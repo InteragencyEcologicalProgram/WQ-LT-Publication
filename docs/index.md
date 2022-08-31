@@ -5,4 +5,5 @@ layout: default
 ## Analysis
 
 * [Sampling Effort - discretewq](Sampling_Effort_discretewq.html)
+* [Draft Data Processing Methods](Data_processing_methods.html)
 

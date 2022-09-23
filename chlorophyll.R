@@ -124,7 +124,15 @@ ggplot(Chla, aes(x = YearAdj, y = LogChl, fill = Drought))+
   ylab("Chlorophyl ug/L (log-transformed)")+
   theme_bw()
 
-#
+
+ggplot(Chla, aes(x = YearAdj, y = LogChl))+
+  geom_point(alpha = 0.7)+
+  geom_smooth()+
+ # drt_color_pal_drought()+
+  ylab("Chlorophyl ug/L (log-transformed)")+
+  theme_bw()
+
+
 # #plot of raw chlrophyll data by day of year
 # Chl = mutate(raw_chla_1975_2021, Yday = yday(Date))
 #

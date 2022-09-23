@@ -228,7 +228,9 @@ plot(pairsNN2, comparisons = T)
 
 #OK, higher nitriate during drought years in the Confluence and Suisun.
 
-
+ggplot(Nitrate, aes(x = YearAdj, y = DissNitrateNitrite)) + geom_point(aes(color = Region))+
+  geom_smooth(aes(color = Region))+
+  theme_bw()+ ylab("Dissolved Nitrate + Nitrite")
 
 #####################################################################
 #Phosphorus
@@ -290,6 +292,10 @@ ggplot(logPhos, aes(x = SVIndex, y = LogPhos))+
   xlab("Sac Valley Index")+
   theme_bw()
 
+
+ggplot(Phos, aes(x = YearAdj, y = DissOrthophos)) + geom_point(aes(color = Region))+
+  geom_smooth(aes(color = Region))+
+  theme_bw()+ ylab("Dissolved Orthophosphate")
 #Wow. Phosphorus actuallylooks pretty good there.
 
 ggplot(Phos, aes(x = Drought, y = DissOrthophos, fill = Drought))+

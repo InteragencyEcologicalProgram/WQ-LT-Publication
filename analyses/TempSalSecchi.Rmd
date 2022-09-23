@@ -1,0 +1,406 @@
+---
+title: "Temperature, Salinity, and Secchi analyses"
+author: "Sam Bashevkin"
+date: '`r format(Sys.Date(), "%B %d, %Y")`'
+output: 
+  html_document:
+    toc: true
+    toc_float:
+      collapsed: false
+editor_options: 
+  chunk_output_type: console
+knit: (function(input, ...) {
+    rmarkdown::render(
+      input,
+      output_dir = 'docs',
+      knit_root_dir = "../",
+      envir = globalenv()
+    )
+    })
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r packages, message=FALSE, warning=FALSE}
+require(dplyr)
+require(DroughtData)
+require(ggplot2)
+require(patchwork)
+require(knitr)
+require(car)
+require(multcomp)
+require(emmeans)
+require(stringr)
+require(readr)
+```
+
+# Functions
+
+```{r}
+model_plotter<-function(model, data, parameter){
+  data<-data%>%
+    filter(!is.na(.data[[parameter]]))%>%
+    mutate(Residuals=resid(model),
+           Fitted=predict(model))
+  
+  units<-case_when(
+    parameter=="Temperature" ~ " (°C)",
+    parameter=="Salinity_l" ~ " (log)",
+    parameter=="Secchi_l" ~ " (log)" 
+  )
+  parameter_label<-case_when(parameter=="Secchi_l" ~ "secchi depth", 
+                             parameter=="Salinity_l" ~ "salinity",
+                             parameter=="Temperature" ~ "temperature")
+  
+  p_hist<-ggplot(data, aes(x=Residuals))+
+    geom_histogram()+
+    xlab(paste0("Residuals", units))+
+    theme_bw()
+  
+  p_res_fit<-ggplot(data, aes(x=Residuals, y=Fitted))+
+    geom_point()+
+    ylab(paste0("Predicted ", parameter_label, units))+
+    xlab(paste0("Residuals", units))+
+    theme_bw()
+  
+  p_obs_fit<-ggplot(data, aes(x=.data[[parameter]], y=Fitted))+
+    geom_point()+
+    geom_abline(slope=1, intercept=0, color="red")+
+    ylab(paste0("Predicted ", parameter_label, units))+
+    xlab(paste0("Observed ", parameter_label, units))+
+    theme_bw()
+  
+  out<-(p_hist+plot_layout(ncol=1))+(p_res_fit+p_obs_fit+plot_layout(ncol=2))+plot_layout(nrow=2, widths=c(1, 0.5, 0.5))
+  
+  return(out)
+}
+
+result_plotter<-function(contrast, variable, xlabel){
+  contrasts<-plot(contrast$emmeans, comparisons = T, by=variable, plotit=F)%>%
+    mutate(across(c(lcmpl, rcmpl), ~ if_else(is.na(.x), the.emmean, .x)))
+  
+  ggplot(contrasts, aes(y=Drought, x=the.emmean))+
+    geom_pointrange(aes(xmin=lcmpl, xmax=rcmpl))+
+    facet_wrap(~.data[[variable]], scales="free_x", ncol=1)+
+    xlab(xlabel)+
+    theme_bw()
+}
+
+partial.r2<-function(ANOVA, factor){
+  r2<-ANOVA[factor, "Sum Sq"]/(ANOVA[factor, "Sum Sq"]+ ANOVA["Residuals", "Sum Sq"])
+  return(r2)
+}
+```
+
+# Load data
+
+```{r}
+wq_data<-lt_avg_wq%>%
+  mutate(Region=factor(Region, levels=c("Suisun Marsh", "Suisun Bay", "Confluence", "SouthCentral", "North")),
+         Season=factor(Season, levels=c("Winter", "Spring", "Summer", "Fall")),
+         Year_fac=factor(YearAdj),
+         Drought=factor(Drought, levels=c("D", "N", "W")),
+         YearAdj_s=(YearAdj-mean(YearAdj)/sd(YearAdj)),
+         across(c(Secchi, Salinity), list(l=log)))
+```
+
+# Plots
+
+Note that each facet has a different y-axis scale
+
+## By year
+
+### Temperature
+
+```{r, fig.width=12, fig.height=12}
+ggplot(wq_data, aes(x=YearAdj, y=Temperature, fill=Drought))+
+  geom_point(shape=21, color="black")+
+  facet_wrap(Season~Region, scales="free_y")+
+  drt_color_pal_drought()+
+  ylab("Temperature (°C)")+
+  theme_bw()+
+  theme(axis.text.x=element_text(angle=45, hjust=1))
+```
+
+### Salinity
+
+```{r, fig.width=12, fig.height=12}
+ggplot(wq_data, aes(x=YearAdj, y=Salinity, fill=Drought))+
+  geom_point(shape=21, color="black")+
+  facet_wrap(Season~Region, scales="free_y")+
+  drt_color_pal_drought()+
+  ylab("Salinity")+
+  theme_bw()+
+  theme(axis.text.x=element_text(angle=45, hjust=1))
+```
+
+### Secchi
+
+Secchi is also more regionally than seasonally variable
+
+```{r, fig.width=12, fig.height=12}
+ggplot(wq_data, aes(x=YearAdj, y=Secchi, fill=Drought))+
+  geom_point(shape=21, color="black")+
+  facet_wrap(Season~Region, scales="free_y")+
+  drt_color_pal_drought()+
+  ylab("Secchi depth (cm)")+
+  theme_bw()+
+  theme(axis.text.x=element_text(angle=45, hjust=1))
+```
+
+# By Drought index
+
+### Temperature
+
+```{r, fig.width=12, fig.height=12}
+ggplot(wq_data, aes(x=Drought, y=Temperature, fill=Drought))+
+  geom_boxplot()+
+  facet_wrap(Season~Region, scales="free_y")+
+  drt_color_pal_drought()+
+  ylab("Temperature (°C)")+
+  theme_bw()+
+  theme(axis.text.x=element_text(angle=45, hjust=1))
+```
+
+### Salinity
+
+```{r, fig.width=12, fig.height=12}
+ggplot(wq_data, aes(x=Drought, y=Salinity, fill=Drought))+
+  geom_boxplot()+
+  facet_wrap(Season~Region, scales="free_y")+
+  drt_color_pal_drought()+
+  ylab("Salinity")+
+  theme_bw()+
+  theme(axis.text.x=element_text(angle=45, hjust=1))
+```
+
+### Secchi
+
+```{r, fig.width=12, fig.height=12}
+ggplot(wq_data, aes(x=Drought, y=Secchi, fill=Drought))+
+  geom_boxplot()+
+  facet_wrap(Season~Region, scales="free_y")+
+  drt_color_pal_drought()+
+  ylab("Secchi depth (cm)")+
+  theme_bw()+
+  theme(axis.text.x=element_text(angle=45, hjust=1))
+```
+
+# Analyses
+
+## Temperature
+
+```{r}
+m_t<-aov(Temperature ~ (Drought + Season + Region)^2, data=wq_data)
+```
+
+### Check assumptions:
+
+```{r}
+model_plotter(m_t, wq_data, "Temperature")
+```
+
+### Check results
+
+```{r}
+m_t_Anova<-Anova(m_t, type=2)
+m_t_Anova
+```
+
+### Partial R^2^
+
+How much variability is explained by the Drought index?
+
+```{r}
+partial.r2(m_t_Anova, "Drought")
+```
+
+### Post-hoc test
+
+```{r}
+m_t_contrasts_r <- emmeans(m_t, pairwise ~ Drought*Region)
+
+m_t_contrasts_s <- emmeans(m_t, pairwise ~ Drought*Season)
+```
+
+Option 1: non-overlapping error bars = significant difference
+```{r, fig.width=4, fig.height=6}
+# Region
+result_plotter(m_t_contrasts_r, "Region", "Temperature (°C)")
+
+# Season
+result_plotter(m_t_contrasts_s, "Season", "Temperature (°C)")
+```
+
+## Salinity
+
+Salinity data had to be log transformed to fit the assumption of normality
+
+```{r}
+m_sa<-aov(Salinity_l ~ (Drought + Season + Region)^2, data=wq_data)
+```
+
+### Check assumptions:
+
+```{r}
+model_plotter(m_sa, wq_data, "Salinity_l")
+```
+
+### Check results
+
+```{r}
+m_sa_Anova<-Anova(m_sa, type=2)
+m_sa_Anova
+```
+
+### Partial R^2^
+
+How much variability is explained by the Drought index?
+
+```{r}
+partial.r2(m_sa_Anova, "Drought")
+```
+
+### Post-hoc test
+
+```{r}
+m_sa_contrasts_r <- emmeans(m_sa, pairwise ~ Drought*Region)
+
+m_sa_contrasts_s <- emmeans(m_sa, pairwise ~ Drought*Season)
+```
+
+Option 1: non-overlapping error bars = significant difference
+```{r, fig.width=4, fig.height=6}
+# Region
+result_plotter(m_sa_contrasts_r, "Region", "Salinity")
+
+# Season
+result_plotter(m_sa_contrasts_s, "Season", "Salinity")
+```
+
+## Secchi Depth
+
+Secchi depth had to be log-transformed to comply with the assumption of normality
+
+```{r}
+m_se<-aov(Secchi_l ~ (Drought + Season + Region)^2, data=wq_data)
+```
+
+### Check assumptions:
+
+```{r}
+model_plotter(m_se, wq_data, "Secchi_l")
+```
+
+### Check results
+
+```{r}
+m_se_Anova<-Anova(m_se, type=2)
+m_se_Anova
+```
+
+### Partial R^2^
+
+How much variability is explained by the Drought index?
+
+```{r}
+partial.r2(m_se_Anova, "Drought")
+```
+
+### Post-hoc test
+
+```{r}
+m_se_contrasts_r <- emmeans(m_se, pairwise ~ Drought*Region)
+
+m_se_contrasts_s <- emmeans(m_se, pairwise ~ Drought*Season)
+```
+
+Option 1: non-overlapping error bars = significant difference
+```{r, fig.width=4, fig.height=6}
+# Region
+result_plotter(m_se_contrasts_r, "Region", "Secchi depth (log)")
+
+# Season
+result_plotter(m_se_contrasts_s, "Season", "Secchi depth (log)")
+```
+
+## Secchi Depth with annual trend
+
+Secchi depth had to be log-transformed to comply with the assumption of normality
+
+```{r}
+m_se2<-aov(Secchi_l ~ (Drought + Season + Region)^2 + YearAdj*Season*Region, data=wq_data)
+```
+
+### Check assumptions:
+
+```{r}
+model_plotter(m_se2, wq_data, "Secchi_l")
+```
+
+### Check results
+
+```{r}
+m_se2_Anova<-Anova(m_se2, type=2)
+m_se2_Anova
+```
+
+### Partial R^2^
+
+How much variability is explained by the Drought index?
+
+```{r}
+partial.r2(m_se2_Anova, "Drought")
+```
+
+### Post-hoc test
+
+```{r}
+m_se2_contrasts_r <- emmeans(m_se2, pairwise ~ Drought*Region)
+
+m_se2_contrasts_s <- emmeans(m_se2, pairwise ~ Drought*Season)
+```
+
+Option 1: non-overlapping error bars = significant difference
+```{r, fig.width=4, fig.height=6}
+# Region
+result_plotter(m_se2_contrasts_r, "Region", "Secchi depth (log)")
+
+# Season
+result_plotter(m_se2_contrasts_s, "Season", "Secchi depth (log)")
+```
+
+## Save all model outputs
+
+Anovas
+```{r}
+anovas<-bind_rows(
+  mutate(as_tibble(m_t_Anova, rownames = "Parameter"), model="Temperature"),
+  mutate(as_tibble(m_sa_Anova, rownames = "Parameter"), model="Salinity"),
+  mutate(as_tibble(m_se_Anova, rownames = "Parameter"), model="Secchi depth")
+)%>%
+  mutate(`Pr(>F)`=if_else(`Pr(>F)`<0.001, "< 0.001", as.character(round(`Pr(>F)`, 4))))%>%
+  relocate(model)%>%
+  write_csv(file.path("outputs", "TempSalSecchi_anovas.csv"))
+
+print(anovas, n=1000)
+```
+
+Post-hoc tests
+```{r}
+tukeys<-bind_rows(
+  mutate(as_tibble(m_t_contrasts_r$contrasts), model="Temperature", `contrast type`="region"),
+  mutate(as_tibble(m_t_contrasts_s$contrasts), model="Temperature", `contrast type`="season"),
+  mutate(as_tibble(m_sa_contrasts_r$contrasts), model="Salinity", `contrast type`="region"),
+  mutate(as_tibble(m_sa_contrasts_s$contrasts), model="Salinity", `contrast type`="season"),
+  mutate(as_tibble(m_se_contrasts_r$contrasts), model="Secchi depth", `contrast type`="region"),
+  mutate(as_tibble(m_se_contrasts_s$contrasts), model="Secchi depth", `contrast type`="season"))%>%
+  rename(`p-value`=p.value, `t-ratio`=t.ratio)%>%
+  mutate(`p-value`=if_else(`p-value`<0.001, "< 0.001", as.character(round(`p-value`, 4))))%>%
+  relocate(model, `contrast type`)%>%
+  write_csv(file.path("outputs", "TempSalSecchi_tukeys.csv"))
+
+print(anovas, n=1000)
+```

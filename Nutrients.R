@@ -1,14 +1,14 @@
 #Nutrient analyses
 
 
-library(tidyverse)
-library(lubridate)
+  library(tidyverse)
+  library(lubridate)
 
-library(lme4)
-library(lmerTest)
-library(DHARMa)
-library(effects)
-library(DroughtData)
+  library(lme4)
+  library(lmerTest)
+  library(DHARMa)
+  library(effects)
+  library(DroughtData)
 
 
 #Replace my data with teh official version
@@ -28,7 +28,8 @@ Ammonia <- raw_nutr_1975_2021 %>%
   # Add year assignments
   drt_add_yr_assign() %>%
   mutate(YearType = factor(YearType, levels = c("Critical", "Dry", "Below Normal",
-                                                "Above Normal", "Wet")))
+                                                "Above Normal", "Wet")),
+         logAm = log(DissAmmonia))
 
 
 logAmmonia <- raw_nutr_1975_2021 %>%
@@ -319,12 +320,16 @@ ggplot(Phos, aes(x = YearAdj, y = DissOrthophos, fill = YearType))+
 hist(Phos$DissOrthophos)
 hist(log(Phos$DissOrthophos))
 hist(logPhos$LogPhos)
+hist(sqrt(Phos$DissOrthophos))
+
 
 #Meh. Not sure there
-Phosx = lm(DissOrthophos ~ Drought*Region*Season, data = Phos)
-Phos1 = lm(LogPhos ~ Drought*Region*Season, data = logPhos)
+Phosx = lm(sqrt(DissOrthophos) ~ Drought*Region+ Drought*Season+ Region*Season, data = Phos)
+Phos1 = lm(LogPhos ~ Drought*Region+ Drought*Season+ Region*Season, data = Phos)
 summary(Phos1)
 plot(Phos1)
+plot(Phosx)
+
 eff1 = allEffects(Chl1, x.var = "Drought")
 plot(eff1)
 # I hate three-way interactions. Impossible to interpret

@@ -130,12 +130,13 @@ plot(ampx, comparisons = T)
 Now add the treatment plant term
 
 ```{r}
-Am2 = lm(LogAm ~ Drought*Region+ Drought*Season + Region*Season + StocktonUpgrade, data = Ammonia)
+Am2 = lm(LogAm ~ Drought*Region+ Drought*Season + Region*Season + Region*StocktonUpgrade, data = Ammonia)
 summary(Am2)
 plot(Am2)
 visreg(Am2, xvar = "Drought", by = "Region")
 visreg(Am2, xvar = "Drought", by = "Season")
 visreg(Am2, xvar = "Region", by = "Season")
+visreg(Am2, xvar = "Region", by = "StocktonUpgrade")
 amp2 = emmeans(Am2, pairwise ~ Drought*Region)
 plot(amp2, comparisons = T)
 

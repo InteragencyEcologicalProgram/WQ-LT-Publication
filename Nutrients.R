@@ -344,3 +344,5 @@ pairsP =  emmeans(Phos2, pairwise ~ Drought*Region)
 plot(pairsP, comparisons = T)
 plot(emmeans(Phos2, pairwise ~ Drought), comparisons = T)
 #major effect of drought on phosphorus! NOthing else, but yest phosphorus!
+
+

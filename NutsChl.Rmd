@@ -7,6 +7,7 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE)
+library(multcomp)
 library(tidyverse)
   library(lubridate)
   library(emmeans)
@@ -15,6 +16,7 @@ library(tidyverse)
   library(DHARMa)
   library(effects)
 library(visreg)
+
   library(DroughtData)
 ```
 
@@ -289,7 +291,7 @@ ggplot(Phos, aes(x = YearType, y = DissOrthophos, fill = YearType))+
   theme_bw()+
   scale_x_discrete(labels = c("C", "D", "B", "A", "W"))
 
-#plot of Nitrate by Sac valley index
+#plot of phosphorus by Sac valley index
 ggplot(Phos, aes(x = SVIndex, y = LogPhos))+
   geom_point(alpha = 0.7, aes(color =Drought))+
   geom_smooth(method = "lm")+
@@ -343,6 +345,23 @@ plot(emmeans(Phos2, pairwise ~ Drought), comparisons = T)
 
 For phosphorus, the story is still really the main effect of drought. Lower Phosphorus in wet years.
 
+
+
+```{r}
+
+#now again as a linear model versus sac valley index
+
+
+Phos2 = lm(LogPhos ~ SVIndex*Region + SVIndex*Season + Region*Season, data = Phos)
+plot(Phos2)
+visreg(Phos2, xvar = "SVIndex", by = "Region")
+visreg(Phos2, xvar = "SVIndex", by = "Season")
+visreg(Phos2, xvar = "Region", by = "Season")
+summary(Phos2)
+
+
+```
+
 ## Chlorophyll
 
 This is what Cloern has to say:
@@ -372,7 +391,9 @@ ChlaA <- raw_chla_1975_2021 %>%
   drt_add_yr_assign() %>%
   mutate(YearType = factor(YearType, levels = c("Critical", "Dry", "Below Normal",
                                                 "Above Normal", "Wet")),
-         LogChl = log(Chlorophyll))
+         LogChl = log(Chlorophyll),
+         Regime = case_when(YearAdj > 1987 ~ "post-clam",
+                            YearAdj <1988 ~ "pre-clam"))
 
 
 
@@ -460,13 +481,13 @@ And now for some statistics
 
 ```{r}
 
-Chl1 = lm(LogChl ~ Drought*Region+ Drought*Season + Region*Season, data = ChlaA)
+Chl1 = lm(LogChl ~ Drought*Region+ Drought*Season + Region*Season + Region*Regime, data = ChlaA)
 summary(Chl1)
 plot(Chl1)
 library(car)
 qqPlot(Chl1)
 hist(residuals(Chl1))
-#BLEH
+#better
 
 hist(log(ChlaA$Chlorophyll))
 
@@ -478,6 +499,9 @@ plot(pairsC, comparisons = T)
 pairsC2 =  emmeans(Chl1, pairwise ~ Drought*Season)
 plot(pairsC2, comparisons = T)
 
+pairsC3 =  emmeans(Chl1, pairwise ~Regime*Region)
+plot(pairsC3, comparisons = T)
+
 
 
 
@@ -485,11 +509,29 @@ plot(pairsC2, comparisons = T)
 
 ```
 
-Yup. Chlorophyll still refuses to be interesting. It's also not quite meeting my linear regression assumptions. Am I allowed to take the square-root of a log? Probably not. Maybe a gamma distribution? Or just go to brms?
+Well, I added the regime shift at the clam invasion and now my diagnostic plots look better, droughts definitely have higher chlorophyll in the south-central region, and definitely have higher winter chlorophyll YAY!!
 
-I need to get Sam to check my work on this. Is lognormal appropriate?
+Try the linear model with Sac valley index
 
 ```{r}
+
+
+Chl2 = lm(LogChl ~ SVIndex*Region+ SVIndex*Season + Region*Season + Region*Regime, data = ChlaA)
+summary(Chl2)
+plot(Chl2)
+
+visreg(Chl2, xvar ="SVIndex", by = "Region")
+visreg(Chl2, xvar = "SVIndex", by = "Season")
+visreg(Chl2, xvar = "Region", by = "Season")
+
+
+
+
+```
+
+
+
+```{r, eval=FALSE, echo=FALSE}
 library(brms)
 
 chlb = brm(Chlorophyll ~ Region*Drought+ Season*Drought + Region*Season, data = ChlaA, 
@@ -501,4 +543,11 @@ cex
 
 ```
 
-Well, if i did do that right, droughts are still not very interesting. Maybe chlorophyll is lower in Suisun Bay, but that's it. 
+
+
+```{r, eval=FALSE }
+table(raw_chla_1975_2021$Source, raw_chla_1975_2021$YearAdj)
+table(raw_nutr_1975_2021$Source, raw_nutr_1975_2021$YearAdj)
+
+```
+

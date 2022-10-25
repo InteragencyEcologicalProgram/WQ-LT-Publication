@@ -549,5 +549,12 @@ cex
 table(raw_chla_1975_2021$Source, raw_chla_1975_2021$YearAdj)
 table(raw_nutr_1975_2021$Source, raw_nutr_1975_2021$YearAdj)
 
+#bind nutrients anc chlorophyll together to use in synthesis paper
+
+NutsCLa = left_join(ChlaA, Nitrate) %>%
+  left_join(Phos) %>%
+  left_join(Ammonia)
+
+save(NutsCLa, file = "NutrientsChlorophyll.RData")
 ```
 

@@ -3,8 +3,10 @@
 library(tidyverse)
 library(lubridate)
 library(DroughtData)
-source("Nutrients.R")
-source("chlorophyll.R")
+#source("Nutrients.R")
+#source("chlorophyll.R")
+load("NutrientsChlorophyll.RData")
+#save(Ammonia, ChlaA, Nitrate, NutsCLa, Phos, file = "NutrientsChlorophyll.RData")
 
 yrs = read_csv("yearassignments.csv") %>%
   rename(YearAdj = Year) %>%
@@ -12,7 +14,8 @@ yrs = read_csv("yearassignments.csv") %>%
 
 #nitrate graph
 Nitrate = left_join(Nitrate, yrs) %>%
-  mutate(Whitepaper = factor(Whitepaper, levels = c("Critical", "Dry", "Below Normal", "Above Normal", "Wet", "2020", "2021", "2022"), ordered = T))
+  mutate(Whitepaper = factor(Whitepaper, levels = c("Critical", "Dry", "Below Normal", "Above Normal", "Wet", "2020", "2021", "2022"),
+                             ordered = T))
 
 
 

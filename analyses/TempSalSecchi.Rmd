@@ -24,6 +24,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r packages, message=FALSE, warning=FALSE}
+require(conflicted)
 require(dplyr)
 require(DroughtData)
 require(ggplot2)
@@ -34,6 +35,9 @@ require(multcomp)
 require(emmeans)
 require(stringr)
 require(readr)
+
+conflict_prefer("filter", "dplyr")
+conflict_prefer("select", "dplyr")
 ```
 
 # Functions
@@ -86,11 +90,20 @@ result_plotter<-function(contrast, variable, xlabel, log){
       mutate(across(c(the.emmean, lcmpl, rcmpl), ~exp(.x)))
   }
   
-  ggplot(contrasts, aes(y=Drought, x=the.emmean))+
+  p<-ggplot(contrasts, aes(y=Drought, x=the.emmean))+
     geom_pointrange(aes(xmin=lcmpl, xmax=rcmpl))+
     facet_wrap(~.data[[variable]], scales="free_x", ncol=1)+
     xlab(xlabel)+
     theme_bw()
+  
+  diffs<-filter(contrasts, Drought%in%c("D", "W"))%>%
+    select(Drought, all_of(variable), `the.emmean`)%>%
+    pivot_wider(names_from = Drought, values_from = the.emmean)%>%
+    mutate(difference=D-W)
+  
+  plot(p)
+  
+  invisible(diffs)
 }
 
 partial.r2<-function(ANOVA, factor){

@@ -77,9 +77,14 @@ model_plotter<-function(model, data, parameter){
   return(out)
 }
 
-result_plotter<-function(contrast, variable, xlabel){
+result_plotter<-function(contrast, variable, xlabel, log){
   contrasts<-plot(contrast$emmeans, comparisons = T, by=variable, plotit=F)%>%
     mutate(across(c(lcmpl, rcmpl), ~ if_else(is.na(.x), the.emmean, .x)))
+  
+  if(log){
+    contrasts<-contrasts%>%
+      mutate(across(c(the.emmean, lcmpl, rcmpl), ~exp(.x)))
+  }
   
   ggplot(contrasts, aes(y=Drought, x=the.emmean))+
     geom_pointrange(aes(xmin=lcmpl, xmax=rcmpl))+
@@ -228,10 +233,10 @@ m_t_contrasts_s <- emmeans(m_t, pairwise ~ Drought*Season)
 Option 1: non-overlapping error bars = significant difference
 ```{r, fig.width=4, fig.height=6}
 # Region
-result_plotter(m_t_contrasts_r, "Region", "Temperature (°C)")
+result_plotter(m_t_contrasts_r, "Region", "Temperature (°C)", log=FALSE)
 
 # Season
-result_plotter(m_t_contrasts_s, "Season", "Temperature (°C)")
+result_plotter(m_t_contrasts_s, "Season", "Temperature (°C)", log=FALSE)
 ```
 
 ## Salinity
@@ -274,10 +279,10 @@ m_sa_contrasts_s <- emmeans(m_sa, pairwise ~ Drought*Season)
 Option 1: non-overlapping error bars = significant difference
 ```{r, fig.width=4, fig.height=6}
 # Region
-result_plotter(m_sa_contrasts_r, "Region", "Salinity")
+result_plotter(m_sa_contrasts_r, "Region", "Salinity", log=TRUE)
 
 # Season
-result_plotter(m_sa_contrasts_s, "Season", "Salinity")
+result_plotter(m_sa_contrasts_s, "Season", "Salinity", log=TRUE)
 ```
 
 ## Secchi Depth
@@ -320,10 +325,10 @@ m_se_contrasts_s <- emmeans(m_se, pairwise ~ Drought*Season)
 Option 1: non-overlapping error bars = significant difference
 ```{r, fig.width=4, fig.height=6}
 # Region
-result_plotter(m_se_contrasts_r, "Region", "Secchi depth (log)")
+result_plotter(m_se_contrasts_r, "Region", "Secchi depth (log)", log=TRUE)
 
 # Season
-result_plotter(m_se_contrasts_s, "Season", "Secchi depth (log)")
+result_plotter(m_se_contrasts_s, "Season", "Secchi depth (log)", log=TRUE)
 ```
 
 ## Secchi Depth with annual trend
@@ -366,10 +371,10 @@ m_se2_contrasts_s <- emmeans(m_se2, pairwise ~ Drought*Season)
 Option 1: non-overlapping error bars = significant difference
 ```{r, fig.width=4, fig.height=6}
 # Region
-result_plotter(m_se2_contrasts_r, "Region", "Secchi depth (log)")
+result_plotter(m_se2_contrasts_r, "Region", "Secchi depth (log)", log=TRUE)
 
 # Season
-result_plotter(m_se2_contrasts_s, "Season", "Secchi depth (log)")
+result_plotter(m_se2_contrasts_s, "Season", "Secchi depth (log)", log=TRUE)
 ```
 
 ## Save all model outputs

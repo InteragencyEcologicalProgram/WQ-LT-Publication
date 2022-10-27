@@ -35,7 +35,7 @@ require(multcomp)
 require(emmeans)
 require(stringr)
 require(readr)
-
+require(tidyr)
 conflict_prefer("filter", "dplyr")
 conflict_prefer("select", "dplyr")
 ```

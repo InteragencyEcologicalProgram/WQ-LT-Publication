@@ -11,7 +11,7 @@
 
 <meta name="author" content="Sam Bashevkin" />
 
-<meta name="date" content="2022-10-27" />
+<meta name="date" content="2022-10-28" />
 
 <title>Temperature, Salinity, and Secchi analyses</title>
 
@@ -1512,7 +1512,7 @@ div.tocify {
 <h1 class="title toc-ignore">Temperature, Salinity, and Secchi
 analyses</h1>
 <h4 class="author">Sam Bashevkin</h4>
-<h4 class="date">October 27, 2022</h4>
+<h4 class="date">October 28, 2022</h4>
 
 </div>
 
@@ -1596,6 +1596,7 @@ result_plotter&lt;-function(contrast, variable, xlabel, log){
   invisible(diffs)
 }
 
+# Partial R2 from this post: https://stats.stackexchange.com/questions/64010/importance-of-predictors-in-multiple-regression-partial-r2-vs-standardized
 partial.r2&lt;-function(ANOVA, factor){
   r2&lt;-ANOVA[factor, &quot;Sum Sq&quot;]/(ANOVA[factor, &quot;Sum Sq&quot;]+ ANOVA[&quot;Residuals&quot;, &quot;Sum Sq&quot;])
   return(r2)

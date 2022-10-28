@@ -106,6 +106,7 @@ result_plotter<-function(contrast, variable, xlabel, log){
   invisible(diffs)
 }
 
+# Partial R2 from this post: https://stats.stackexchange.com/questions/64010/importance-of-predictors-in-multiple-regression-partial-r2-vs-standardized
 partial.r2<-function(ANOVA, factor){
   r2<-ANOVA[factor, "Sum Sq"]/(ANOVA[factor, "Sum Sq"]+ ANOVA["Residuals", "Sum Sq"])
   return(r2)

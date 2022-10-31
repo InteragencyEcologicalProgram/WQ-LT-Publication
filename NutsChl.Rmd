@@ -18,6 +18,7 @@ library(tidyverse)
 library(visreg)
 
   library(DroughtData)
+source("helperfunctions.R")
 ```
 
 ## Nutrients and chlorophyll
@@ -104,6 +105,16 @@ ggplot(Ammonia, aes(x = YearAdj, y = DissAmmonia, fill = YearType))+
   ylab("Ammonia mg/L")+
   theme_bw()
 
+#plot ofammonia by drought
+ggplot(Ammonia, aes(x = Drought, y = DissAmmonia, fill = Drought))+
+  geom_boxplot(alpha = 0.7)+
+  facet_wrap(~Season, scales = "free_y")+
+  drt_color_pal_drought()+
+  ylab("Ammonia mg/L")+
+  xlab("Year Type")+
+  theme_bw()
+
+
 ```
 
 Now we'll do the statistics. I'm going to take out 2021, because of the Sac WWTP upgrade. Stockton WWTP was upgraded in 2006
@@ -127,6 +138,12 @@ plot(amp, comparisons = T)
 ampx = emmeans(Am1, pairwise ~ Drought*Season)
 plot(ampx, comparisons = T)
 
+# Region
+result_plotter(amp, "Region", "Ammonia ug/L")
+
+# Season
+result_plotter(ampx, "Season", "Ammonia ug/L")
+
 ```
 
 Now add the treatment plant term
@@ -147,6 +164,14 @@ plot(amp2x, comparisons = T)
 
 AIC(Am2)
 AIC(Am1)
+
+
+# Region
+result_plotter(amp2, "Region", "Ammonia ug/L")
+
+# Season
+result_plotter(amp2x, "Season", "Ammonia ug/L")
+
 
 ```
 
@@ -503,6 +528,12 @@ pairsC3 =  emmeans(Chl1, pairwise ~Regime*Region)
 plot(pairsC3, comparisons = T)
 
 
+
+# Region
+result_plotter(pairsC, "Region", "Chlorophyll ug/L")
+
+# Season
+result_plotter(pairsC2, "Season", "Chlorophyll ug/L")
 
 
 

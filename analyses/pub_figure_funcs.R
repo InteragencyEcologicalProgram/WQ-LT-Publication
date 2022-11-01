@@ -11,8 +11,9 @@ pub_figure_plotter <- function(df_data,
                                y_label,
                                fct_grp,
                                model,
+                               plt_title,
                                log_trans = FALSE,
-                               print_plot = TRUE) {
+                               print_plt = TRUE) {
 
   # Set local variables to NULL
   . <- NULL
@@ -76,6 +77,7 @@ pub_figure_plotter <- function(df_data,
     ggplot2::geom_text(ggplot2::aes(y = y_pos)) +
     ggplot2::facet_wrap(ggplot2::vars({{ fct_grp }}), scales = "free_y", nrow = 1) +
     ggplot2::ylab(y_label) +
+    ggplot2::ggtitle(plt_title) +
     ggplot2::theme_bw()
 
   diffs <- emm_tuk_c %>%
@@ -84,7 +86,7 @@ pub_figure_plotter <- function(df_data,
     tidyr::pivot_wider(names_from = Drought, values_from = emmean) %>%
     dplyr::mutate(difference = D - W)
 
-  if (print_plot == TRUE) print(plt)
+  if (print_plt == TRUE) print(plt)
 
   invisible(
     tibble::lst(

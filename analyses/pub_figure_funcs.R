@@ -11,7 +11,8 @@ pub_figure_plotter <- function(df_data,
                                y_label,
                                fct_grp,
                                model,
-                               log_trans = FALSE) {
+                               log_trans = FALSE,
+                               print_plot = TRUE) {
 
   # Set local variables to NULL
   . <- NULL
@@ -83,7 +84,8 @@ pub_figure_plotter <- function(df_data,
     tidyr::pivot_wider(names_from = Drought, values_from = emmean) %>%
     dplyr::mutate(difference = D - W)
 
-  print(plt)
+  if (print_plot == TRUE) print(plt)
+
   invisible(
     tibble::lst(
       plt,

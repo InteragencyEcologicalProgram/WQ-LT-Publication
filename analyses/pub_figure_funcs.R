@@ -6,11 +6,11 @@ library(emmeans)
 library(rlang)
 
 
-pub_figure_plotter <- function(df_data,
-                               param,
-                               y_label,
-                               fct_grp,
-                               model,
+pub_figure_plotter <- function(df_data, #dataframe containing the dataset
+                               param, #response variable
+                               y_label, #label for y-axis (response variable and units)
+                               fct_grp, #grouping for plot (usually Region or Season)
+                               model, #linear model of response variable versus predictor factors
                                log_trans = FALSE) {
 
   # Set local variables to NULL

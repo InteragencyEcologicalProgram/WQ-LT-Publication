@@ -19,6 +19,7 @@ library(visreg)
 
   library(DroughtData)
 source("helperfunctions.R")
+source("analyses/pub_figure_funcs.R")
 ```
 
 ## Nutrients and chlorophyll
@@ -172,6 +173,11 @@ result_plotter(amp2, "Region", "Ammonia ug/L")
 # Season
 result_plotter(amp2x, "Season", "Ammonia ug/L")
 
+#now the good graph of everything
+pub_figure_plotter(Ammonia, DissAmmonia, "Ammonia mg/L", Region, Am2, log_trans = T)
+
+pub_figure_plotter(Ammonia, DissAmmonia, "Ammonia mg/L", Season, Am2, log_trans = T)
+
 
 ```
 
@@ -264,6 +270,11 @@ pairsNN =  emmeans(Nat2, pairwise ~ Drought*Region)
 plot(pairsNN, comparisons = T)
 pairsNN2 =  emmeans(Nat2, pairwise ~ Drought*Season)
 plot(pairsNN2, comparisons = T)
+
+#now the good graph of everything
+pub_figure_plotter(Nitrate, DissNitrateNitrite, "Nitrate + Nitrite mg/L", Region, Nat2, log_trans = T)
+
+pub_figure_plotter(Nitrate, DissNitrateNitrite, "Nitrate + Nitrite mg/L", Season, Nat2, log_trans = T)
 
 ```
 
@@ -364,6 +375,11 @@ summary(Phos2)
 pairsP =  emmeans(Phos2, pairwise ~ Drought*Region)
 plot(pairsP, comparisons = T)
 plot(emmeans(Phos2, pairwise ~ Drought), comparisons = T)
+
+#now the good graph of everything
+pub_figure_plotter(Phos, DissOrthophos, "Orthophosphate mg/L", Region, Phos2, log_trans = T)
+
+pub_figure_plotter(Phos, DissOrthophos, "Orthophosphate mg/L", Season, Phos2, log_trans = T)
 
 
 ```
@@ -537,7 +553,10 @@ result_plotter(pairsC2, "Season", "Chlorophyll ug/L")
 
 
 
+#now the good graph of everything
+pub_figure_plotter(ChlaA, Chlorophyll, "Chlorophyll-a ug/L", Region, Chl1, log_trans = T)
 
+pub_figure_plotter(ChlaA, Chlorophyll, "Chlorophyll-a ug/L", Season, Chl1, log_trans = T)
 ```
 
 Well, I added the regime shift at the clam invasion and now my diagnostic plots look better, droughts definitely have higher chlorophyll in the south-central region, and definitely have higher winter chlorophyll YAY!!

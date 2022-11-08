@@ -6,12 +6,23 @@ library(emmeans)
 library(rlang)
 
 
+<<<<<<< HEAD
 pub_figure_plotter <- function(df_data, #dataframe containing the dataset
                                param, #response variable
                                y_label, #label for y-axis (response variable and units)
                                fct_grp, #grouping for plot (usually Region or Season)
                                model, #linear model of response variable versus predictor factors
                                log_trans = FALSE) {
+=======
+pub_figure_plotter <- function(df_data,
+                               param,
+                               y_label,
+                               fct_grp,
+                               model,
+                               plt_title,
+                               log_trans = FALSE,
+                               print_plt = TRUE) {
+>>>>>>> dcec33db090124d6be33cc656ac27cd71107357b
 
   # Set local variables to NULL
   . <- NULL
@@ -75,6 +86,7 @@ pub_figure_plotter <- function(df_data, #dataframe containing the dataset
     ggplot2::geom_text(ggplot2::aes(y = y_pos)) +
     ggplot2::facet_wrap(ggplot2::vars({{ fct_grp }}), scales = "free_y", nrow = 1) +
     ggplot2::ylab(y_label) +
+    ggplot2::ggtitle(plt_title) +
     ggplot2::theme_bw()
 
   diffs <- emm_tuk_c %>%
@@ -83,7 +95,8 @@ pub_figure_plotter <- function(df_data, #dataframe containing the dataset
     tidyr::pivot_wider(names_from = Drought, values_from = emmean) %>%
     dplyr::mutate(difference = D - W)
 
-  print(plt)
+  if (print_plt == TRUE) print(plt)
+
   invisible(
     tibble::lst(
       plt,

@@ -50,7 +50,8 @@ result_plotter<-function(contrast, variable, xlabel){
     theme_bw()
 }
 
-partial.r2<-function(ANOVA, factor){
-  r2<-ANOVA[factor, "Sum Sq"]/(ANOVA[factor, "Sum Sq"]+ ANOVA["Residuals", "Sum Sq"])
+partial.r2<-function(ANOVA){
+  factors<-paste0("Drought", c("", ":Season", ":Region"))
+  r2<-sum(ANOVA[factors, "Sum Sq"])/(sum(ANOVA[factors, "Sum Sq"]) + ANOVA["Residuals", "Sum Sq"])
   return(r2)
 }

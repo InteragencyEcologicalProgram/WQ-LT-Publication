@@ -153,10 +153,11 @@ Now add the treatment plant term
 Am2 = lm(LogAm ~ Drought*Region+ Drought*Season + Region*Season + Region*StocktonUpgrade, data = Ammonia)
 summary(Am2)
 plot(Am2)
+Aman = Anova(Am2, type=3, contrasts=list(topic=contr.sum, sys=contr.sum))
 visreg(Am2, xvar = "Drought", by = "Region")
 visreg(Am2, xvar = "Drought", by = "Season")
 visreg(Am2, xvar = "Region", by = "Season")
-visreg(Am2, xvar = "Region", by = "StocktonUpgrade")
+visreg(Am2, xvar = "StocktonUpgrade", by = "Region")
 amp2 = emmeans(Am2, pairwise ~ Drought*Region)
 plot(amp2, comparisons = T)
 
@@ -165,7 +166,19 @@ plot(amp2x, comparisons = T)
 
 AIC(Am2)
 AIC(Am1)
+```
 
+
+```{r}
+partial.r2(Aman)
+
+library(broom)
+amRegime = emmeans(Am2, pairwise ~ StocktonUpgrade|Region)
+amRegimet = tidy(amRegime$emmeans) %>%
+  mutate(trans = exp(estimate))
+
+diffsam = group_by(amRegimet, Region) %>%
+  summarize(diff = trans[1]-trans[2])
 
 # Region
 result_plotter(amp2, "Region", "Ammonia ug/L")
@@ -174,9 +187,11 @@ result_plotter(amp2, "Region", "Ammonia ug/L")
 result_plotter(amp2x, "Season", "Ammonia ug/L")
 
 #now the good graph of everything
-pub_figure_plotter(Ammonia, DissAmmonia, "Ammonia mg/L", Region, Am2, log_trans = T)
+AmRegions = pub_figure_plotter(Ammonia, DissAmmonia, "Ammonia mg/L", Region, Am2, log_trans = T,
+                   plt_title = "Ammonia - By Region")
 
-pub_figure_plotter(Ammonia, DissAmmonia, "Ammonia mg/L", Season, Am2, log_trans = T)
+AmSeasons = pub_figure_plotter(Ammonia, DissAmmonia, "Ammonia mg/L", Season, Am2, log_trans = T,
+                               plt_title = "Ammonia - By Season")
 
 
 ```
@@ -272,9 +287,11 @@ pairsNN2 =  emmeans(Nat2, pairwise ~ Drought*Season)
 plot(pairsNN2, comparisons = T)
 
 #now the good graph of everything
-pub_figure_plotter(Nitrate, DissNitrateNitrite, "Nitrate + Nitrite mg/L", Region, Nat2, log_trans = T)
+NNRegion = pub_figure_plotter(Nitrate, DissNitrateNitrite, "Nitrate + Nitrite mg/L", Region, Nat2, log_trans = T,
+                   plt_title = "Nitrate+Nitrite - By Region")
 
-pub_figure_plotter(Nitrate, DissNitrateNitrite, "Nitrate + Nitrite mg/L", Season, Nat2, log_trans = T)
+NNSeason = pub_figure_plotter(Nitrate, DissNitrateNitrite, "Nitrate + Nitrite mg/L", Season, Nat2, log_trans = T,
+                   plt_title = "Nitrate+Nitrite - By Season")
 
 ```
 
@@ -377,9 +394,11 @@ plot(pairsP, comparisons = T)
 plot(emmeans(Phos2, pairwise ~ Drought), comparisons = T)
 
 #now the good graph of everything
-pub_figure_plotter(Phos, DissOrthophos, "Orthophosphate mg/L", Region, Phos2, log_trans = T)
+OPRegion = pub_figure_plotter(Phos, DissOrthophos, "Orthophosphate mg/L", Region, Phos2, log_trans = T,
+                              plt_title = "Orthophosphate by Region")
 
-pub_figure_plotter(Phos, DissOrthophos, "Orthophosphate mg/L", Season, Phos2, log_trans = T)
+OPSeason = pub_figure_plotter(Phos, DissOrthophos, "Orthophosphate mg/L", Season, Phos2, log_trans = T,
+                   plt_title = "Orthophosphate by Season")
 
 
 ```
@@ -523,7 +542,11 @@ And now for some statistics
 ```{r}
 
 Chl1 = lm(LogChl ~ Drought*Region+ Drought*Season + Region*Season + Region*Regime, data = ChlaA)
+Ch1_Anova<-Anova(Chl1, type=3, contrasts=list(topic=contr.sum, sys=contr.sum))
+Ch1_Anova
+partial.r2(Ch1_Anova)
 summary(Chl1)
+visreg(Chl1, xvar = "Regime", by = "Region")
 plot(Chl1)
 library(car)
 qqPlot(Chl1)
@@ -550,16 +573,27 @@ result_plotter(pairsC, "Region", "Chlorophyll ug/L")
 
 # Season
 result_plotter(pairsC2, "Season", "Chlorophyll ug/L")
+library(broom)
+emRegime = emmeans(Chl1, pairwise ~ Regime|Region)
+emRegimet = tidy(emRegime$emmeans) %>%
+  mutate(trans = exp(estimate))
 
-
+diffs = group_by(emRegimet, Region) %>%
+  summarize(diff = trans[1]-trans[2])
 
 #now the good graph of everything
-pub_figure_plotter(ChlaA, Chlorophyll, "Chlorophyll-a ug/L", Region, Chl1, log_trans = T)
+ChRegion = pub_figure_plotter(ChlaA, Chlorophyll, "Chlorophyll-a ug/L", Region, Chl1, log_trans = T,
+                              plt_title = "Chlorophyll-a - By Region")
 
-pub_figure_plotter(ChlaA, Chlorophyll, "Chlorophyll-a ug/L", Season, Chl1, log_trans = T)
+CHSeason = pub_figure_plotter(ChlaA, Chlorophyll, "Chlorophyll-a ug/L", Season, Chl1, log_trans = T,
+                              plt_title = "Chlorophyll-a - By Season")
+
+#save all the results
+save(ChRegion, CHSeason, NNRegion, NNSeason, OPRegion, OPSeason, AmRegions, AmSeasons, file = "NutsCHLplotsandResults.RData")
+
 ```
 
-Well, I added the regime shift at the clam invasion and now my diagnostic plots look better, droughts definitely have higher chlorophyll in the south-central region, and definitely have higher winter chlorophyll YAY!!
+Well, I added the regime shift at the clam invasion and now my diagnostic plots look better, droughts definitely have higher chlorophyll in the south-central region, and definitely have higher winter and spring chlorophyll YAY!!
 
 Try the linear model with Sac valley index
 

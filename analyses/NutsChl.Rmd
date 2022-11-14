@@ -593,7 +593,7 @@ CHSeason = pub_figure_plotter(ChlaA, Chlorophyll, "Chlorophyll-a ug/L", Season, 
                               plt_title = "Chlorophyll-a - By Season")
 
 #save all the results
-save(ChRegion, CHSeason, NNRegion, NNSeason, OPRegion, OPSeason, AmRegions, AmSeasons, file = "outputs/NutsCHLplotsandResults.RData")
+save(ChRegion, CHSeason, NNRegion, NNSeason, OPRegion, OPSeason, AmRegions, AmSeasons, file = "NutsCHLplotsandResults.RData")
 
 ```
 

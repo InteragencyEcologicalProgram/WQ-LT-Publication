@@ -8,6 +8,8 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE)
 library(multcomp)
+library(car)
+library(broom)
 library(tidyverse)
   library(lubridate)
   library(emmeans)
@@ -18,8 +20,8 @@ library(tidyverse)
 library(visreg)
 
   library(DroughtData)
-source("helperfunctions.R")
-source("analyses/pub_figure_funcs.R")
+source("../helperfunctions.R")
+source("../analyses/pub_figure_funcs.R")
 ```
 
 ## Nutrients and chlorophyll
@@ -125,26 +127,6 @@ Ammonia = filter(Ammonia, YearAdj < 2021) %>%
   mutate(StocktonUpgrade = case_when(YearAdj < 2006 ~ "Before",
                                      YearAdj >= 2006 ~ "After"))
 
-
-Am1 = lm(LogAm ~ Drought*Region+ Drought*Season + Region*Season, data = Ammonia)
-summary(Am1)
-plot(Am1)
-
-visreg(Am1, xvar = "Drought", by = "Region")
-visreg(Am1, xvar = "Drought", by = "Season")
-visreg(Am1, xvar = "Region", by = "Season")
-amp = emmeans(Am1, pairwise ~ Drought*Region)
-plot(amp, comparisons = T)
-
-ampx = emmeans(Am1, pairwise ~ Drought*Season)
-plot(ampx, comparisons = T)
-
-# Region
-result_plotter(amp, "Region", "Ammonia ug/L")
-
-# Season
-result_plotter(ampx, "Season", "Ammonia ug/L")
-
 ```
 
 Now add the treatment plant term
@@ -154,37 +136,36 @@ Am2 = lm(LogAm ~ Drought*Region+ Drought*Season + Region*Season + Region*Stockto
 summary(Am2)
 plot(Am2)
 Aman = Anova(Am2, type=3, contrasts=list(topic=contr.sum, sys=contr.sum))
-visreg(Am2, xvar = "Drought", by = "Region")
-visreg(Am2, xvar = "Drought", by = "Season")
-visreg(Am2, xvar = "Region", by = "Season")
-visreg(Am2, xvar = "StocktonUpgrade", by = "Region")
+#visreg(Am2, xvar = "Drought", by = "Region")
+#visreg(Am2, xvar = "Drought", by = "Season")
+#visreg(Am2, xvar = "Region", by = "Season")
+#visreg(Am2, xvar = "StocktonUpgrade", by = "Region")
+
+#plot pairwise comparisons
 amp2 = emmeans(Am2, pairwise ~ Drought*Region)
 plot(amp2, comparisons = T)
 
 amp2x = emmeans(Am2, pairwise ~ Drought*Season)
 plot(amp2x, comparisons = T)
 
-AIC(Am2)
-AIC(Am1)
 ```
 
 
 ```{r}
+#calculate partial R2 for drought effect
 partial.r2(Aman)
 
-library(broom)
+#calculate means for the treatment plant upgrade by region
 amRegime = emmeans(Am2, pairwise ~ StocktonUpgrade|Region)
+
+#put results in a better format and back transform
 amRegimet = tidy(amRegime$emmeans) %>%
   mutate(trans = exp(estimate))
 
+#calculate effect sizes
 diffsam = group_by(amRegimet, Region) %>%
   summarize(diff = trans[1]-trans[2])
 
-# Region
-result_plotter(amp2, "Region", "Ammonia ug/L")
-
-# Season
-result_plotter(amp2x, "Season", "Ammonia ug/L")
 
 #now the good graph of everything
 AmRegions = pub_figure_plotter(Ammonia, DissAmmonia, "Ammonia mg/L", Region, Am2, log_trans = T,
@@ -277,18 +258,20 @@ OK, now for the statistics. The treatment plant upgrades didn't have as big an i
 
 Nat2 = lm(LogNat ~Drought*Region + Drought*Season + Region*Season, data = Nitrate)
 plot(Nat2)
-NatAn = Anova(Nat2, type=3, contrasts=list(topic=contr.sum, sys=contr.sum))
+NatAn =Anova(Nat2, type=3, contrasts=list(topic=contr.sum, sys=contr.sum))
 
 partial.r2(NatAn)
+#partial R2 for drought is 0.127
 
-visreg(Nat2, xvar = "Drought", by = "Region")
-visreg(Nat2, xvar = "Drought", by = "Season")
-visreg(Nat2, xvar = "Region", by = "Season")
+# visreg(Nat2, xvar = "Drought", by = "Region")
+# visreg(Nat2, xvar = "Drought", by = "Season")
+# visreg(Nat2, xvar = "Region", by = "Season")
 summary(Nat2)
+#pairwise comparisons
 pairsNN =  emmeans(Nat2, pairwise ~ Drought*Region)
-plot(pairsNN, comparisons = T)
+#plot(pairsNN, comparisons = T)
 pairsNN2 =  emmeans(Nat2, pairwise ~ Drought*Season)
-plot(pairsNN2, comparisons = T)
+#plot(pairsNN2, comparisons = T)
 
 #now the good graph of everything
 NNRegion = pub_figure_plotter(Nitrate, DissNitrateNitrite, "Nitrate + Nitrite mg/L", Region, Nat2, log_trans = T,
@@ -544,7 +527,7 @@ And now for some statistics
 
 
 ```{r}
-
+#model including pre/post clam regime
 Chl1 = lm(LogChl ~ Drought*Region+ Drought*Season + Region*Season + Region*Regime, data = ChlaA)
 Ch1_Anova<-Anova(Chl1, type=3, contrasts=list(topic=contr.sum, sys=contr.sum))
 Ch1_Anova
@@ -552,16 +535,16 @@ partial.r2(Ch1_Anova)
 summary(Chl1)
 visreg(Chl1, xvar = "Regime", by = "Region")
 plot(Chl1)
-library(car)
+
 qqPlot(Chl1)
 hist(residuals(Chl1))
 #better
 
-hist(log(ChlaA$Chlorophyll))
 
-visreg(Chl1, xvar = "Drought", by = "Region")
-visreg(Chl1, xvar = "Drought", by = "Season")
-visreg(Chl1, xvar = "Region", by = "Season")
+# visreg(Chl1, xvar = "Drought", by = "Region")
+# visreg(Chl1, xvar = "Drought", by = "Season")
+# visreg(Chl1, xvar = "Region", by = "Season")
+
 pairsC =  emmeans(Chl1, pairwise ~ Drought*Region)
 plot(pairsC, comparisons = T)
 pairsC2 =  emmeans(Chl1, pairwise ~ Drought*Season)
@@ -571,13 +554,7 @@ pairsC3 =  emmeans(Chl1, pairwise ~Regime*Region)
 plot(pairsC3, comparisons = T)
 
 
-
-# Region
-result_plotter(pairsC, "Region", "Chlorophyll ug/L")
-
-# Season
-result_plotter(pairsC2, "Season", "Chlorophyll ug/L")
-library(broom)
+#calculate effect size by regime
 emRegime = emmeans(Chl1, pairwise ~ Regime|Region)
 emRegimet = tidy(emRegime$emmeans) %>%
   mutate(trans = exp(estimate))
@@ -585,7 +562,7 @@ emRegimet = tidy(emRegime$emmeans) %>%
 diffs = group_by(emRegimet, Region) %>%
   summarize(diff = trans[1]-trans[2])
 
-#now the good graph of everything
+#now the good graph of everything and the effect sizes by region and season
 ChRegion = pub_figure_plotter(ChlaA, Chlorophyll, "Chlorophyll-a ug/L", Region, Chl1, log_trans = T,
                               plt_title = "Chlorophyll-a - By Region")
 
@@ -593,7 +570,7 @@ CHSeason = pub_figure_plotter(ChlaA, Chlorophyll, "Chlorophyll-a ug/L", Season, 
                               plt_title = "Chlorophyll-a - By Season")
 
 #save all the results
-save(ChRegion, CHSeason, NNRegion, NNSeason, OPRegion, OPSeason, AmRegions, AmSeasons, file = "NutsCHLplotsandResults.RData")
+save(ChRegion, CHSeason, NNRegion, NNSeason, OPRegion, OPSeason, AmRegions, AmSeasons, file = "../outputs/NutsCHLplotsandResults.RData")
 
 ```
 
@@ -617,6 +594,7 @@ visreg(Chl2, xvar = "Region", by = "Season")
 
 ```
 
+The rest of this was an attempt to use baysean stats but I decided not to go there after all. 
 
 
 ```{r, eval=FALSE, echo=FALSE}

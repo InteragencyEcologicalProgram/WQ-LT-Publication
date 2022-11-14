@@ -109,16 +109,19 @@ ggplot(d, aes(x=wdoy, y=InflowTotal/InflowTotal_sum, color=Period_year2, group=P
 
 Total cumulative inflow seasonal hydrograph by Period_year
 ```{r}
-ggplot(d, aes(x=wdoy, y=InflowTotal_cum/InflowTotal_sum, color=Period_year2, group=WY))+
+p<-ggplot(d, aes(x=wdoy, y=InflowTotal_cum/InflowTotal_sum, color=Period_year2, group=WY, linetype=Period_year2))+
   geom_line()+
   facet_grid(Drought~., scales="free_y")+
   ylab("Cumulative proportional inflow")+
   xlab("Water day of year")+
   scale_color_viridis_d(name="Period-year")+
+  scale_linetype(name="Period-year")+
   scale_x_continuous(breaks=c(wdoy_months$day_min, wdoy_months$month_label), labels=c(rep("", 12), as.character(wdoy_months$Month)))+
   coord_cartesian(ylim=c(0, NA), expand = FALSE)+
   theme_bw()+
   theme(axis.ticks.x = element_line(color = c(rep("black", 12), rep(NA, 12))))
+p
+ggsave(plot=p, filename="plots/manuscript/inflow.png", width=6, height=4, units="in")
 ```
 
 This shows most clearly how in dry years, after 2+ years of a drought, water managers are more conservative early in the water year, saving up whatever rainfall they can. But in wet years after 2+ years of a wet period, the reservoirs are full and much more water is released earlier in the water year. Neutral years show no pattern, as expected since they represent flip-flopping among year types.
@@ -126,7 +129,7 @@ This shows most clearly how in dry years, after 2+ years of a drought, water man
 
 Same plot as above, but smoothed for each Period_year and drought category combo
 ```{r}
-p<-ggplot(d, aes(x=wdoy, y=InflowTotal_cum/InflowTotal_sum, color=Period_year2, fill=Period_year2, group=Period_year2, linetype=Period_year2))+
+ggplot(d, aes(x=wdoy, y=InflowTotal_cum/InflowTotal_sum, color=Period_year2, fill=Period_year2, group=Period_year2, linetype=Period_year2))+
   geom_smooth(method="gam", formula=y~s(x, bs="cs", k=25), alpha=0.5)+
   facet_grid(Drought~., scales="free_y")+
   ylab("Cumulative proportional inflow")+
@@ -137,7 +140,5 @@ p<-ggplot(d, aes(x=wdoy, y=InflowTotal_cum/InflowTotal_sum, color=Period_year2, 
   coord_cartesian(ylim=c(0, NA), expand = FALSE)+
   theme_bw()+
   theme(axis.ticks.x = element_line(color = c(rep("black", 12), rep(NA, 12))))
-p
-ggsave(plot=p, filename="plots/manuscript/inflow.png", width=6, height=4, units="in")
 ```
 

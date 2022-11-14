@@ -157,7 +157,7 @@ partial.r2(Aman)
 
 #calculate means for the treatment plant upgrade by region
 amRegime = emmeans(Am2, pairwise ~ StocktonUpgrade|Region)
-
+amRegime
 #put results in a better format and back transform
 amRegimet = tidy(amRegime$emmeans) %>%
   mutate(trans = exp(estimate))
@@ -166,6 +166,14 @@ amRegimet = tidy(amRegime$emmeans) %>%
 diffsam = group_by(amRegimet, Region) %>%
   summarize(diff = trans[1]-trans[2])
 
+#calculate differences another way
+diffsam2 = group_by(Ammonia, Region, StocktonUpgrade) %>%
+  summarize(mean = mean(DissAmmonia, na.rm = T)) %>%
+  group_by(Region) %>%
+  summarize(diff = mean[1]-mean[2])
+
+ggplot(Ammonia, aes(x = StocktonUpgrade, y = DissAmmonia)) +
+  facet_wrap(~Region) + geom_boxplot()
 
 #now the good graph of everything
 AmRegions = pub_figure_plotter(Ammonia, DissAmmonia, "Ammonia mg/L", Region, Am2, log_trans = T,
@@ -372,11 +380,14 @@ Log-transforming phosphorus didn't look quite as nice as nitrogen and ammonium. 
 
 Phos2 = lm(LogPhos ~Drought*Region + Drought*Season + Region*Season, data = Phos)
 plot(Phos2)
+Panova = Anova(Phos2, type=3, contrasts=list(topic=contr.sum, sys=contr.sum))
+Panova
+partial.r2(Panova)
 visreg(Phos2, xvar = "Drought", by = "Region")
 visreg(Phos2, xvar = "Drought", by = "Season")
 visreg(Phos2, xvar = "Region", by = "Season")
 summary(Phos2)
-pairsP =  emmeans(Phos2, pairwise ~ Drought*Region)
+pairsP =  emmeans(Phos2, pairwise ~ Drought|Region)
 plot(pairsP, comparisons = T)
 plot(emmeans(Phos2, pairwise ~ Drought), comparisons = T)
 
@@ -386,7 +397,8 @@ OPRegion = pub_figure_plotter(Phos, DissOrthophos, "Orthophosphate mg/L", Region
 
 OPSeason = pub_figure_plotter(Phos, DissOrthophos, "Orthophosphate mg/L", Season, Phos2, log_trans = T,
                    plt_title = "Orthophosphate by Season")
-
+OPSeason$diffs
+OPSeason$contrasts
 
 ```
 
@@ -561,6 +573,12 @@ emRegimet = tidy(emRegime$emmeans) %>%
 
 diffs = group_by(emRegimet, Region) %>%
   summarize(diff = trans[1]-trans[2])
+
+#calculate differences a different way
+diffchl = group_by(ChlaA, Regime, Region) %>%
+  summarize(Chl = mean(Chlorophyll, na.rm =T)) %>%
+  group_by(Region) %>%
+  summarize(DiffCHL = Chl[1]- Chl[2])
 
 #now the good graph of everything and the effect sizes by region and season
 ChRegion = pub_figure_plotter(ChlaA, Chlorophyll, "Chlorophyll-a ug/L", Region, Chl1, log_trans = T,

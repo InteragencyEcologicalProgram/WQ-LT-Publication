@@ -277,6 +277,10 @@ OK, now for the statistics. The treatment plant upgrades didn't have as big an i
 
 Nat2 = lm(LogNat ~Drought*Region + Drought*Season + Region*Season, data = Nitrate)
 plot(Nat2)
+NatAn = Anova(Nat2, type=3, contrasts=list(topic=contr.sum, sys=contr.sum))
+
+partial.r2(NatAn)
+
 visreg(Nat2, xvar = "Drought", by = "Region")
 visreg(Nat2, xvar = "Drought", by = "Season")
 visreg(Nat2, xvar = "Region", by = "Season")

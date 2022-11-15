@@ -1,0 +1,144 @@
+---
+title: "Inflow"
+author: "Sam Bashevkin"
+date: "`r Sys.Date()`"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+knit: (function(input, ...) {
+    rmarkdown::render(
+      input,
+      output_dir = 'docs',
+      knit_root_dir = "../",
+      envir = globalenv()
+    )
+    })
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r, message=FALSE, warning=FALSE}
+library(dplyr)
+library(tidyr)
+library(lubridate)
+library(DroughtData)
+library(ggplot2)
+```
+
+```{r}
+d<-DroughtData::raw_hydro_1975_2021%>%
+  mutate(Year=year(Date),
+         WY=if_else(month(Date)>=10, Year+1, Year),
+         doy=yday(Date),
+         wdoy=case_when(
+           leap_year(Year) & doy >=275 ~ doy -274,
+           leap_year(Year) & doy <275 ~ doy + 92,
+           !leap_year(Year) & doy >=274 ~ doy -273,
+           !leap_year(Year) & doy <274 ~ doy + 92
+         ))%>%
+  group_by(WY)%>%
+  arrange(wdoy)%>%
+  mutate(across(c(InflowSacR, InflowYolo, InflowEast, InflowTotal, Outflow, Export), list(cum=~cumsum(.x), sum=~sum(.x))))%>%
+  left_join(DroughtData::lt_avg_wq%>%
+              distinct(YearAdj, SVIndex, YearType, Drought)%>%
+              arrange(Drought, YearAdj)%>%
+              group_by(Drought)%>%
+              mutate(Lag=YearAdj-lag(YearAdj, order_by = YearAdj))%>%
+              ungroup()%>%
+              mutate(Start=if_else(is.na(Lag) | Lag>1, TRUE, FALSE),
+                     Period_ID=1:n(),
+                     Period_ID=if_else(Start, Period_ID, NA_integer_),
+                     Period_ID=as.integer(as.factor(Period_ID)))%>%
+              fill(Period_ID, .direction="down")%>%
+              group_by(Period_ID)%>%
+              arrange(YearAdj)%>%
+              mutate(Period_year=1:n(),
+                     Period_year2=if_else(Period_year>=3, "3+", as.character(Period_year)),
+                     Period_year2=factor(Period_year2, levels=c("1", "2", "3+")))%>%
+              select(-Lag, -Start),
+            by=c("WY"="YearAdj"))%>%
+  filter(!is.na(Drought))
+
+# Calculate wdoy for the first day of each month
+wdoy_months<-d%>%
+  mutate(Month=month(Date, label=T))%>%
+  group_by(Month)%>%
+  summarise(day_min=min(wdoy))%>%
+  mutate(month_label=day_min+15)
+```
+
+Total inflow seasonal hydrograph by year
+```{r}
+ggplot(d, aes(x=doy, y=InflowTotal, color=Period_year2, group=WY))+
+  geom_smooth(method="gam", formula=y~s(x, bs="cs", k=25))+
+  facet_grid(Drought~., scales="free_y")+
+  scale_color_viridis_d()+
+  coord_cartesian(ylim=c(0, NA), expand = FALSE)+
+  theme_bw()
+```
+
+Total inflow seasonal hydrograph by Period_year
+```{r}
+ggplot(d, aes(x=wdoy, y=InflowTotal, color=Period_year2, group=Period_year2))+
+  geom_smooth(method="gam", formula=y~s(x, bs="cs", k=25))+
+  facet_grid(Drought~., scales="free_y")+
+  xlab("Water day of year")+
+  scale_color_viridis_d()+
+  scale_x_continuous(breaks=c(wdoy_months$day_min, wdoy_months$month_label), labels=c(rep("", 12), as.character(wdoy_months$Month)))+
+  coord_cartesian(ylim=c(0, NA), expand = FALSE)+
+  theme_bw()+
+  theme(axis.ticks.x = element_line(color = c(rep("black", 12), rep(NA, 12))))
+```
+
+
+Total inflow seasonal hydrograph by Period_year, scaled by summed inflow over the year
+```{r}
+ggplot(d, aes(x=wdoy, y=InflowTotal/InflowTotal_sum, color=Period_year2, group=Period_year2))+
+  geom_smooth(method="gam", formula=y~s(x, bs="cs", k=25))+
+  facet_grid(Drought~.)+
+  xlab("Water day of year")+
+  scale_color_viridis_d()+
+  scale_x_continuous(breaks=c(wdoy_months$day_min, wdoy_months$month_label), labels=c(rep("", 12), as.character(wdoy_months$Month)))+
+  coord_cartesian(ylim=c(0, NA), expand = FALSE)+
+  theme_bw()+
+  theme(axis.ticks.x = element_line(color = c(rep("black", 12), rep(NA, 12))))
+```
+
+Total cumulative inflow seasonal hydrograph by Period_year
+```{r}
+p<-ggplot(d, aes(x=wdoy, y=InflowTotal_cum/InflowTotal_sum, color=Period_year2, group=WY, linetype=Period_year2))+
+  geom_line()+
+  facet_grid(Drought~., scales="free_y")+
+  ylab("Cumulative proportional inflow")+
+  xlab("Water day of year")+
+  scale_color_viridis_d(name="Period-year")+
+  scale_linetype(name="Period-year")+
+  scale_x_continuous(breaks=c(wdoy_months$day_min, wdoy_months$month_label), labels=c(rep("", 12), as.character(wdoy_months$Month)))+
+  coord_cartesian(ylim=c(0, NA), expand = FALSE)+
+  theme_bw()+
+  theme(axis.ticks.x = element_line(color = c(rep("black", 12), rep(NA, 12))))
+p
+ggsave(plot=p, filename="plots/manuscript/inflow.png", width=6, height=4, units="in")
+```
+
+This shows most clearly how in dry years, after 2+ years of a drought, water managers are more conservative early in the water year, saving up whatever rainfall they can. But in wet years after 2+ years of a wet period, the reservoirs are full and much more water is released earlier in the water year. Neutral years show no pattern, as expected since they represent flip-flopping among year types.
+
+
+Same plot as above, but smoothed for each Period_year and drought category combo
+```{r}
+ggplot(d, aes(x=wdoy, y=InflowTotal_cum/InflowTotal_sum, color=Period_year2, fill=Period_year2, group=Period_year2, linetype=Period_year2))+
+  geom_smooth(method="gam", formula=y~s(x, bs="cs", k=25), alpha=0.5)+
+  facet_grid(Drought~., scales="free_y")+
+  ylab("Cumulative proportional inflow")+
+  xlab("Water day of year")+
+  scale_color_viridis_d(aesthetics=c("color", "fill"), name="Period-year")+
+  scale_linetype(name="Period-year")+
+  scale_x_continuous(breaks=c(wdoy_months$day_min, wdoy_months$month_label), labels=c(rep("", 12), as.character(wdoy_months$Month)))+
+  coord_cartesian(ylim=c(0, NA), expand = FALSE)+
+  theme_bw()+
+  theme(axis.ticks.x = element_line(color = c(rep("black", 12), rep(NA, 12))))
+```
+

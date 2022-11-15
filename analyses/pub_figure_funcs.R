@@ -6,13 +6,13 @@ library(emmeans)
 library(rlang)
 
 
-pub_figure_plotter <- function(df_data, #dataframe containing the dataset
-                               param, #response variable
-                               y_label, #label for y-axis (response variable and units)
-                               fct_grp, #grouping for plot (usually Region or Season)
-                               model, #linear model of response variable versus predictor factors
-                               plt_title,
-                               log_trans = FALSE,
+pub_figure_plotter <- function(df_data, # dataframe containing the dataset
+                               param, # response variable
+                               y_label, # label for y-axis (response variable and units)
+                               fct_grp, # grouping for plot (either Region or Season)
+                               model, # linear model of response variable versus predictor factors
+                               plt_title, # label for the plot title
+                               log_trans = FALSE, # is the response variable log transformed?
                                print_plt = TRUE) {
 
   # Set local variables to NULL
@@ -21,8 +21,21 @@ pub_figure_plotter <- function(df_data, #dataframe containing the dataset
   # Convert fct_grp to a character string
   fct_grp_chr <- rlang::as_name(rlang::ensym(fct_grp))
 
-  # Remove NA values in param
-  df_data_c <- df_data %>% tidyr::drop_na({{ param }})
+  # Define factor order for Season, Region, and Drought variables
+  lvs_season <- c("Winter", "Spring", "Summer", "Fall")
+  lvs_region <- c("Suisun Marsh", "Suisun Bay", "Confluence", "SouthCentral", "North")
+  lvs_drought <- c("D", "N", "W")
+
+  # Prepare df_data for plotting
+  df_data_c <- df_data %>%
+    # Remove NA values in param
+    tidyr::drop_na({{ param }}) %>%
+    # Apply factor orders
+    dplyr::mutate(
+      Season = factor(.data$Season, levels = lvs_season),
+      Region = factor(.data$Region, levels = lvs_region),
+      Drought = factor(.data$Drought, levels = lvs_drought)
+    )
 
   # Run emmeans Tukey post-hoc for all pairwise comparisons between Drought
     # classifications for each fct_grp
@@ -51,9 +64,18 @@ pub_figure_plotter <- function(df_data, #dataframe containing the dataset
       .
     }} %>%
     dplyr::mutate(
+      # Determine vertical positioning of letters
       max_val = dplyr::if_else(.data$upper.CL > .data$max_val, .data$upper.CL, .data$max_val),
-      y_pos = .data$max_val + (.data$max_val - .data$min_val) / 10
-    )
+      y_pos = .data$max_val + (.data$max_val - .data$min_val) / 10,
+      # Apply factor order to Drought
+      Drought = factor(.data$Drought, levels = lvs_drought)
+    ) %>%
+    # Apply factor order to fct_grp
+    {if (fct_grp_chr == "Season") {
+      dplyr::mutate(., "{{fct_grp}}" := factor({{ fct_grp }}, levels = lvs_season))
+    } else if (fct_grp_chr == "Region") {
+      dplyr::mutate(., "{{fct_grp}}" := factor({{ fct_grp }}, levels = lvs_region))
+    }}
 
   # Create boxplot showing Tukey post-hoc results for the fct_grp (Region or
     # Season)
@@ -80,11 +102,23 @@ pub_figure_plotter <- function(df_data, #dataframe containing the dataset
     ggplot2::ggtitle(plt_title) +
     ggplot2::theme_bw()
 
+  # Calculate effect sizes between D and W
   diffs <- emm_tuk_c %>%
     dplyr::filter(.data$Drought %in% c("D", "W")) %>%
     dplyr::select(Drought, {{ fct_grp }}, emmean) %>%
     tidyr::pivot_wider(names_from = Drought, values_from = emmean) %>%
-    dplyr::mutate(difference = D - W)
+    dplyr::mutate(difference = D - W) %>%
+    dplyr::arrange({{ fct_grp }})
+
+  # Format contrasts from emmeans
+  contrasts <- tibble::as_tibble(emm_tuk$contrasts) %>%
+    # Apply factor order to fct_grp
+    {if (fct_grp_chr == "Season") {
+      dplyr::mutate(., "{{fct_grp}}" := factor({{ fct_grp }}, levels = lvs_season))
+    } else if (fct_grp_chr == "Region") {
+      dplyr::mutate(., "{{fct_grp}}" := factor({{ fct_grp }}, levels = lvs_region))
+    }} %>%
+    dplyr::arrange({{ fct_grp }})
 
   if (print_plt == TRUE) print(plt)
 
@@ -92,7 +126,7 @@ pub_figure_plotter <- function(df_data, #dataframe containing the dataset
     tibble::lst(
       plt,
       diffs,
-      contrasts = tibble::as_tibble(emm_tuk$contrasts)
+      contrasts
     )
   )
 }

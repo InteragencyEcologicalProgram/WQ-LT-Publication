@@ -216,9 +216,13 @@ partial.r2(m_t_Anova)
 ### Post-hoc test
 
 ```{r}
-m_t_contrasts_r <- pub_figure_plotter(wq_data, Temperature, "Temperature (°C)", Region, m_t)
+m_t_contrasts_r <- pub_figure_plotter(df_data=wq_data, param=Temperature, y_label="Temperature (°C)", 
+                                      fct_grp=Region, model=m_t, plt_title = "Region")
+m_t_contrasts_r$diffs
 
-m_t_contrasts_s <- pub_figure_plotter(wq_data, Temperature, "Temperature (°C)", Season, m_t)
+m_t_contrasts_s <- pub_figure_plotter(df_data=wq_data, param=Temperature, y_label="Temperature (°C)", 
+                                      fct_grp=Season, model=m_t, plt_title = "Season")
+m_t_contrasts_s$diffs
 ```
 
 ## Salinity
@@ -253,9 +257,15 @@ partial.r2(m_sa_Anova)
 ### Post-hoc test
 
 ```{r}
-m_sa_contrasts_r <- pub_figure_plotter(wq_data, Salinity, "Salinity", Region, m_sa, log_trans = TRUE)
+m_sa_contrasts_r <- pub_figure_plotter(df_data=wq_data, param=Salinity, y_label="Salinity", 
+                                       fct_grp=Region, model=m_sa, log_trans = TRUE, plt_title = "Region")
 
-m_sa_contrasts_s <- pub_figure_plotter(wq_data, Salinity, "Salinity", Season, m_sa, log_trans = TRUE)
+m_sa_contrasts_r$diffs
+
+m_sa_contrasts_s <- pub_figure_plotter(df_data=wq_data, param=Salinity, y_label="Salinity", 
+                                       fct_grp=Season, model=m_sa, log_trans = TRUE, plt_title = "Season")
+
+m_sa_contrasts_s$diffs
 ```
 
 
@@ -291,9 +301,15 @@ partial.r2(m_se_Anova)
 ### Post-hoc test
 
 ```{r}
-m_se_contrasts_r <- pub_figure_plotter(wq_data, Secchi, "Secchi depth (cm)", Region, m_se, log_trans = TRUE)
+m_se_contrasts_r <- pub_figure_plotter(df_data=wq_data, param=Secchi, y_label="Secchi depth (cm)", 
+                                       fct_grp=Region, model=m_se, log_trans = TRUE, plt_title = "Region")
 
-m_se_contrasts_s <- pub_figure_plotter(wq_data, Secchi, "Secchi depth (cm)", Season, m_se, log_trans = TRUE)
+m_se_contrasts_r$diffs
+
+m_se_contrasts_s <- pub_figure_plotter(df_data=wq_data, param=Secchi, y_label="Secchi depth (cm)", 
+                                       fct_grp=Season, model=m_se, log_trans = TRUE, plt_title = "Season")
+
+m_se_contrasts_s$diffs
 ```
 
 ## Secchi Depth with annual trend
@@ -328,9 +344,15 @@ partial.r2(m_se2_Anova)
 ### Post-hoc test
 
 ```{r}
-m_se2_contrasts_r <- pub_figure_plotter(wq_data, Secchi, "Secchi depth (cm)", Region, m_se2, log_trans = TRUE)
+m_se2_contrasts_r <- pub_figure_plotter(df_data=wq_data, param=Secchi, y_label="Secchi depth (cm)", 
+                                        fct_grp=Region, model=m_se2, log_trans = TRUE, plt_title = "Region")
 
-m_se2_contrasts_s <- pub_figure_plotter(wq_data, Secchi, "Secchi depth (cm)", Season, m_se2, log_trans = TRUE)
+m_se2_contrasts_r$diffs
+
+m_se2_contrasts_s <- pub_figure_plotter(df_data=wq_data, param=Secchi, y_label="Secchi depth (cm)", 
+                                        fct_grp=Season, model=m_se2, log_trans = TRUE, plt_title = "Season")
+
+m_se2_contrasts_s$diffs
 ```
 
 ## Save all model outputs

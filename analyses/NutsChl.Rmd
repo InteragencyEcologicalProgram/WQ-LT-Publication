@@ -8,24 +8,26 @@ editor_options:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, warning = FALSE)
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r packages, message=FALSE, warning=FALSE}
 library(multcomp)
 library(car)
 library(broom)
 library(tidyverse)
-  library(lubridate)
-  library(emmeans)
-  library(lme4)
-  library(lmerTest)
-  library(DHARMa)
-  library(effects)
+library(lubridate)
+library(emmeans)
+library(lme4)
+library(lmerTest)
+library(DHARMa)
+library(effects)
 library(visreg)
+library(DroughtData)
+library(here)
 
-  library(DroughtData)
-source("../helperfunctions.R")
-source("helperfunctions.R")
-source("../analyses/pub_figure_funcs.R")
-source("analyses/pub_figure_funcs.R")
+source(here("helperfunctions.R"))
+source(here("analyses/pub_figure_funcs.R"))
 ```
 
 ## Nutrients and chlorophyll

@@ -595,3 +595,60 @@ NutsCLa = left_join(ChlaA, Nitrate) %>%
 save(NutsCLa, file = "NutrientsChlorophyll.RData")
 ```
 
+## Save all model outputs
+
+Anovas:
+
+```{r}
+anovas <-
+  bind_rows(
+    mutate(as_tibble(Aman, rownames = "Parameter"), Model = "Ammonia"),
+    mutate(as_tibble(NatAn, rownames = "Parameter"), Model = "Nitrate + Nitrite"),
+    mutate(as_tibble(Panova, rownames = "Parameter"), Model = "Orthophosphate"),
+    mutate(as_tibble(Ch1_Anova, rownames = "Parameter"), Model = "Chlorophyll-a")
+  ) %>%
+  mutate(`Pr(>F)` = if_else(`Pr(>F)` < 0.001, "< 0.001", as.character(round(`Pr(>F)`, 4)))) %>%
+  relocate(Model) %>%
+  write_csv(here("outputs/Nutr_Chla_anovas.csv"))
+
+print(anovas, n = 1000)
+```
+
+Post-hoc tests:
+
+```{r}
+tukeys <- 
+  bind_rows(
+    mutate(AmRegions$contrasts, Model = "Ammonia", `Contrast type` = "region"),
+    mutate(AmSeasons$contrasts, Model = "Ammonia", `Contrast type` = "season"),
+    mutate(NNRegion$contrasts, Model = "Nitrate + Nitrite", `Contrast type` = "region"),
+    mutate(NNSeason$contrasts, Model = "Nitrate + Nitrite", `Contrast type` = "season"),
+    mutate(OPRegion$contrasts, Model = "Orthophosphate", `Contrast type` = "region"),
+    mutate(OPSeason$contrasts, Model = "Orthophosphate", `Contrast type` = "season"),
+    mutate(ChRegion$contrasts, Model = "Chlorophyll-a", `Contrast type` = "region"),
+    mutate(CHSeason$contrasts, Model = "Chlorophyll-a", `Contrast type` = "season")
+  ) %>%
+  rename(
+    `p-value` = p.value, 
+    `t-ratio` = t.ratio
+  ) %>%
+  mutate(
+    `p-value` = if_else(`p-value` < 0.001, "< 0.001", as.character(round(`p-value`, 4))),
+    Group = if_else(is.na(Region), as.character(Season), as.character(Region))
+  ) %>%
+  select(
+    Model,
+    `Contrast type`,
+    Group,
+    Contrast = contrast,
+    Estimate = estimate,
+    SE,
+    DF = df,
+    `t-ratio`,
+    `p-value`
+  ) %>%
+  write_csv(here("outputs/Nutr_Chla_tukeys.csv"))
+
+print(tukeys, n = 1000)
+```
+

@@ -11,7 +11,7 @@
 
 <meta name="author" content="Sam Bashevkin" />
 
-<meta name="date" content="2022-12-05" />
+<meta name="date" content="2022-12-13" />
 
 <title>Temperature, Salinity, and Secchi analyses</title>
 
@@ -1494,7 +1494,7 @@ font-size: 0.95em;
 <h1 class="title toc-ignore">Temperature, Salinity, and Secchi
 analyses</h1>
 <h4 class="author">Sam Bashevkin</h4>
-<h4 class="date">December 05, 2022</h4>
+<h4 class="date">December 13, 2022</h4>
 
 </div>
 
@@ -1918,38 +1918,41 @@ m_se2_Anova</code></pre>
   mutate(as_tibble(m_sa_Anova, rownames = &quot;Parameter&quot;), model=&quot;Salinity&quot;),
   mutate(as_tibble(m_se_Anova, rownames = &quot;Parameter&quot;), model=&quot;Secchi depth&quot;)
 )%&gt;%
-  mutate(`Pr(&gt;F)`=if_else(`Pr(&gt;F)`&lt;0.001, &quot;&lt; 0.001&quot;, as.character(round(`Pr(&gt;F)`, 4))))%&gt;%
+  mutate(`Pr(&gt;F)`=if_else(`Pr(&gt;F)`&lt;0.001, &quot;&lt; 0.001&quot;, as.character(formatC(signif(`Pr(&gt;F)`, 4), digits=4, format=&quot;fg&quot;, flag=&quot;#&quot;))),
+         across(c(`Sum Sq`, `F value`), ~formatC(signif(.x, 4), digits=4, format=&quot;fg&quot;, flag=&quot;#&quot;)),
+         # Excel is the worst, I had to add letters to these numbers so it wouldn&#39;t re-round them
+         across(c(`Sum Sq`, `F value`, `Pr(&gt;F)`), ~paste0(ifelse(str_detect(.x, fixed(&quot;NA&quot;)) | is.na(.x), &quot;&quot;, .x), &quot;ZZZ&quot;)))%&gt;%
   relocate(model)%&gt;%
   write_csv(file.path(&quot;outputs&quot;, &quot;TempSalSecchi_anovas.csv&quot;))
 
 print(anovas, n=1000)</code></pre>
 <pre><code>## # A tibble: 24 × 6
-##    model        Parameter      `Sum Sq`    Df `F value` `Pr(&gt;F)`
-##    &lt;chr&gt;        &lt;chr&gt;             &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;   
-##  1 Temperature  (Intercept)    3027.        1   4492.   &lt; 0.001 
-##  2 Temperature  Drought          11.1       2      8.20 &lt; 0.001 
-##  3 Temperature  Season         2601.        3   1287.   &lt; 0.001 
-##  4 Temperature  Region            6.87      4      2.55 0.0379  
-##  5 Temperature  Drought:Season   57.5       6     14.2  &lt; 0.001 
-##  6 Temperature  Drought:Region   40.9       8      7.58 &lt; 0.001 
-##  7 Temperature  Season:Region   189.       12     23.3  &lt; 0.001 
-##  8 Temperature  Residuals       606.      900     NA    &lt;NA&gt;    
-##  9 Salinity     (Intercept)      60.8       1    237.   &lt; 0.001 
-## 10 Salinity     Drought          30.0       2     58.6  &lt; 0.001 
-## 11 Salinity     Season           25.0       3     32.6  &lt; 0.001 
-## 12 Salinity     Region          544.        4    531.   &lt; 0.001 
-## 13 Salinity     Drought:Season    8.50      6      5.53 &lt; 0.001 
-## 14 Salinity     Drought:Region   49.1       8     24.0  &lt; 0.001 
-## 15 Salinity     Season:Region    45.5      12     14.8  &lt; 0.001 
-## 16 Salinity     Residuals       230.      900     NA    &lt;NA&gt;    
-## 17 Secchi depth (Intercept)     405.        1   5456.   &lt; 0.001 
-## 18 Secchi depth Drought           3.88      2     26.1  &lt; 0.001 
-## 19 Secchi depth Season            5.60      3     25.1  &lt; 0.001 
-## 20 Secchi depth Region           18.6       4     62.5  &lt; 0.001 
-## 21 Secchi depth Drought:Season    0.579     6      1.30 0.255   
-## 22 Secchi depth Drought:Region    1.40      8      2.36 0.0162  
-## 23 Secchi depth Season:Region     5.33     12      5.98 &lt; 0.001 
-## 24 Secchi depth Residuals        66.1     890     NA    &lt;NA&gt;</code></pre>
+##    model        Parameter      `Sum Sq`     Df `F value` `Pr(&gt;F)`  
+##    &lt;chr&gt;        &lt;chr&gt;          &lt;chr&gt;     &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt;     
+##  1 Temperature  (Intercept)    3027.ZZZ      1 4492.ZZZ  &lt; 0.001ZZZ
+##  2 Temperature  Drought        11.05ZZZ      2 8.201ZZZ  &lt; 0.001ZZZ
+##  3 Temperature  Season         2601.ZZZ      3 1287.ZZZ  &lt; 0.001ZZZ
+##  4 Temperature  Region         6.874ZZZ      4 2.551ZZZ  0.03787ZZZ
+##  5 Temperature  Drought:Season 57.48ZZZ      6 14.22ZZZ  &lt; 0.001ZZZ
+##  6 Temperature  Drought:Region 40.86ZZZ      8 7.580ZZZ  &lt; 0.001ZZZ
+##  7 Temperature  Season:Region  188.7ZZZ     12 23.33ZZZ  &lt; 0.001ZZZ
+##  8 Temperature  Residuals      606.4ZZZ    900 ZZZ       ZZZ       
+##  9 Salinity     (Intercept)    60.76ZZZ      1 237.4ZZZ  &lt; 0.001ZZZ
+## 10 Salinity     Drought        30.00ZZZ      2 58.59ZZZ  &lt; 0.001ZZZ
+## 11 Salinity     Season         25.00ZZZ      3 32.56ZZZ  &lt; 0.001ZZZ
+## 12 Salinity     Region         543.8ZZZ      4 531.1ZZZ  &lt; 0.001ZZZ
+## 13 Salinity     Drought:Season 8.498ZZZ      6 5.533ZZZ  &lt; 0.001ZZZ
+## 14 Salinity     Drought:Region 49.14ZZZ      8 24.00ZZZ  &lt; 0.001ZZZ
+## 15 Salinity     Season:Region  45.48ZZZ     12 14.81ZZZ  &lt; 0.001ZZZ
+## 16 Salinity     Residuals      230.4ZZZ    900 ZZZ       ZZZ       
+## 17 Secchi depth (Intercept)    405.3ZZZ      1 5456.ZZZ  &lt; 0.001ZZZ
+## 18 Secchi depth Drought        3.881ZZZ      2 26.12ZZZ  &lt; 0.001ZZZ
+## 19 Secchi depth Season         5.599ZZZ      3 25.12ZZZ  &lt; 0.001ZZZ
+## 20 Secchi depth Region         18.59ZZZ      4 62.54ZZZ  &lt; 0.001ZZZ
+## 21 Secchi depth Drought:Season 0.5789ZZZ     6 1.299ZZZ  0.2550ZZZ 
+## 22 Secchi depth Drought:Region 1.404ZZZ      8 2.363ZZZ  0.01616ZZZ
+## 23 Secchi depth Season:Region  5.327ZZZ     12 5.976ZZZ  &lt; 0.001ZZZ
+## 24 Secchi depth Residuals      66.12ZZZ    890 ZZZ       ZZZ</code></pre>
 <p>Post-hoc tests</p>
 <pre class="r"><code>tukeys&lt;-bind_rows(
   mutate(as_tibble(m_t_contrasts_r$contrasts), model=&quot;Temperature&quot;, `contrast type`=&quot;region&quot;),
@@ -1959,97 +1962,99 @@ print(anovas, n=1000)</code></pre>
   mutate(as_tibble(m_se_contrasts_r$contrasts), model=&quot;Secchi depth&quot;, `contrast type`=&quot;region&quot;),
   mutate(as_tibble(m_se_contrasts_s$contrasts), model=&quot;Secchi depth&quot;, `contrast type`=&quot;season&quot;))%&gt;%
   rename(`p-value`=p.value, `t-ratio`=t.ratio)%&gt;%
-  mutate(`p-value`=if_else(`p-value`&lt;0.001, &quot;&lt; 0.001&quot;, as.character(round(`p-value`, 4))),
-         Group=if_else(is.na(Region), as.character(Season), as.character(Region)))%&gt;%
+  mutate(`p-value`=if_else(`p-value`&lt;0.001, &quot;&lt; 0.001&quot;, as.character(formatC(signif(`p-value`, 4), digits=4, format=&quot;fg&quot;, flag=&quot;#&quot;))),
+         Group=if_else(is.na(Region), as.character(Season), as.character(Region)),
+         across(c(estimate, SE, `t-ratio`), ~formatC(signif(.x, 4), digits=4, format=&quot;fg&quot;, flag=&quot;#&quot;)),
+         across(c(estimate, SE, `t-ratio`, `p-value`), ~paste0(ifelse(str_detect(.x, fixed(&quot;NA&quot;)) | is.na(.x), &quot;&quot;, .x), &quot;ZZZ&quot;)))%&gt;%
   select(Model=model, `Contrast type`=`contrast type`, Group, Contrast=contrast,
          Estimate=estimate, SE, DF=df, `t-ratio`, `p-value`)%&gt;%
   write_csv(file.path(&quot;outputs&quot;, &quot;TempSalSecchi_tukeys.csv&quot;))
 
 print(tukeys, n=1000)</code></pre>
 <pre><code>## # A tibble: 81 × 9
-##    Model        Contrast ty…¹ Group Contr…² Estim…³     SE    DF t-rat…⁴ p-val…⁵
-##    &lt;chr&gt;        &lt;chr&gt;         &lt;chr&gt; &lt;fct&gt;     &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt; &lt;chr&gt;  
-##  1 Temperature  region        Suis… D - N   -0.0989 0.142    900  -0.695 0.7665 
-##  2 Temperature  region        Suis… D - W    0.262  0.151    900   1.73  0.1934 
-##  3 Temperature  region        Suis… N - W    0.361  0.163    900   2.21  0.07   
-##  4 Temperature  region        Suis… D - N    0.222  0.142    900   1.57  0.2608 
-##  5 Temperature  region        Suis… D - W    0.449  0.149    900   3.03  0.0072 
-##  6 Temperature  region        Suis… N - W    0.228  0.161    900   1.41  0.3365 
-##  7 Temperature  region        Conf… D - N    0.200  0.142    900   1.41  0.3357 
-##  8 Temperature  region        Conf… D - W    0.537  0.149    900   3.62  &lt; 0.001
-##  9 Temperature  region        Conf… N - W    0.337  0.161    900   2.09  0.0924 
-## 10 Temperature  region        Sout… D - N    0.669  0.142    900   4.72  &lt; 0.001
-## 11 Temperature  region        Sout… D - W    0.944  0.149    900   6.36  &lt; 0.001
-## 12 Temperature  region        Sout… N - W    0.275  0.161    900   1.70  0.2042 
-## 13 Temperature  region        North D - N    0.924  0.142    900   6.53  &lt; 0.001
-## 14 Temperature  region        North D - W    1.56   0.149    900  10.5   &lt; 0.001
-## 15 Temperature  region        North N - W    0.638  0.161    900   3.95  &lt; 0.001
-## 16 Temperature  season        Wint… D - N   -0.190  0.127    900  -1.50  0.2918 
-## 17 Temperature  season        Wint… D - W   -0.0544 0.134    900  -0.407 0.9126 
-## 18 Temperature  season        Wint… N - W    0.135  0.145    900   0.934 0.6191 
-## 19 Temperature  season        Spri… D - N    0.571  0.127    900   4.49  &lt; 0.001
-## 20 Temperature  season        Spri… D - W    1.43   0.134    900  10.7   &lt; 0.001
-## 21 Temperature  season        Spri… N - W    0.863  0.145    900   5.95  &lt; 0.001
-## 22 Temperature  season        Summ… D - N    0.279  0.127    900   2.20  0.0718 
-## 23 Temperature  season        Summ… D - W    0.599  0.133    900   4.51  &lt; 0.001
-## 24 Temperature  season        Summ… N - W    0.320  0.144    900   2.22  0.0686 
-## 25 Temperature  season        Fall  D - N    0.873  0.127    900   6.89  &lt; 0.001
-## 26 Temperature  season        Fall  D - W    1.02   0.133    900   7.72  &lt; 0.001
-## 27 Temperature  season        Fall  N - W    0.152  0.144    900   1.05  0.5435 
-## 28 Salinity     region        Suis… D - N    0.568  0.0877   900   6.48  &lt; 0.001
-## 29 Salinity     region        Suis… D - W    1.34   0.0932   900  14.4   &lt; 0.001
-## 30 Salinity     region        Suis… N - W    0.772  0.101    900   7.67  &lt; 0.001
-## 31 Salinity     region        Suis… D - N    0.739  0.0873   900   8.46  &lt; 0.001
-## 32 Salinity     region        Suis… D - W    1.40   0.0915   900  15.3   &lt; 0.001
-## 33 Salinity     region        Suis… N - W    0.662  0.0995   900   6.65  &lt; 0.001
-## 34 Salinity     region        Conf… D - N    0.968  0.0873   900  11.1   &lt; 0.001
-## 35 Salinity     region        Conf… D - W    1.64   0.0915   900  17.9   &lt; 0.001
-## 36 Salinity     region        Conf… N - W    0.674  0.0995   900   6.77  &lt; 0.001
-## 37 Salinity     region        Sout… D - N    0.381  0.0873   900   4.37  &lt; 0.001
-## 38 Salinity     region        Sout… D - W    0.548  0.0915   900   5.99  &lt; 0.001
-## 39 Salinity     region        Sout… N - W    0.167  0.0995   900   1.68  0.2134 
-## 40 Salinity     region        North D - N    0.0979 0.0873   900   1.12  0.5008 
-## 41 Salinity     region        North D - W    0.206  0.0915   900   2.25  0.0629 
-## 42 Salinity     region        North N - W    0.108  0.0995   900   1.09  0.5204 
-## 43 Salinity     season        Wint… D - N    0.385  0.0781   900   4.93  &lt; 0.001
-## 44 Salinity     season        Wint… D - W    0.959  0.0823   900  11.6   &lt; 0.001
-## 45 Salinity     season        Wint… N - W    0.574  0.0894   900   6.42  &lt; 0.001
-## 46 Salinity     season        Spri… D - N    0.899  0.0784   900  11.5   &lt; 0.001
-## 47 Salinity     season        Spri… D - W    1.25   0.0826   900  15.1   &lt; 0.001
-## 48 Salinity     season        Spri… N - W    0.352  0.0894   900   3.94  &lt; 0.001
-## 49 Salinity     season        Summ… D - N    0.537  0.0781   900   6.88  &lt; 0.001
-## 50 Salinity     season        Summ… D - W    1.07   0.0819   900  13.0   &lt; 0.001
-## 51 Salinity     season        Summ… N - W    0.530  0.0890   900   5.96  &lt; 0.001
-## 52 Salinity     season        Fall  D - N    0.383  0.0781   900   4.91  &lt; 0.001
-## 53 Salinity     season        Fall  D - W    0.834  0.0819   900  10.2   &lt; 0.001
-## 54 Salinity     season        Fall  N - W    0.450  0.0890   900   5.06  &lt; 0.001
-## 55 Secchi depth region        Suis… D - N    0.209  0.0473   890   4.43  &lt; 0.001
-## 56 Secchi depth region        Suis… D - W    0.343  0.0502   890   6.84  &lt; 0.001
-## 57 Secchi depth region        Suis… N - W    0.134  0.0542   890   2.47  0.0364 
-## 58 Secchi depth region        Suis… D - N    0.167  0.0470   890   3.55  0.0012 
-## 59 Secchi depth region        Suis… D - W    0.290  0.0493   890   5.89  &lt; 0.001
-## 60 Secchi depth region        Suis… N - W    0.123  0.0536   890   2.30  0.0561 
-## 61 Secchi depth region        Conf… D - N    0.132  0.0470   890   2.80  0.0145 
-## 62 Secchi depth region        Conf… D - W    0.208  0.0493   890   4.22  &lt; 0.001
-## 63 Secchi depth region        Conf… N - W    0.0764 0.0536   890   1.42  0.3288 
-## 64 Secchi depth region        Sout… D - N    0.252  0.0470   890   5.35  &lt; 0.001
-## 65 Secchi depth region        Sout… D - W    0.385  0.0493   890   7.80  &lt; 0.001
-## 66 Secchi depth region        Sout… N - W    0.133  0.0536   890   2.49  0.035  
-## 67 Secchi depth region        North D - N    0.256  0.0492   890   5.19  &lt; 0.001
-## 68 Secchi depth region        North D - W    0.488  0.0498   890   9.81  &lt; 0.001
-## 69 Secchi depth region        North N - W    0.233  0.0552   890   4.22  &lt; 0.001
-## 70 Secchi depth season        Wint… D - N    0.250  0.0421   890   5.95  &lt; 0.001
-## 71 Secchi depth season        Wint… D - W    0.443  0.0444   890  10.0   &lt; 0.001
-## 72 Secchi depth season        Wint… N - W    0.193  0.0482   890   4.01  &lt; 0.001
-## 73 Secchi depth season        Spri… D - N    0.165  0.0430   890   3.83  &lt; 0.001
-## 74 Secchi depth season        Spri… D - W    0.305  0.0447   890   6.82  &lt; 0.001
-## 75 Secchi depth season        Spri… N - W    0.140  0.0487   890   2.87  0.0116 
-## 76 Secchi depth season        Summ… D - N    0.193  0.0428   890   4.51  &lt; 0.001
-## 77 Secchi depth season        Summ… D - W    0.292  0.0443   890   6.59  &lt; 0.001
-## 78 Secchi depth season        Summ… N - W    0.0985 0.0485   890   2.03  0.1055 
-## 79 Secchi depth season        Fall  D - N    0.204  0.0421   890   4.84  &lt; 0.001
-## 80 Secchi depth season        Fall  D - W    0.332  0.0441   890   7.53  &lt; 0.001
-## 81 Secchi depth season        Fall  N - W    0.128  0.0480   890   2.68  0.0207 
+##    Model        Contrast typ…¹ Group Contr…² Estim…³ SE       DF t-rat…⁴ p-val…⁵
+##    &lt;chr&gt;        &lt;chr&gt;          &lt;chr&gt; &lt;fct&gt;   &lt;chr&gt;   &lt;chr&gt; &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;  
+##  1 Temperature  region         Suis… D - N   -0.098… 0.14…   900 -0.695… 0.7665…
+##  2 Temperature  region         Suis… D - W   0.2621… 0.15…   900 1.733Z… 0.1934…
+##  3 Temperature  region         Suis… N - W   0.3610… 0.16…   900 2.210Z… 0.0700…
+##  4 Temperature  region         Suis… D - N   0.2218… 0.14…   900 1.566Z… 0.2608…
+##  5 Temperature  region         Suis… D - W   0.4493… 0.14…   900 3.025Z… 0.0071…
+##  6 Temperature  region         Suis… N - W   0.2275… 0.16…   900 1.409Z… 0.3365…
+##  7 Temperature  region         Conf… D - N   0.1998… 0.14…   900 1.411Z… 0.3357…
+##  8 Temperature  region         Conf… D - W   0.5373… 0.14…   900 3.617Z… &lt; 0.00…
+##  9 Temperature  region         Conf… N - W   0.3375… 0.16…   900 2.090Z… 0.0924…
+## 10 Temperature  region         Sout… D - N   0.6687… 0.14…   900 4.722Z… &lt; 0.00…
+## 11 Temperature  region         Sout… D - W   0.9439… 0.14…   900 6.355Z… &lt; 0.00…
+## 12 Temperature  region         Sout… N - W   0.2751… 0.16…   900 1.704Z… 0.2042…
+## 13 Temperature  region         North D - N   0.9243… 0.14…   900 6.527Z… &lt; 0.00…
+## 14 Temperature  region         North D - W   1.562Z… 0.14…   900 10.52Z… &lt; 0.00…
+## 15 Temperature  region         North N - W   0.6379… 0.16…   900 3.951Z… &lt; 0.00…
+## 16 Temperature  season         Wint… D - N   -0.189… 0.12…   900 -1.499… 0.2918…
+## 17 Temperature  season         Wint… D - W   -0.054… 0.13…   900 -0.407… 0.9126…
+## 18 Temperature  season         Wint… N - W   0.1355… 0.14…   900 0.9336… 0.6191…
+## 19 Temperature  season         Spri… D - N   0.5711… 0.12…   900 4.491Z… &lt; 0.00…
+## 20 Temperature  season         Spri… D - W   1.434Z… 0.13…   900 10.70Z… &lt; 0.00…
+## 21 Temperature  season         Spri… N - W   0.8633… 0.14…   900 5.950Z… &lt; 0.00…
+## 22 Temperature  season         Summ… D - N   0.2786… 0.12…   900 2.199Z… 0.0718…
+## 23 Temperature  season         Summ… D - W   0.5990… 0.13…   900 4.509Z… &lt; 0.00…
+## 24 Temperature  season         Summ… N - W   0.3204… 0.14…   900 2.219Z… 0.0686…
+## 25 Temperature  season         Fall  D - N   0.8728… 0.12…   900 6.891Z… &lt; 0.00…
+## 26 Temperature  season         Fall  D - W   1.025Z… 0.13…   900 7.715Z… &lt; 0.00…
+## 27 Temperature  season         Fall  N - W   0.1521… 0.14…   900 1.053Z… 0.5435…
+## 28 Salinity     region         Suis… D - N   0.5684… 0.08…   900 6.480Z… &lt; 0.00…
+## 29 Salinity     region         Suis… D - W   1.341Z… 0.09…   900 14.38Z… &lt; 0.00…
+## 30 Salinity     region         Suis… N - W   0.7722… 0.10…   900 7.669Z… &lt; 0.00…
+## 31 Salinity     region         Suis… D - N   0.7387… 0.08…   900 8.464Z… &lt; 0.00…
+## 32 Salinity     region         Suis… D - W   1.400Z… 0.09…   900 15.30Z… &lt; 0.00…
+## 33 Salinity     region         Suis… N - W   0.6617… 0.09…   900 6.649Z… &lt; 0.00…
+## 34 Salinity     region         Conf… D - N   0.9678… 0.08…   900 11.09Z… &lt; 0.00…
+## 35 Salinity     region         Conf… D - W   1.642Z… 0.09…   900 17.94Z… &lt; 0.00…
+## 36 Salinity     region         Conf… N - W   0.6741… 0.09…   900 6.774Z… &lt; 0.00…
+## 37 Salinity     region         Sout… D - N   0.3813… 0.08…   900 4.369Z… &lt; 0.00…
+## 38 Salinity     region         Sout… D - W   0.5485… 0.09…   900 5.992Z… &lt; 0.00…
+## 39 Salinity     region         Sout… N - W   0.1672… 0.09…   900 1.680Z… 0.2134…
+## 40 Salinity     region         North D - N   0.0979… 0.08…   900 1.122Z… 0.5008…
+## 41 Salinity     region         North D - W   0.2064… 0.09…   900 2.255Z… 0.0628…
+## 42 Salinity     region         North N - W   0.1085… 0.09…   900 1.090Z… 0.5204…
+## 43 Salinity     season         Wint… D - N   0.3848… 0.07…   900 4.929Z… &lt; 0.00…
+## 44 Salinity     season         Wint… D - W   0.9588… 0.08…   900 11.65Z… &lt; 0.00…
+## 45 Salinity     season         Wint… N - W   0.5740… 0.08…   900 6.419Z… &lt; 0.00…
+## 46 Salinity     season         Spri… D - N   0.8986… 0.07…   900 11.46Z… &lt; 0.00…
+## 47 Salinity     season         Spri… D - W   1.251Z… 0.08…   900 15.14Z… &lt; 0.00…
+## 48 Salinity     season         Spri… N - W   0.3522… 0.08…   900 3.938Z… &lt; 0.00…
+## 49 Salinity     season         Summ… D - N   0.5369… 0.07…   900 6.877Z… &lt; 0.00…
+## 50 Salinity     season         Summ… D - W   1.067Z… 0.08…   900 13.03Z… &lt; 0.00…
+## 51 Salinity     season         Summ… N - W   0.5302… 0.08…   900 5.957Z… &lt; 0.00…
+## 52 Salinity     season         Fall  D - N   0.3830… 0.07…   900 4.907Z… &lt; 0.00…
+## 53 Salinity     season         Fall  D - W   0.8335… 0.08…   900 10.18Z… &lt; 0.00…
+## 54 Salinity     season         Fall  N - W   0.4505… 0.08…   900 5.061Z… &lt; 0.00…
+## 55 Secchi depth region         Suis… D - N   0.2093… 0.04…   890 4.429Z… &lt; 0.00…
+## 56 Secchi depth region         Suis… D - W   0.3434… 0.05…   890 6.837Z… &lt; 0.00…
+## 57 Secchi depth region         Suis… N - W   0.1340… 0.05…   890 2.471Z… 0.0363…
+## 58 Secchi depth region         Suis… D - N   0.1670… 0.04…   890 3.551Z… 0.0011…
+## 59 Secchi depth region         Suis… D - W   0.2903… 0.04…   890 5.887Z… &lt; 0.00…
+## 60 Secchi depth region         Suis… N - W   0.1234… 0.05…   890 2.301Z… 0.0561…
+## 61 Secchi depth region         Conf… D - N   0.1316… 0.04…   890 2.799Z… 0.0144…
+## 62 Secchi depth region         Conf… D - W   0.2080… 0.04…   890 4.217Z… &lt; 0.00…
+## 63 Secchi depth region         Conf… N - W   0.0763… 0.05…   890 1.424Z… 0.3288…
+## 64 Secchi depth region         Sout… D - N   0.2515… 0.04…   890 5.350Z… &lt; 0.00…
+## 65 Secchi depth region         Sout… D - W   0.3848… 0.04…   890 7.803Z… &lt; 0.00…
+## 66 Secchi depth region         Sout… N - W   0.1333… 0.05…   890 2.486Z… 0.0349…
+## 67 Secchi depth region         North D - N   0.2556… 0.04…   890 5.194Z… &lt; 0.00…
+## 68 Secchi depth region         North D - W   0.4883… 0.04…   890 9.810Z… &lt; 0.00…
+## 69 Secchi depth region         North N - W   0.2328… 0.05…   890 4.220Z… &lt; 0.00…
+## 70 Secchi depth season         Wint… D - N   0.2504… 0.04…   890 5.953Z… &lt; 0.00…
+## 71 Secchi depth season         Wint… D - W   0.4435… 0.04…   890 9.998Z… &lt; 0.00…
+## 72 Secchi depth season         Wint… N - W   0.1931… 0.04…   890 4.008Z… &lt; 0.00…
+## 73 Secchi depth season         Spri… D - N   0.1647… 0.04…   890 3.831Z… &lt; 0.00…
+## 74 Secchi depth season         Spri… D - W   0.3047… 0.04…   890 6.820Z… &lt; 0.00…
+## 75 Secchi depth season         Spri… N - W   0.1400… 0.04…   890 2.873Z… 0.0115…
+## 76 Secchi depth season         Summ… D - N   0.1932… 0.04…   890 4.513Z… &lt; 0.00…
+## 77 Secchi depth season         Summ… D - W   0.2917… 0.04…   890 6.588Z… &lt; 0.00…
+## 78 Secchi depth season         Summ… N - W   0.0984… 0.04…   890 2.031Z… 0.1055…
+## 79 Secchi depth season         Fall  D - N   0.2037… 0.04…   890 4.844Z… &lt; 0.00…
+## 80 Secchi depth season         Fall  D - W   0.3320… 0.04…   890 7.527Z… &lt; 0.00…
+## 81 Secchi depth season         Fall  N - W   0.1283… 0.04…   890 2.675Z… 0.0207…
 ## # … with abbreviated variable names ¹​`Contrast type`, ²​Contrast, ³​Estimate,
 ## #   ⁴​`t-ratio`, ⁵​`p-value`</code></pre>
 </div>

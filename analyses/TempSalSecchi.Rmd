@@ -12,8 +12,7 @@ editor_options:
 knit: (function(input, ...) {
     rmarkdown::render(
       input,
-      output_dir = 'docs',
-      knit_root_dir = "../",
+      output_dir = here::here("docs"),
       envir = globalenv()
     )
     })
@@ -36,6 +35,7 @@ require(emmeans)
 require(stringr)
 require(readr)
 require(tidyr)
+library(kableExtra)
 library(here)
 
 source(here("global_functions.R"))
@@ -311,41 +311,83 @@ m_se2_contrasts_s$diffs
 
 ## Save all model outputs
 
-Anovas
-```{r}
-anovas<-bind_rows(
-  mutate(as_tibble(m_t_Anova, rownames = "Parameter"), model="Temperature"),
-  mutate(as_tibble(m_sa_Anova, rownames = "Parameter"), model="Salinity"),
-  mutate(as_tibble(m_se_Anova, rownames = "Parameter"), model="Secchi depth")
-)%>%
-  mutate(`Pr(>F)`=if_else(`Pr(>F)`<0.001, "< 0.001", as.character(formatC(signif(`Pr(>F)`, 4), digits=4, format="fg", flag="#"))),
-         across(c(`Sum Sq`, `F value`), ~formatC(signif(.x, 4), digits=4, format="fg", flag="#")),
-         # Excel is the worst, I had to add letters to these numbers so it wouldn't re-round them
-         across(c(`Sum Sq`, `F value`, `Pr(>F)`), ~paste0(ifelse(str_detect(.x, fixed("NA")) | is.na(.x), "", .x), "ZZZ")))%>%
-  relocate(model)%>%
-  write_csv(file.path("outputs", "TempSalSecchi_anovas.csv"))
+### Anovas
 
-print(anovas, n=1000)
+```{r}
+anovas <-
+  bind_rows(
+    mutate(as_tibble(m_t_Anova, rownames = "Parameter"), Model="Temperature"),
+    mutate(as_tibble(m_sa_Anova, rownames = "Parameter"), Model="Salinity"),
+    mutate(as_tibble(m_se_Anova, rownames = "Parameter"), Model="Secchi depth")
+  ) %>%
+  mutate(
+    `Pr(>F)`=if_else(
+      `Pr(>F)`<0.001, 
+      "< 0.001", 
+      as.character(formatC(signif(`Pr(>F)`, 4), digits = 4, format = "fg", flag = "#"))
+    ),
+    across(c(`Sum Sq`, `F value`), ~formatC(signif(.x, 4), digits = 4, format = "fg", flag = "#"))
+  ) %>%
+  relocate(Model)
+  
+kbl(anovas) %>% kable_styling(fixed_thead = TRUE)
+
+# Excel is the worst, I had to add letters to these numbers so it wouldn't re-round them
+anovas %>% 
+  mutate(
+    across(
+      c(`Sum Sq`, `F value`, `Pr(>F)`), 
+      ~paste0(ifelse(str_detect(.x, fixed("NA")) | is.na(.x), "", .x), "ZZZ"))
+  ) %>% 
+  write_csv(here("outputs/TempSalSecchi_anovas.csv"))
 ```
 
-Post-hoc tests
-```{r}
-tukeys<-bind_rows(
-  mutate(as_tibble(m_t_contrasts_r$contrasts), model="Temperature", `contrast type`="region"),
-  mutate(as_tibble(m_t_contrasts_s$contrasts), model="Temperature", `contrast type`="season"),
-  mutate(as_tibble(m_sa_contrasts_r$contrasts), model="Salinity", `contrast type`="region"),
-  mutate(as_tibble(m_sa_contrasts_s$contrasts), model="Salinity", `contrast type`="season"),
-  mutate(as_tibble(m_se_contrasts_r$contrasts), model="Secchi depth", `contrast type`="region"),
-  mutate(as_tibble(m_se_contrasts_s$contrasts), model="Secchi depth", `contrast type`="season"))%>%
-  rename(`p-value`=p.value, `t-ratio`=t.ratio)%>%
-  mutate(`p-value`=if_else(`p-value`<0.001, "< 0.001", as.character(formatC(signif(`p-value`, 4), digits=4, format="fg", flag="#"))),
-         Group=if_else(is.na(Region), as.character(Season), as.character(Region)),
-         across(c(estimate, SE, `t-ratio`), ~formatC(signif(.x, 4), digits=4, format="fg", flag="#")),
-         # Excel is the worst, I had to add letters to these numbers so it wouldn't re-round them
-         across(c(estimate, SE, `t-ratio`, `p-value`), ~paste0(ifelse(str_detect(.x, fixed("NA")) | is.na(.x), "", .x), "ZZZ")))%>%
-  select(Model=model, `Contrast type`=`contrast type`, Group, Contrast=contrast,
-         Estimate=estimate, SE, DF=df, `t-ratio`, `p-value`)%>%
-  write_csv(file.path("outputs", "TempSalSecchi_tukeys.csv"))
+### Post-hoc tests
 
-print(tukeys, n=1000)
+```{r}
+tukeys <- 
+  bind_rows(
+    mutate(as_tibble(m_t_contrasts_r$contrasts), Model="Temperature", `Contrast type`="region"),
+    mutate(as_tibble(m_t_contrasts_s$contrasts), Model="Temperature", `Contrast type`="season"),
+    mutate(as_tibble(m_sa_contrasts_r$contrasts), Model="Salinity", `Contrast type`="region"),
+    mutate(as_tibble(m_sa_contrasts_s$contrasts), Model="Salinity", `Contrast type`="season"),
+    mutate(as_tibble(m_se_contrasts_r$contrasts), Model="Secchi depth", `Contrast type`="region"),
+    mutate(as_tibble(m_se_contrasts_s$contrasts), Model="Secchi depth", `Contrast type`="season")
+  ) %>%
+  rename(
+    `p-value`=p.value, 
+    `t-ratio`=t.ratio
+  ) %>%
+  mutate(
+    `p-value`=if_else(
+      `p-value`<0.001, 
+      "< 0.001", 
+      as.character(formatC(signif(`p-value`, 4), digits=4, format="fg", flag="#"))
+    ),
+    Group=if_else(is.na(Region), as.character(Season), as.character(Region)),
+    across(c(estimate, SE, `t-ratio`), ~formatC(signif(.x, 4), digits=4, format="fg", flag="#")),
+  ) %>%
+  select(
+    Model,
+    `Contrast type`,
+    Group, 
+    Contrast=contrast,
+    Estimate=estimate, 
+    SE,
+    DF=df, 
+    `t-ratio`, 
+    `p-value`
+  )
+  
+kbl(tukeys) %>% kable_styling(fixed_thead = TRUE)
+
+# Excel is the worst, I had to add letters to these numbers so it wouldn't re-round them
+tukeys %>% 
+  mutate(
+    across(
+      c(Estimate, SE, `t-ratio`, `p-value`), 
+      ~paste0(ifelse(str_detect(.x, fixed("NA")) | is.na(.x), "", .x), "ZZZ")
+    )
+  ) %>% 
+  write_csv(here("outputs/TempSalSecchi_tukeys.csv"))
 ```

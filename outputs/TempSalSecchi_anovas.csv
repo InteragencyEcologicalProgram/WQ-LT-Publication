@@ -1,4 +1,4 @@
-model,Parameter,Sum Sq,Df,F value,Pr(>F)
+Model,Parameter,Sum Sq,Df,F value,Pr(>F)
 Temperature,(Intercept),3027.ZZZ,1,4492.ZZZ,< 0.001ZZZ
 Temperature,Drought,11.05ZZZ,2,8.201ZZZ,< 0.001ZZZ
 Temperature,Season,2601.ZZZ,3,1287.ZZZ,< 0.001ZZZ

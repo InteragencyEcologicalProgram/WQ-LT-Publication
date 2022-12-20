@@ -26,8 +26,7 @@ library(visreg)
 library(DroughtData)
 library(here)
 
-source(here("helperfunctions.R"))
-source(here("analyses/pub_figure_funcs.R"))
+source(here("global_functions.R"))
 ```
 
 ## Nutrients and chlorophyll

@@ -19,13 +19,21 @@ model_plotter <- function(model, data, parameter) {
   units <- dplyr::case_when(
     parameter == "Temperature" ~ " (°C)",
     parameter == "Salinity_l" ~ " (log)",
-    parameter == "Secchi_l" ~ " (log)"
+    parameter == "Secchi_l" ~ " (log)",
+    parameter == "LogAm" ~ " (log)",
+    parameter == "LogNat" ~ " (log)",
+    parameter == "LogPhos" ~ " (log)",
+    parameter == "LogChl" ~ " (log)"
   )
 
   parameter_label <- dplyr::case_when(
     parameter == "Secchi_l" ~ "secchi depth",
     parameter == "Salinity_l" ~ "salinity",
-    parameter == "Temperature" ~ "temperature"
+    parameter == "Temperature" ~ "temperature",
+    parameter == "LogAm" ~ "ammonia",
+    parameter == "LogNat" ~ "nitrate",
+    parameter == "LogPhos" ~ "phosphate",
+    parameter == "LogChl" ~ "chlorophyll"
   )
 
   p_hist <- ggplot2::ggplot(data, ggplot2::aes(x = .data$Residuals)) +

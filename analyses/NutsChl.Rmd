@@ -131,7 +131,7 @@ Now add the treatment plant term
 ```{r}
 Am2 = lm(LogAm ~ Drought*Region + Drought*Season + Region*Season + Region*StocktonUpgrade, data = Ammonia)
 summary(Am2)
-plot(Am2)
+model_plotter(Am2, Ammonia, "LogAm")
 Aman = Anova(Am2, type=3, contrasts=list(topic=contr.sum, sys=contr.sum))
 #visreg(Am2, xvar = "Drought", by = "Region")
 #visreg(Am2, xvar = "Drought", by = "Season")
@@ -253,7 +253,7 @@ OK, now for the statistics. The treatment plant upgrades didn't have as big an i
 
 ```{r}
 Nat2 = lm(LogNat ~ Drought*Region + Drought*Season + Region*Season, data = Nitrate)
-plot(Nat2)
+model_plotter(Nat2, Nitrate, "LogNat")
 NatAn =Anova(Nat2, type=3, contrasts=list(topic=contr.sum, sys=contr.sum))
 
 partial.r2(NatAn)
@@ -279,7 +279,6 @@ NNSeason = pub_figure_plotter(Nitrate, DissNitrateNitrite, "Nitrate + Nitrite mg
 ```
 
 OK, there is a big main effect of drought here, with droughts having higher nitrate, especially in the spring, summer and fall (no effect in the winter). If I'm reading this right, droughts mean increased nitrate in Suisun Bay and the Confluence, but not the Norht, whereas Ammonia increased in the North. Interesting.
-
 
 ## Ortho-phosphate
 
@@ -339,7 +338,7 @@ ggplot(Phos, aes(x = SVIndex, y = LogPhos))+
 ggplot(Phos, aes(x = YearAdj, y = DissOrthophos)) + geom_point(aes(color = Region))+
   geom_smooth(aes(color = Region))+
   theme_bw()+ ylab("Dissolved Orthophosphate")
-#Wow. Phosphorus actuallylooks pretty good there.
+#Wow. Phosphorus actually looks pretty good there.
 
 ggplot(Phos, aes(x = Drought, y = DissOrthophos, fill = Drought))+
   geom_boxplot(alpha = 0.7)+
@@ -364,7 +363,7 @@ Log-transforming phosphorus didn't look quite as nice as nitrogen and ammonium. 
 
 ```{r}
 Phos2 = lm(LogPhos ~ Drought*Region + Drought*Season + Region*Season, data = Phos)
-plot(Phos2)
+model_plotter(Phos2, Phos, "LogPhos")
 Panova = Anova(Phos2, type=3, contrasts=list(topic=contr.sum, sys=contr.sum))
 Panova
 partial.r2(Panova)
@@ -402,7 +401,6 @@ summary(Phos2SV)
 
 This is what Cloern has to say:
 
-Chl a
 Phytoplankton biomass in estuaries is regulated by river driven transport processes and the balance between growth and grazing rates. Chl a at Sta. D8 decreased abruptly in 1987 (Table 3), and the largest declines occurred in summer—May through September (Fig. 6C). The best-fitting model of summer Chl a had an interactive effect between Outflow and clam abundance. This interaction was expected because the relationship between Chl a and Outflow changed after the Potamocorbula introduction (Jassby 2008). Most (80%) of that variability was associated with Outflow and clam abundance treated as a categorical variable (Fig. 8B). No other variables, such as temperature, turbidity (Secchi depth), nutrient concentrations, or loadings had comparable effects on summer Chl a.
 
 Summer phytoplankton blooms occurred regularly in this region of the estuary during the 1970s and 1980s. These were attributed to the accumulation of phytoplankton cells within an estuarine turbidity maximum that was positioned in Suisun Bay (Sta. D8) when Outflow was in the range 100–350 m3 s−1 (Cloern et al. 1983). Thus, flow-phytoplankton relationships were established early in the study of San Francisco Bay. Observations made over the subsequent 3+ decades confirm that summer Chl a decreases when Outflow exceeds about200–300 m3 s−1 (Fig. 8B), primarily through its effect on residence time (Jassby 2008). A summer bloom did not develop in 1977, a year of extreme drought when salinity increased high enough that the upper estuary was colonized by marine benthic filter feeders including M. arenaria (Nichols 1985). The 1977 anomaly was the first evidence that bivalve grazing can suppress blooms in this estuary. Summer blooms disappeared completely after P. amurensis became established as a permanent resident in 1987. The regression model (Table 4) shows that the effect of clam presence was large (−13.1) compared to the outflow effect (−2.5). The nearly fourfold loss of phytoplankton biomass (Table 2) and production restructured biological communities and altered nutrient dynamics, establishing what has become an iconic example of abrupt disturbance by the introduction of a non-native species (Cloern and Jassby 2012). Regression models allow us to compare the effects of that human disturbance with the effect of varying freshwater inflow.
@@ -505,12 +503,12 @@ And now for some statistics
 ```{r}
 #model including pre/post clam regime
 Chl1 = lm(LogChl ~ Drought*Region + Drought*Season + Region*Season + Region*Regime, data = ChlaA)
+model_plotter(Chl1, ChlaA, "LogChl")
 Ch1_Anova<-Anova(Chl1, type=3, contrasts=list(topic=contr.sum, sys=contr.sum))
 Ch1_Anova
 partial.r2(Ch1_Anova)
 summary(Chl1)
 visreg(Chl1, xvar = "Regime", by = "Region")
-plot(Chl1)
 
 qqPlot(Chl1)
 hist(residuals(Chl1))

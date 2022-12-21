@@ -120,13 +120,13 @@ pub_figure_plotter <- function(df_data, # dataframe containing the dataset
     dplyr::mutate(.group = stringr::str_remove_all(.data$.group, stringr::fixed(" "))) %>%
     dplyr::left_join(
       df_data_c %>%
-        dplyr::group_by(.data$Drought, {{ fct_grp }}) %>%
+        dplyr::group_by({{ fct_grp }}) %>%
         dplyr::summarize(
           max_val = max({{ param }}),
           min_val = min({{ param }}),
           .groups = "drop"
         ),
-      by = c("Drought", fct_grp_chr)
+      by = c(fct_grp_chr)
     ) %>%
     # Back transform log-transformed results if log_trans = TRUE
     {if (log_trans == TRUE) {
@@ -134,13 +134,14 @@ pub_figure_plotter <- function(df_data, # dataframe containing the dataset
     } else {
       .
     }} %>%
-    dplyr::mutate(
-      # Determine vertical positioning of letters
-      max_val = dplyr::if_else(.data$upper.CL > .data$max_val, .data$upper.CL, .data$max_val),
-      y_pos = .data$max_val + (.data$max_val - .data$min_val) / 10,
-      # Apply factor order to Drought
-      Drought = factor(.data$Drought, levels = lvs_drought)
-    ) %>%
+    # Determine vertical positioning of letters
+    dplyr::mutate(dplyr::if_else(.data$upper.CL > .data$max_val, .data$upper.CL, .data$max_val)) %>%
+    dplyr::group_by({{ fct_grp }}) %>%
+    dplyr::mutate(max_val = max(.data$max_val)) %>%
+    ungroup() %>%
+    dplyr::mutate(y_pos = .data$max_val + (.data$max_val - .data$min_val) / 10) %>%
+    # Apply factor order to Drought
+    dplyr::mutate(Drought = factor(.data$Drought, levels = lvs_drought)) %>%
     # Apply factor order to fct_grp
     {if (fct_grp_chr == "Season") {
       dplyr::mutate(., "{{fct_grp}}" := factor({{ fct_grp }}, levels = lvs_season))

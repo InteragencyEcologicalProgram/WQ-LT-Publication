@@ -130,53 +130,56 @@ Now add the treatment plant term
 
 ```{r}
 Am2 = lm(LogAm ~ Drought*Region + Drought*Season + Region*Season + Region*StocktonUpgrade, data = Ammonia)
-summary(Am2)
+
+# Check assumptions
 model_plotter(Am2, Ammonia, "LogAm")
+
+# Check results
+summary(Am2)
 Aman = Anova(Am2, type=3, contrasts=list(topic=contr.sum, sys=contr.sum))
-#visreg(Am2, xvar = "Drought", by = "Region")
-#visreg(Am2, xvar = "Drought", by = "Season")
-#visreg(Am2, xvar = "Region", by = "Season")
-#visreg(Am2, xvar = "StocktonUpgrade", by = "Region")
+Aman
 
-#plot pairwise comparisons
-amp2 = emmeans(Am2, pairwise ~ Drought*Region)
-plot(amp2, comparisons = T)
+# visreg(Am2, xvar = "Drought", by = "Region")
+# visreg(Am2, xvar = "Drought", by = "Season")
+# visreg(Am2, xvar = "Region", by = "Season")
+# visreg(Am2, xvar = "StocktonUpgrade", by = "Region")
 
-amp2x = emmeans(Am2, pairwise ~ Drought*Season)
-plot(amp2x, comparisons = T)
-```
+# plot pairwise comparisons
+# amp2 = emmeans(Am2, pairwise ~ Drought*Region)
+# plot(amp2, comparisons = T)
+# 
+# amp2x = emmeans(Am2, pairwise ~ Drought*Season)
+# plot(amp2x, comparisons = T)
 
-
-```{r}
-#calculate partial R2 for drought effect
+# Calculate partial R2 for drought effect
 partial.r2(Aman)
 
-#calculate means for the treatment plant upgrade by region
-amRegime = emmeans(Am2, pairwise ~ StocktonUpgrade|Region)
-amRegime
-#put results in a better format and back transform
-amRegimet = tidy(amRegime$emmeans) %>%
-  mutate(trans = exp(estimate))
-
-#calculate effect sizes
-diffsam = group_by(amRegimet, Region) %>%
-  summarize(diff = trans[1]-trans[2])
-
-#calculate differences another way
-diffsam2 = group_by(Ammonia, Region, StocktonUpgrade) %>%
-  summarize(mean = mean(DissAmmonia, na.rm = T)) %>%
-  group_by(Region) %>%
-  summarize(diff = mean[1]-mean[2])
-
-ggplot(Ammonia, aes(x = StocktonUpgrade, y = DissAmmonia)) +
-  facet_wrap(~Region) + geom_boxplot()
-
-#now the good graph of everything
+# Post-hoc tests and figures
 AmRegions = pub_figure_plotter(Ammonia, DissAmmonia, "Ammonia mg/L", Region, Am2, log_trans = T,
                    plt_title = "Ammonia - By Region")
+AmRegions$diffs
 
 AmSeasons = pub_figure_plotter(Ammonia, DissAmmonia, "Ammonia mg/L", Season, Am2, log_trans = T,
                                plt_title = "Ammonia - By Season")
+AmSeasons$diffs
+
+# Run Post-hoc test for the treatment plant upgrade by region
+amRegime = emmeans(Am2, pairwise ~ StocktonUpgrade|Region)
+
+# Calculate effect sizes and match up p-values
+amRegime_diff = as_tibble(amRegime$emmeans) %>% 
+  mutate(trans = exp(emmean)) %>% 
+  select(StocktonUpgrade, Region, trans) %>%
+  pivot_wider(names_from = StocktonUpgrade, values_from = trans) %>%
+  mutate(difference = After - Before) %>% 
+  left_join(as_tibble(amRegime$contrasts) %>% select(Region, p.value))
+
+amRegime_diff
+
+visreg(Am2, xvar = "StocktonUpgrade", by = "Region")
+
+# ggplot(Ammonia, aes(x = StocktonUpgrade, y = DissAmmonia)) +
+#   facet_wrap(~Region) + geom_boxplot()
 ```
 
 Well, the treatment plant term improves the model a bit, but it doesn't actually change the drought story. However including the region*season interaction and taking out 2021 does make this a little more interesting than before. Droughts in the north are definitely higher in Ammonia. 
@@ -253,29 +256,36 @@ OK, now for the statistics. The treatment plant upgrades didn't have as big an i
 
 ```{r}
 Nat2 = lm(LogNat ~ Drought*Region + Drought*Season + Region*Season, data = Nitrate)
-model_plotter(Nat2, Nitrate, "LogNat")
-NatAn =Anova(Nat2, type=3, contrasts=list(topic=contr.sum, sys=contr.sum))
 
+# Check assumptions
+model_plotter(Nat2, Nitrate, "LogNat")
+
+# Check results
+summary(Nat2)
+NatAn =Anova(Nat2, type=3, contrasts=list(topic=contr.sum, sys=contr.sum))
+NatAn
+
+# Calculate partial R2 for drought effect
 partial.r2(NatAn)
-#partial R2 for drought is 0.127
 
 # visreg(Nat2, xvar = "Drought", by = "Region")
 # visreg(Nat2, xvar = "Drought", by = "Season")
 # visreg(Nat2, xvar = "Region", by = "Season")
-summary(Nat2)
-#pairwise comparisons
-pairsNN =  emmeans(Nat2, pairwise ~ Drought*Region)
-#plot(pairsNN, comparisons = T)
-pairsNN2 =  emmeans(Nat2, pairwise ~ Drought*Season)
-#plot(pairsNN2, comparisons = T)
 
-#now the good graph of everything
+# Pairwise comparisons
+# pairsNN =  emmeans(Nat2, pairwise ~ Drought*Region)
+# plot(pairsNN, comparisons = T)
+# pairsNN2 =  emmeans(Nat2, pairwise ~ Drought*Season)
+# plot(pairsNN2, comparisons = T)
+
+# Post-hoc tests and figures
 NNRegion = pub_figure_plotter(Nitrate, DissNitrateNitrite, "Nitrate + Nitrite mg/L", Region, Nat2, log_trans = T,
                    plt_title = "Nitrate+Nitrite - By Region")
+NNRegion$diffs
 
 NNSeason = pub_figure_plotter(Nitrate, DissNitrateNitrite, "Nitrate + Nitrite mg/L", Season, Nat2, log_trans = T,
                    plt_title = "Nitrate+Nitrite - By Season")
-
+NNSeason$diffs
 ```
 
 OK, there is a big main effect of drought here, with droughts having higher nitrate, especially in the spring, summer and fall (no effect in the winter). If I'm reading this right, droughts mean increased nitrate in Suisun Bay and the Confluence, but not the Norht, whereas Ammonia increased in the North. Interesting.
@@ -363,26 +373,33 @@ Log-transforming phosphorus didn't look quite as nice as nitrogen and ammonium. 
 
 ```{r}
 Phos2 = lm(LogPhos ~ Drought*Region + Drought*Season + Region*Season, data = Phos)
+
+# Check assumptions
 model_plotter(Phos2, Phos, "LogPhos")
+
+# Check results
+summary(Phos2)
 Panova = Anova(Phos2, type=3, contrasts=list(topic=contr.sum, sys=contr.sum))
 Panova
-partial.r2(Panova)
-visreg(Phos2, xvar = "Drought", by = "Region")
-visreg(Phos2, xvar = "Drought", by = "Season")
-visreg(Phos2, xvar = "Region", by = "Season")
-summary(Phos2)
-pairsP =  emmeans(Phos2, pairwise ~ Drought|Region)
-plot(pairsP, comparisons = T)
-plot(emmeans(Phos2, pairwise ~ Drought), comparisons = T)
 
-#now the good graph of everything
+# Calculate partial R2 for drought effect
+partial.r2(Panova)
+
+# visreg(Phos2, xvar = "Drought", by = "Region")
+# visreg(Phos2, xvar = "Drought", by = "Season")
+# visreg(Phos2, xvar = "Region", by = "Season")
+# pairsP =  emmeans(Phos2, pairwise ~ Drought|Region)
+# plot(pairsP, comparisons = T)
+# plot(emmeans(Phos2, pairwise ~ Drought), comparisons = T)
+
+# Post-hoc tests and figures
 OPRegion = pub_figure_plotter(Phos, DissOrthophos, "Orthophosphate mg/L", Region, Phos2, log_trans = T,
                               plt_title = "Orthophosphate by Region")
+OPRegion$diffs
 
 OPSeason = pub_figure_plotter(Phos, DissOrthophos, "Orthophosphate mg/L", Season, Phos2, log_trans = T,
                    plt_title = "Orthophosphate by Season")
 OPSeason$diffs
-OPSeason$contrasts
 ```
 
 For phosphorus, the story is still really the main effect of drought. Lower Phosphorus in wet years.
@@ -390,7 +407,7 @@ For phosphorus, the story is still really the main effect of drought. Lower Phos
 ```{r}
 #now again as a linear model versus sac valley index
 Phos2SV = lm(LogPhos ~ SVIndex*Region + SVIndex*Season + Region*Season, data = Phos)
-plot(Phos2SV)
+# plot(Phos2SV)
 visreg(Phos2SV, xvar = "SVIndex", by = "Region")
 visreg(Phos2SV, xvar = "SVIndex", by = "Season")
 visreg(Phos2SV, xvar = "Region", by = "Season")
@@ -501,56 +518,56 @@ ggplot(ChlaA, aes(x = YearAdj, y = LogChl, color = Region))+
 And now for some statistics
 
 ```{r}
-#model including pre/post clam regime
+# model including pre/post clam regime
 Chl1 = lm(LogChl ~ Drought*Region + Drought*Season + Region*Season + Region*Regime, data = ChlaA)
+
+# Check assumptions
 model_plotter(Chl1, ChlaA, "LogChl")
+qqPlot(Chl1)
+
+# Check results
+summary(Chl1)
 Ch1_Anova<-Anova(Chl1, type=3, contrasts=list(topic=contr.sum, sys=contr.sum))
 Ch1_Anova
+
+# Calculate partial R2 for drought effect
 partial.r2(Ch1_Anova)
-summary(Chl1)
-visreg(Chl1, xvar = "Regime", by = "Region")
-
-qqPlot(Chl1)
-hist(residuals(Chl1))
-#better
-
 
 # visreg(Chl1, xvar = "Drought", by = "Region")
 # visreg(Chl1, xvar = "Drought", by = "Season")
 # visreg(Chl1, xvar = "Region", by = "Season")
 
-pairsC =  emmeans(Chl1, pairwise ~ Drought*Region)
-plot(pairsC, comparisons = T)
-pairsC2 =  emmeans(Chl1, pairwise ~ Drought*Season)
-plot(pairsC2, comparisons = T)
+# pairsC =  emmeans(Chl1, pairwise ~ Drought*Region)
+# plot(pairsC, comparisons = T)
+# pairsC2 =  emmeans(Chl1, pairwise ~ Drought*Season)
+# plot(pairsC2, comparisons = T)
+# 
+# pairsC3 =  emmeans(Chl1, pairwise ~Regime*Region)
+# plot(pairsC3, comparisons = T)
 
-pairsC3 =  emmeans(Chl1, pairwise ~Regime*Region)
-plot(pairsC3, comparisons = T)
-
-
-#calculate effect size by regime
-emRegime = emmeans(Chl1, pairwise ~ Regime|Region)
-emRegimet = tidy(emRegime$emmeans) %>%
-  mutate(trans = exp(estimate))
-
-diffs = group_by(emRegimet, Region) %>%
-  summarize(diff = trans[1]-trans[2])
-
-#calculate differences a different way
-diffchl = group_by(ChlaA, Regime, Region) %>%
-  summarize(Chl = mean(Chlorophyll, na.rm =T)) %>%
-  group_by(Region) %>%
-  summarize(DiffCHL = Chl[1]- Chl[2])
-
-#now the good graph of everything and the effect sizes by region and season
+# Post-hoc tests and figures
 ChRegion = pub_figure_plotter(ChlaA, Chlorophyll, "Chlorophyll-a ug/L", Region, Chl1, log_trans = T,
                               plt_title = "Chlorophyll-a - By Region")
+ChRegion$diffs
 
 CHSeason = pub_figure_plotter(ChlaA, Chlorophyll, "Chlorophyll-a ug/L", Season, Chl1, log_trans = T,
                               plt_title = "Chlorophyll-a - By Season")
+CHSeason$diffs
 
-#save all the results
-save(ChRegion, CHSeason, NNRegion, NNSeason, OPRegion, OPSeason, AmRegions, AmSeasons, file = "../outputs/NutsCHLplotsandResults.RData")
+# Run Post-hoc test for Regime by region
+emRegime = emmeans(Chl1, pairwise ~ Regime|Region)
+
+# Calculate effect sizes and match up p-values
+emRegime_diff = as_tibble(emRegime$emmeans) %>% 
+  mutate(trans = exp(emmean)) %>% 
+  select(Regime, Region, trans) %>%
+  pivot_wider(names_from = Regime, values_from = trans) %>%
+  mutate(difference = `post-clam` - `pre-clam`) %>% 
+  left_join(as_tibble(emRegime$contrasts) %>% select(Region, p.value))
+
+emRegime_diff
+
+visreg(Chl1, xvar = "Regime", by = "Region")
 ```
 
 Well, I added the regime shift at the clam invasion and now my diagnostic plots look better, droughts definitely have higher chlorophyll in the south-central region, and definitely have higher winter and spring chlorophyll YAY!!
@@ -560,7 +577,7 @@ Try the linear model with Sac valley index
 ```{r}
 Chl2 = lm(LogChl ~ SVIndex*Region + SVIndex*Season + Region*Season + Region*Regime, data = ChlaA)
 summary(Chl2)
-plot(Chl2)
+# plot(Chl2)
 
 visreg(Chl2, xvar ="SVIndex", by = "Region")
 visreg(Chl2, xvar = "SVIndex", by = "Season")
@@ -594,7 +611,7 @@ save(NutsCLa, file = "NutrientsChlorophyll.RData")
 
 ## Save all model outputs
 
-Anovas:
+### Anovas
 
 ```{r}
 anovas <-
@@ -611,7 +628,7 @@ anovas <-
 print(anovas, n = 1000)
 ```
 
-Post-hoc tests:
+### Post-hoc tests
 
 ```{r}
 tukeys <- 
@@ -647,5 +664,11 @@ tukeys <-
   write_csv(here("outputs/Nutr_Chla_tukeys.csv"))
 
 print(tukeys, n = 1000)
+```
+
+### Manuscript Figures
+
+```{r}
+save(ChRegion, CHSeason, NNRegion, NNSeason, OPRegion, OPSeason, AmRegions, AmSeasons, file = "../outputs/NutsCHLplotsandResults.RData")
 ```
 

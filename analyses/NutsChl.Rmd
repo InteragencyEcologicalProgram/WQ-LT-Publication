@@ -52,7 +52,7 @@ Ammonia <- raw_nutr_1975_2021 %>%
   # Remove NA values in DissAmmonia
   tidyr::drop_na(DissAmmonia) %>%
   # Replace <RL values with random value
-  drt_replace_rl(DissAmmonia, DissAmmonia_Sign) %>%
+  drt_replace_rl(DissAmmonia, DissAmmonia_Sign, min_val = 0) %>%
   # Calculate seasonal-regional averages
   drt_avg_data(DissAmmonia, avg_type = "both", month_na = "relaxed") %>%
   # Add year assignments
@@ -130,7 +130,7 @@ Ammonia = filter(Ammonia, YearAdj < 2021) %>%
 
 Now add the treatment plant term
 
-```{r}
+```{r, message = FALSE, warning = FALSE}
 Am2 = lm(LogAm ~ Drought*Region + Drought*Season + Region*Season + Region*StocktonUpgrade, data = Ammonia)
 
 # Check assumptions
@@ -194,7 +194,7 @@ Nitrate <- raw_nutr_1975_2021 %>%
   # Remove NA values in DissNitrate
   tidyr::drop_na(DissNitrateNitrite) %>%
   # Replace <RL values with random value
-  drt_replace_rl(DissNitrateNitrite, DissNitrateNitrite_Sign) %>%
+  drt_replace_rl(DissNitrateNitrite, DissNitrateNitrite_Sign, min_val = 0) %>%
   # Calculate seasonal-regional averages
   drt_avg_data(DissNitrateNitrite, avg_type = "both", month_na = "relaxed") %>%
   # Add year assignments
@@ -304,7 +304,7 @@ Phos <- raw_nutr_1975_2021 %>%
   # Remove NA values in DissNitrate
   tidyr::drop_na(DissOrthophos) %>%
   # Replace <RL values with random value
-  drt_replace_rl(DissOrthophos, DissOrthophos_Sign) %>%
+  drt_replace_rl(DissOrthophos, DissOrthophos_Sign, min_val = 0) %>%
   # Calculate seasonal-regional averages
   drt_avg_data(DissOrthophos, avg_type = "both", month_na = "relaxed") %>%
   # Add year assignments
@@ -430,7 +430,7 @@ ChlaA <- raw_chla_1975_2021 %>%
   # Remove NA values in DissAmmonia
   tidyr::drop_na(Chlorophyll) %>%
   # Replace <RL values with random value
-  drt_replace_rl(Chlorophyll, Chlorophyll_Sign) %>%
+  drt_replace_rl(Chlorophyll, Chlorophyll_Sign, min_val = 0) %>%
    # Calculate seasonal-regional averages
   drt_avg_data(Chlorophyll, avg_type = "both", month_na = "relaxed") %>%
   # Add year assignments
@@ -519,7 +519,7 @@ ggplot(ChlaA, aes(x = YearAdj, y = LogChl, color = Region))+
 
 And now for some statistics
 
-```{r}
+```{r, message = FALSE, warning = FALSE}
 # model including pre/post clam regime
 Chl1 = lm(LogChl ~ Drought*Region + Drought*Season + Region*Season + Region*Regime, data = ChlaA)
 
@@ -599,7 +599,7 @@ cex = conditional_effects(chlb, ask = FALSE)
 cex
 ```
 
-```{r, eval=FALSE }
+```{r, eval=FALSE}
 table(raw_chla_1975_2021$Source, raw_chla_1975_2021$YearAdj)
 table(raw_nutr_1975_2021$Source, raw_nutr_1975_2021$YearAdj)
 

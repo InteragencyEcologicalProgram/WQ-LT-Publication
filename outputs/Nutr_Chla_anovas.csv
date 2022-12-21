@@ -4,11 +4,11 @@ Ammonium,Drought,0.03335ZZZ,2,0.1114ZZZ,0.8946ZZZ
 Ammonium,Region,41.21ZZZ,3,91.74ZZZ,< 0.001ZZZ
 Ammonium,Season,18.81ZZZ,3,41.88ZZZ,< 0.001ZZZ
 Ammonium,StocktonUpgrade,2.422ZZZ,1,16.17ZZZ,< 0.001ZZZ
-Ammonium,Drought:Region,9.926ZZZ,6,11.05ZZZ,< 0.001ZZZ
+Ammonium,Drought:Region,9.927ZZZ,6,11.05ZZZ,< 0.001ZZZ
 Ammonium,Drought:Season,7.431ZZZ,6,8.273ZZZ,< 0.001ZZZ
 Ammonium,Region:Season,45.63ZZZ,9,33.86ZZZ,< 0.001ZZZ
-Ammonium,Region:StocktonUpgrade,22.80ZZZ,3,50.77ZZZ,< 0.001ZZZ
-Ammonium,Residuals,98.96ZZZ,661,ZZZ,ZZZ
+Ammonium,Region:StocktonUpgrade,22.81ZZZ,3,50.77ZZZ,< 0.001ZZZ
+Ammonium,Residuals,98.97ZZZ,661,ZZZ,ZZZ
 Nitrate + Nitrite,(Intercept),31.55ZZZ,1,375.1ZZZ,< 0.001ZZZ
 Nitrate + Nitrite,Drought,3.236ZZZ,2,19.24ZZZ,< 0.001ZZZ
 Nitrate + Nitrite,Region,42.53ZZZ,3,168.6ZZZ,< 0.001ZZZ
@@ -20,7 +20,7 @@ Nitrate + Nitrite,Residuals,60.38ZZZ,718,ZZZ,ZZZ
 Ortho-phosphate,(Intercept),182.7ZZZ,1,1956.ZZZ,< 0.001ZZZ
 Ortho-phosphate,Drought,3.517ZZZ,2,18.82ZZZ,< 0.001ZZZ
 Ortho-phosphate,Region,1.799ZZZ,3,6.418ZZZ,< 0.001ZZZ
-Ortho-phosphate,Season,1.111ZZZ,3,3.965ZZZ,0.008083ZZZ
+Ortho-phosphate,Season,1.111ZZZ,3,3.965ZZZ,0.008084ZZZ
 Ortho-phosphate,Drought:Region,1.469ZZZ,6,2.621ZZZ,0.01608ZZZ
 Ortho-phosphate,Drought:Season,1.546ZZZ,6,2.758ZZZ,0.01173ZZZ
 Ortho-phosphate,Region:Season,7.513ZZZ,9,8.935ZZZ,< 0.001ZZZ

@@ -35,6 +35,10 @@ Look at the sampling effort for the various parameters to be included in the lon
 library(tidyverse)
 library(lubridate)
 library(scales)
+# Make sure we are using `DroughtData` version 2.0.0, commit 76a387a4549bb1c4e97757b37246efde33ce6d90
+# install.packages("devtools")
+# devtools::install_github("mountaindboz/DroughtData", ref = "76a387a4549bb1c4e97757b37246efde33ce6d90")
+library(DroughtData)
 library(here)
 ```
 
@@ -49,17 +53,7 @@ devtools::session_info()
 ```
 
 
-# Import and Prepare Data
-
-```{r import data, message = FALSE}
-# Import raw data stored on this repo for now
-fp_data <- here("data_temp/")
-
-df_wq <- read_csv(file.path(fp_data, "raw_wq_1975_2021.csv"))
-df_nutr <- read_csv(file.path(fp_data, "raw_nutr_1975_2021.csv"))
-df_chla <- read_csv(file.path(fp_data, "raw_chla_1975_2021.csv"))
-```
-
+# Prepare Data
 
 ```{r prepare data}
 # Define factor level for Region
@@ -92,9 +86,9 @@ ndf_lt_wq <-
       "Chlorophyll"
     ),
     df_data = c(
-      rep(list(df_wq), 3),
-      rep(list(df_nutr), 3),
-      list(df_chla)
+      rep(list(raw_wq_1975_2021), 3),
+      rep(list(raw_nutr_1975_2021), 3),
+      list(raw_chla_1975_2021)
     )
   ) %>% 
   mutate(

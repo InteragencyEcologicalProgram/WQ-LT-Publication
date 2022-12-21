@@ -171,11 +171,11 @@ partial.r2(m_t_Anova)
 
 ```{r}
 m_t_contrasts_r <- pub_figure_plotter(df_data=wq_data, param=Temperature, y_label="Temperature (°C)", 
-                                      fct_grp=Region, model=m_t, plt_title = "Region")
+                                      fct_grp=Region, model=m_t, plt_title = "Water temperature")
 m_t_contrasts_r$diffs
 
 m_t_contrasts_s <- pub_figure_plotter(df_data=wq_data, param=Temperature, y_label="Temperature (°C)", 
-                                      fct_grp=Season, model=m_t, plt_title = "Season")
+                                      fct_grp=Season, model=m_t, plt_title = "Water temperature")
 m_t_contrasts_s$diffs
 ```
 
@@ -211,13 +211,13 @@ partial.r2(m_sa_Anova)
 ### Post-hoc test
 
 ```{r}
-m_sa_contrasts_r <- pub_figure_plotter(df_data=wq_data, param=Salinity, y_label="Salinity", 
-                                       fct_grp=Region, model=m_sa, log_trans = TRUE, plt_title = "Region")
+m_sa_contrasts_r <- pub_figure_plotter(df_data=wq_data, param=Salinity, y_label="Salinity (PSU)", 
+                                       fct_grp=Region, model=m_sa, log_trans = TRUE, plt_title = "Salinity")
 
 m_sa_contrasts_r$diffs
 
-m_sa_contrasts_s <- pub_figure_plotter(df_data=wq_data, param=Salinity, y_label="Salinity", 
-                                       fct_grp=Season, model=m_sa, log_trans = TRUE, plt_title = "Season")
+m_sa_contrasts_s <- pub_figure_plotter(df_data=wq_data, param=Salinity, y_label="Salinity (PSU)", 
+                                       fct_grp=Season, model=m_sa, log_trans = TRUE, plt_title = "Salinity")
 
 m_sa_contrasts_s$diffs
 ```
@@ -256,12 +256,12 @@ partial.r2(m_se_Anova)
 
 ```{r}
 m_se_contrasts_r <- pub_figure_plotter(df_data=wq_data, param=Secchi, y_label="Secchi depth (cm)", 
-                                       fct_grp=Region, model=m_se, log_trans = TRUE, plt_title = "Region")
+                                       fct_grp=Region, model=m_se, log_trans = TRUE, plt_title = "Secchi depth")
 
 m_se_contrasts_r$diffs
 
 m_se_contrasts_s <- pub_figure_plotter(df_data=wq_data, param=Secchi, y_label="Secchi depth (cm)", 
-                                       fct_grp=Season, model=m_se, log_trans = TRUE, plt_title = "Season")
+                                       fct_grp=Season, model=m_se, log_trans = TRUE, plt_title = "Secchi depth")
 
 m_se_contrasts_s$diffs
 ```
@@ -299,12 +299,12 @@ partial.r2(m_se2_Anova)
 
 ```{r}
 m_se2_contrasts_r <- pub_figure_plotter(df_data=wq_data, param=Secchi, y_label="Secchi depth (cm)", 
-                                        fct_grp=Region, model=m_se2, log_trans = TRUE, plt_title = "Region")
+                                        fct_grp=Region, model=m_se2, log_trans = TRUE, plt_title = "Secchi depth")
 
 m_se2_contrasts_r$diffs
 
 m_se2_contrasts_s <- pub_figure_plotter(df_data=wq_data, param=Secchi, y_label="Secchi depth (cm)", 
-                                        fct_grp=Season, model=m_se2, log_trans = TRUE, plt_title = "Season")
+                                        fct_grp=Season, model=m_se2, log_trans = TRUE, plt_title = "Secchi depth")
 
 m_se2_contrasts_s$diffs
 ```
@@ -337,7 +337,8 @@ anovas %>%
   mutate(
     across(
       c(`Sum Sq`, `F value`, `Pr(>F)`), 
-      ~paste0(ifelse(str_detect(.x, fixed("NA")) | is.na(.x), "", .x), "ZZZ"))
+      ~paste0(ifelse(str_detect(.x, fixed("NA")) | is.na(.x), "", .x), "ZZZ")
+    )
   ) %>% 
   write_csv(here("outputs/TempSalSecchi_anovas.csv"))
 ```
@@ -365,7 +366,7 @@ tukeys <-
       as.character(formatC(signif(`p-value`, 4), digits=4, format="fg", flag="#"))
     ),
     Group=if_else(is.na(Region), as.character(Season), as.character(Region)),
-    across(c(estimate, SE, `t-ratio`), ~formatC(signif(.x, 4), digits=4, format="fg", flag="#")),
+    across(c(estimate, SE, `t-ratio`), ~formatC(signif(.x, 4), digits=4, format="fg", flag="#"))
   ) %>%
   select(
     Model,
@@ -391,3 +392,25 @@ tukeys %>%
   ) %>% 
   write_csv(here("outputs/TempSalSecchi_tukeys.csv"))
 ```
+
+### Manuscript Figures
+
+Export all figures of model results to be combined into a larger figure for the manuscript.
+
+```{r}
+plt_wq <- tibble(
+  Parameter = rep(c("Temperature", "Salinity", "Secchi"), 2),
+  ContrastType = c(rep("Region", 3), rep("Season", 3)),
+  Plt = list(
+    m_t_contrasts_r$plt,
+    m_sa_contrasts_r$plt,
+    m_se2_contrasts_r$plt,
+    m_t_contrasts_s$plt,
+    m_sa_contrasts_s$plt,
+    m_se2_contrasts_s$plt
+  )
+)
+
+saveRDS(plt_wq, file = here("outputs/TempSalSecchi_plots.RData"))
+```
+

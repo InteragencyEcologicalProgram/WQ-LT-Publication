@@ -8,8 +8,7 @@ editor_options:
 knit: (function(input, ...) {
     rmarkdown::render(
       input,
-      output_dir = 'docs',
-      knit_root_dir = "../",
+      output_dir = here::here("docs"),
       envir = globalenv()
     )
     })

@@ -14,7 +14,7 @@ editor_options:
 knit: (function(input, ...) {
     rmarkdown::render(
       input,
-      output_dir = 'docs',
+      output_dir = here::here("docs"),
       envir = globalenv()
     )
     })

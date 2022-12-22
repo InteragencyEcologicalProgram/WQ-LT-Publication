@@ -311,6 +311,12 @@ m_se2_contrasts_s$diffs
 
 ## Save all model outputs
 
+```{r}
+# Define file paths for output and figures for the manuscript
+fp_output <- here("outputs")
+fp_plots <- here("plots")
+```
+
 ### Anovas
 
 ```{r}
@@ -340,7 +346,7 @@ anovas %>%
       ~paste0(ifelse(str_detect(.x, fixed("NA")) | is.na(.x), "", .x), "ZZZ")
     )
   ) %>% 
-  write_csv(here("outputs/TempSalSecchi_anovas.csv"))
+  write_csv(file.path(fp_output, "TempSalSecchi_anovas.csv"))
 ```
 
 ### Post-hoc tests
@@ -390,27 +396,38 @@ tukeys %>%
       ~paste0(ifelse(str_detect(.x, fixed("NA")) | is.na(.x), "", .x), "ZZZ")
     )
   ) %>% 
-  write_csv(here("outputs/TempSalSecchi_tukeys.csv"))
+  write_csv(file.path(fp_output, "TempSalSecchi_tukeys.csv"))
 ```
 
 ### Manuscript Figures
 
-Export all figures of model results to be combined into a larger figure for the manuscript.
+Combine all figures of model results for the water quality parameters into larger figures for the manuscript, one for the regional analyses and one for the seasonal analyses.
 
 ```{r}
-plt_wq <- tibble(
-  Parameter = rep(c("Temperature", "Salinity", "Secchi"), 2),
-  ContrastType = c(rep("Region", 3), rep("Season", 3)),
-  Plt = list(
-    m_t_contrasts_r$plt,
-    m_sa_contrasts_r$plt,
-    m_se2_contrasts_r$plt,
-    m_t_contrasts_s$plt,
-    m_sa_contrasts_s$plt,
-    m_se2_contrasts_s$plt
-  )
+# Region plots
+plt_wq_region <- m_t_contrasts_r$plt + m_sa_contrasts_r$plt + m_se2_contrasts_r$plt +
+  plot_layout(ncol = 1)
+
+ggsave(
+  file.path(fp_plots, "water_quality_region.jpg"),
+  plot = plt_wq_region,
+  width = 8,
+  height = 9,
+  units = "in",
+  dpi = 300
 )
 
-saveRDS(plt_wq, file = here("outputs/TempSalSecchi_plots.RData"))
+# Season plots
+plt_wq_season <- m_t_contrasts_s$plt + m_sa_contrasts_s$plt + m_se2_contrasts_s$plt +
+  plot_layout(ncol = 1)
+
+ggsave(
+  file.path(fp_plots, "water_quality_season.jpg"),
+  plot = plt_wq_season,
+  width = 8,
+  height = 9,
+  units = "in",
+  dpi = 300
+)
 ```
 

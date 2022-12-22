@@ -613,6 +613,12 @@ saveRDS(NutsCLa, file = here("outputs/NutrientsChlorophyll.RData"))
 
 ## Save all model outputs
 
+```{r}
+# Define file paths for output and figures for the manuscript
+fp_output <- here("outputs")
+fp_plots <- here("plots")
+```
+
 ### Anovas
 
 ```{r}
@@ -643,7 +649,7 @@ anovas %>%
       ~paste0(ifelse(str_detect(.x, fixed("NA")) | is.na(.x), "", .x), "ZZZ")
     )
   ) %>% 
-  write_csv(here("outputs/Nutr_Chla_anovas.csv"))
+  write_csv(file.path(fp_output, "Nutr_Chla_anovas.csv"))
 ```
 
 ### Post-hoc tests
@@ -695,29 +701,38 @@ tukeys %>%
       ~paste0(ifelse(str_detect(.x, fixed("NA")) | is.na(.x), "", .x), "ZZZ")
     )
   ) %>% 
-  write_csv(here("outputs/Nutr_Chla_tukeys.csv"))
+  write_csv(file.path(fp_output, "Nutr_Chla_tukeys.csv"))
 ```
 
 ### Manuscript Figures
 
-Export all figures of model results to be combined into a larger figure for the manuscript.
+Combine all figures of model results for the nutrient and chlorophyll parameters into larger figures for the manuscript, one for the regional analyses and one for the seasonal analyses.
 
 ```{r}
-plt_nutr_chla <- tibble(
-  Parameter = rep(c("Ammonium", "Nitrate", "Orthophosphate", "Chlorophyll"), 2),
-  ContrastType = c(rep("Region", 4), rep("Season", 4)),
-  Plt = list(
-    AmRegions$plt,
-    NNRegion$plt,
-    OPRegion$plt,
-    ChRegion$plt,
-    AmSeasons$plt,
-    NNSeason$plt,
-    OPSeason$plt,
-    CHSeason$plt
-  )
+# Region plots
+plt_nutr_chla_region <- AmRegions$plt + NNRegion$plt + OPRegion$plt + ChRegion$plt +
+  plot_layout(ncol = 1)
+
+ggsave(
+  file.path(fp_plots, "nutr_chla_region.jpg"),
+  plot = plt_nutr_chla_region,
+  width = 8,
+  height = 11,
+  units = "in",
+  dpi = 300
 )
 
-saveRDS(plt_nutr_chla, file = here("outputs/Nutr_Chl_plots.RData"))
+# Season plots
+plt_nutr_chla_season <- AmSeasons$plt + NNSeason$plt + OPSeason$plt + CHSeason$plt +
+  plot_layout(ncol = 1)
+
+ggsave(
+  file.path(fp_plots, "nutr_chla_season.jpg"),
+  plot = plt_nutr_chla_season,
+  width = 8,
+  height = 11,
+  units = "in",
+  dpi = 300
+)
 ```
 

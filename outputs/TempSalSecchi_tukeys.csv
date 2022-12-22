@@ -53,30 +53,30 @@ Salinity,season,Summer,N - W,0.5302ZZZ,0.08901ZZZ,900,5.957ZZZ,< 0.001ZZZ
 Salinity,season,Fall,D - N,0.3830ZZZ,0.07807ZZZ,900,4.907ZZZ,< 0.001ZZZ
 Salinity,season,Fall,D - W,0.8335ZZZ,0.08188ZZZ,900,10.18ZZZ,< 0.001ZZZ
 Salinity,season,Fall,N - W,0.4505ZZZ,0.08901ZZZ,900,5.061ZZZ,< 0.001ZZZ
-Secchi depth,region,Suisun Marsh,D - N,0.2093ZZZ,0.04726ZZZ,890,4.429ZZZ,< 0.001ZZZ
-Secchi depth,region,Suisun Marsh,D - W,0.3434ZZZ,0.05022ZZZ,890,6.837ZZZ,< 0.001ZZZ
-Secchi depth,region,Suisun Marsh,N - W,0.1340ZZZ,0.05425ZZZ,890,2.471ZZZ,0.03638ZZZ
-Secchi depth,region,Suisun Bay,D - N,0.1670ZZZ,0.04702ZZZ,890,3.551ZZZ,0.001174ZZZ
-Secchi depth,region,Suisun Bay,D - W,0.2903ZZZ,0.04932ZZZ,890,5.887ZZZ,< 0.001ZZZ
-Secchi depth,region,Suisun Bay,N - W,0.1234ZZZ,0.05361ZZZ,890,2.301ZZZ,0.05615ZZZ
-Secchi depth,region,Confluence,D - N,0.1316ZZZ,0.04702ZZZ,890,2.799ZZZ,0.01447ZZZ
-Secchi depth,region,Confluence,D - W,0.2080ZZZ,0.04932ZZZ,890,4.217ZZZ,< 0.001ZZZ
-Secchi depth,region,Confluence,N - W,0.07636ZZZ,0.05361ZZZ,890,1.424ZZZ,0.3288ZZZ
-Secchi depth,region,SouthCentral,D - N,0.2515ZZZ,0.04702ZZZ,890,5.350ZZZ,< 0.001ZZZ
-Secchi depth,region,SouthCentral,D - W,0.3848ZZZ,0.04932ZZZ,890,7.803ZZZ,< 0.001ZZZ
-Secchi depth,region,SouthCentral,N - W,0.1333ZZZ,0.05361ZZZ,890,2.486ZZZ,0.03498ZZZ
-Secchi depth,region,North,D - N,0.2556ZZZ,0.04920ZZZ,890,5.194ZZZ,< 0.001ZZZ
-Secchi depth,region,North,D - W,0.4883ZZZ,0.04978ZZZ,890,9.810ZZZ,< 0.001ZZZ
-Secchi depth,region,North,N - W,0.2328ZZZ,0.05516ZZZ,890,4.220ZZZ,< 0.001ZZZ
-Secchi depth,season,Winter,D - N,0.2504ZZZ,0.04206ZZZ,890,5.953ZZZ,< 0.001ZZZ
-Secchi depth,season,Winter,D - W,0.4435ZZZ,0.04435ZZZ,890,9.998ZZZ,< 0.001ZZZ
-Secchi depth,season,Winter,N - W,0.1931ZZZ,0.04818ZZZ,890,4.008ZZZ,< 0.001ZZZ
-Secchi depth,season,Spring,D - N,0.1647ZZZ,0.04299ZZZ,890,3.831ZZZ,< 0.001ZZZ
-Secchi depth,season,Spring,D - W,0.3047ZZZ,0.04467ZZZ,890,6.820ZZZ,< 0.001ZZZ
-Secchi depth,season,Spring,N - W,0.1400ZZZ,0.04872ZZZ,890,2.873ZZZ,0.01158ZZZ
-Secchi depth,season,Summer,D - N,0.1932ZZZ,0.04282ZZZ,890,4.513ZZZ,< 0.001ZZZ
-Secchi depth,season,Summer,D - W,0.2917ZZZ,0.04427ZZZ,890,6.588ZZZ,< 0.001ZZZ
-Secchi depth,season,Summer,N - W,0.09846ZZZ,0.04849ZZZ,890,2.031ZZZ,0.1055ZZZ
-Secchi depth,season,Fall,D - N,0.2037ZZZ,0.04206ZZZ,890,4.844ZZZ,< 0.001ZZZ
-Secchi depth,season,Fall,D - W,0.3320ZZZ,0.04411ZZZ,890,7.527ZZZ,< 0.001ZZZ
-Secchi depth,season,Fall,N - W,0.1283ZZZ,0.04795ZZZ,890,2.675ZZZ,0.02075ZZZ
+Secchi depth,region,Suisun Marsh,D - N,0.1766ZZZ,0.03814ZZZ,870,4.630ZZZ,< 0.001ZZZ
+Secchi depth,region,Suisun Marsh,D - W,0.2997ZZZ,0.04100ZZZ,870,7.310ZZZ,< 0.001ZZZ
+Secchi depth,region,Suisun Marsh,N - W,0.1231ZZZ,0.04292ZZZ,870,2.868ZZZ,0.01176ZZZ
+Secchi depth,region,Suisun Bay,D - N,0.1463ZZZ,0.03771ZZZ,870,3.880ZZZ,< 0.001ZZZ
+Secchi depth,region,Suisun Bay,D - W,0.2587ZZZ,0.04024ZZZ,870,6.428ZZZ,< 0.001ZZZ
+Secchi depth,region,Suisun Bay,N - W,0.1123ZZZ,0.04248ZZZ,870,2.645ZZZ,0.02264ZZZ
+Secchi depth,region,Confluence,D - N,0.06375ZZZ,0.03771ZZZ,870,1.690ZZZ,0.2094ZZZ
+Secchi depth,region,Confluence,D - W,0.1038ZZZ,0.04024ZZZ,870,2.580ZZZ,0.02709ZZZ
+Secchi depth,region,Confluence,N - W,0.04008ZZZ,0.04248ZZZ,870,0.9437ZZZ,0.6127ZZZ
+Secchi depth,region,SouthCentral,D - N,0.1476ZZZ,0.03771ZZZ,870,3.915ZZZ,< 0.001ZZZ
+Secchi depth,region,SouthCentral,D - W,0.2254ZZZ,0.04024ZZZ,870,5.600ZZZ,< 0.001ZZZ
+Secchi depth,region,SouthCentral,N - W,0.07772ZZZ,0.04248ZZZ,870,1.830ZZZ,0.1605ZZZ
+Secchi depth,region,North,D - N,0.1508ZZZ,0.04017ZZZ,870,3.755ZZZ,< 0.001ZZZ
+Secchi depth,region,North,D - W,0.3798ZZZ,0.04049ZZZ,870,9.380ZZZ,< 0.001ZZZ
+Secchi depth,region,North,N - W,0.2290ZZZ,0.04368ZZZ,870,5.243ZZZ,< 0.001ZZZ
+Secchi depth,season,Winter,D - N,0.2162ZZZ,0.03373ZZZ,870,6.408ZZZ,< 0.001ZZZ
+Secchi depth,season,Winter,D - W,0.3915ZZZ,0.03611ZZZ,870,10.84ZZZ,< 0.001ZZZ
+Secchi depth,season,Winter,N - W,0.1753ZZZ,0.03815ZZZ,870,4.596ZZZ,< 0.001ZZZ
+Secchi depth,season,Spring,D - N,0.08541ZZZ,0.03490ZZZ,870,2.448ZZZ,0.03869ZZZ
+Secchi depth,season,Spring,D - W,0.2141ZZZ,0.03651ZZZ,870,5.863ZZZ,< 0.001ZZZ
+Secchi depth,season,Spring,N - W,0.1287ZZZ,0.03856ZZZ,870,3.336ZZZ,0.002546ZZZ
+Secchi depth,season,Summer,D - N,0.1235ZZZ,0.03458ZZZ,870,3.570ZZZ,0.001095ZZZ
+Secchi depth,season,Summer,D - W,0.2001ZZZ,0.03608ZZZ,870,5.546ZZZ,< 0.001ZZZ
+Secchi depth,season,Summer,N - W,0.07664ZZZ,0.03840ZZZ,870,1.996ZZZ,0.1138ZZZ
+Secchi depth,season,Fall,D - N,0.1231ZZZ,0.03373ZZZ,870,3.649ZZZ,< 0.001ZZZ
+Secchi depth,season,Fall,D - W,0.2082ZZZ,0.03599ZZZ,870,5.786ZZZ,< 0.001ZZZ
+Secchi depth,season,Fall,N - W,0.08518ZZZ,0.03799ZZZ,870,2.242ZZZ,0.06486ZZZ

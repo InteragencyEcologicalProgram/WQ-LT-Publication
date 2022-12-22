@@ -324,7 +324,7 @@ anovas <-
   bind_rows(
     mutate(as_tibble(m_t_Anova, rownames = "Parameter"), Model="Temperature"),
     mutate(as_tibble(m_sa_Anova, rownames = "Parameter"), Model="Salinity"),
-    mutate(as_tibble(m_se_Anova, rownames = "Parameter"), Model="Secchi depth")
+    mutate(as_tibble(m_se2_Anova, rownames = "Parameter"), Model="Secchi depth")
   ) %>%
   mutate(
     `Pr(>F)`=if_else(
@@ -358,8 +358,8 @@ tukeys <-
     mutate(as_tibble(m_t_contrasts_s$contrasts), Model="Temperature", `Contrast type`="season"),
     mutate(as_tibble(m_sa_contrasts_r$contrasts), Model="Salinity", `Contrast type`="region"),
     mutate(as_tibble(m_sa_contrasts_s$contrasts), Model="Salinity", `Contrast type`="season"),
-    mutate(as_tibble(m_se_contrasts_r$contrasts), Model="Secchi depth", `Contrast type`="region"),
-    mutate(as_tibble(m_se_contrasts_s$contrasts), Model="Secchi depth", `Contrast type`="season")
+    mutate(as_tibble(m_se2_contrasts_r$contrasts), Model="Secchi depth", `Contrast type`="region"),
+    mutate(as_tibble(m_se2_contrasts_s$contrasts), Model="Secchi depth", `Contrast type`="season")
   ) %>%
   rename(
     `p-value`=p.value, 

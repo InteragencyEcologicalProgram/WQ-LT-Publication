@@ -15,11 +15,15 @@ Salinity,Drought:Season,8.498ZZZ,6,5.533ZZZ,< 0.001ZZZ
 Salinity,Drought:Region,49.14ZZZ,8,24.00ZZZ,< 0.001ZZZ
 Salinity,Season:Region,45.48ZZZ,12,14.81ZZZ,< 0.001ZZZ
 Salinity,Residuals,230.4ZZZ,900,ZZZ,ZZZ
-Secchi depth,(Intercept),405.3ZZZ,1,5456.ZZZ,< 0.001ZZZ
-Secchi depth,Drought,3.881ZZZ,2,26.12ZZZ,< 0.001ZZZ
-Secchi depth,Season,5.599ZZZ,3,25.12ZZZ,< 0.001ZZZ
-Secchi depth,Region,18.59ZZZ,4,62.54ZZZ,< 0.001ZZZ
-Secchi depth,Drought:Season,0.5789ZZZ,6,1.299ZZZ,0.2550ZZZ
-Secchi depth,Drought:Region,1.404ZZZ,8,2.363ZZZ,0.01616ZZZ
-Secchi depth,Season:Region,5.327ZZZ,12,5.976ZZZ,< 0.001ZZZ
-Secchi depth,Residuals,66.12ZZZ,890,ZZZ,ZZZ
+Secchi depth,(Intercept),0.001003ZZZ,1,0.02167ZZZ,0.8830ZZZ
+Secchi depth,Drought,3.535ZZZ,2,38.17ZZZ,< 0.001ZZZ
+Secchi depth,Season,0.1680ZZZ,3,1.209ZZZ,0.3053ZZZ
+Secchi depth,Region,0.8486ZZZ,4,4.581ZZZ,0.001150ZZZ
+Secchi depth,YearAdj,0.01660ZZZ,1,0.3586ZZZ,0.5495ZZZ
+Secchi depth,Drought:Season,1.002ZZZ,6,3.608ZZZ,0.001535ZZZ
+Secchi depth,Drought:Region,1.272ZZZ,8,3.433ZZZ,< 0.001ZZZ
+Secchi depth,Season:Region,1.214ZZZ,12,2.186ZZZ,0.01078ZZZ
+Secchi depth,Season:YearAdj,0.1598ZZZ,3,1.150ZZZ,0.3278ZZZ
+Secchi depth,Region:YearAdj,0.9008ZZZ,4,4.863ZZZ,< 0.001ZZZ
+Secchi depth,Season:Region:YearAdj,1.221ZZZ,12,2.197ZZZ,0.01032ZZZ
+Secchi depth,Residuals,40.29ZZZ,870,ZZZ,ZZZ

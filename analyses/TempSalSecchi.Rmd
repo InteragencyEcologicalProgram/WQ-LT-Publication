@@ -22,6 +22,8 @@ knit: (function(input, ...) {
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+# Load packages and functions
+
 ```{r packages, message=FALSE, warning=FALSE}
 require(conflicted)
 require(dplyr)
@@ -42,6 +44,12 @@ source(here("global_functions.R"))
 
 conflict_prefer("filter", "dplyr")
 conflict_prefer("select", "dplyr")
+```
+
+Display R and package versions:
+
+```{r}
+devtools::session_info()
 ```
 
 # Load data

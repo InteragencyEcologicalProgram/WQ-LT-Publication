@@ -102,14 +102,30 @@ ggplot(wq_data, aes(x=YearAdj, y=Salinity, fill=Drought))+
 Secchi is also more regionally than seasonally variable
 
 ```{r, fig.width=12, fig.height=12}
-ggplot(wq_data, aes(x=YearAdj, y=Secchi, fill=Drought))+
+plt_se_point <- ggplot(wq_data, aes(x=YearAdj, y=Secchi, fill=Drought))+
   geom_point(shape=21, color="black")+
   facet_wrap(Season~Region, scales="free_y")+
   drt_color_pal_drought()+
   ylab("Secchi depth (cm)")+
   theme_bw()+
   theme(axis.text.x=element_text(angle=45, hjust=1))
+
+plt_se_point
 ```
+
+Save Secchi depth figure for Supplemental Info.
+
+```{r}
+ggsave(
+  here("plots/secchi_point_region_season.jpg"),
+  plot = plt_se_point,
+  width = 11,
+  height = 9,
+  units = "in",
+  dpi = 300
+)
+```
+
 
 # By Drought index
 

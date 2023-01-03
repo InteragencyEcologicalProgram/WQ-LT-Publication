@@ -117,35 +117,4 @@ vel_weekly %>%
   guides(color = guide_legend('Water year index'))
 ```
 
-## Compare 2020 + 2021 to other years - WQ White Paper
-
-### Mean net velocity and maximum absolute velocity across stations
-The 2020 and 2021 net velocities compare well to previous drought years. Breaking the data down by station show the Cache and Jersey net velocities are most always seaward and Middle and Old Rivers most always landward, except during wet periods of wet years.
-
-The max. abs. tidal velocities in 2020 and 2021 are nearly identical to dry and critical years years except at Cache where they're slightly lower. With data faceted by station, a slight reduction in max. abs. tidal vel. range at Cache is observed in 2020 relative to other years.
-```{r}
-
-#zoom in
-ggplot(vel_weekly, aes(x=YearType_20_21, y=mean_net_vel_m, fill=YearType))+
-  geom_boxplot()+
-  facet_wrap(~station) +
-  drt_color_pal_yrtype()+
-  labs(x = "Water year index", y = expression(paste("mean net vel. (", m," ",s^-1, ")", sep="")), title = "A. mean net vel. across stations (2007 - 2021) - restricted y axis") +
-  guides(fill = guide_legend('Water year index')) +
-  ylim(c(-0.25, 0.25))+
-  theme_bw()+
-  geom_hline(yintercept=0, linetype='solid', col = 'black') +
-  theme(axis.text.x = element_text(angle = 90)) 
-  
-ggplot(vel_weekly, aes(x=YearType_20_21, y=max_abs_tidal_vel_m, fill=YearType))+
-  geom_boxplot()+
-  facet_wrap(~station)+
-  drt_color_pal_yrtype()+
-  labs(x = "Water year index", y = expression(paste("max. abs. tidal vel. (", m," ",s^-1, ")", sep="")), title = "B. max. abs. tidal vel. across stations (2007 - 2021)") +
-  theme_bw()+
-  theme(axis.text.x = element_text(angle = 90)) +
-  guides(fill = guide_legend('Water year index'))
-```
-
-
 

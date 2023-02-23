@@ -5,9 +5,9 @@ Ammonium,region,Suisun Bay,N - W,0.03969ZZZ,0.07808ZZZ,661,0.5084ZZZ,0.8673ZZZ
 Ammonium,region,Confluence,D - N,0.1002ZZZ,0.07002ZZZ,661,1.431ZZZ,0.3254ZZZ
 Ammonium,region,Confluence,D - W,0.2014ZZZ,0.07687ZZZ,661,2.620ZZZ,0.02436ZZZ
 Ammonium,region,Confluence,N - W,0.1012ZZZ,0.07846ZZZ,661,1.290ZZZ,0.4014ZZZ
-Ammonium,region,SouthCentral,D - N,0.1095ZZZ,0.07240ZZZ,661,1.512ZZZ,0.2858ZZZ
-Ammonium,region,SouthCentral,D - W,-0.001234ZZZ,0.08048ZZZ,661,-0.01534ZZZ,0.9999ZZZ
-Ammonium,region,SouthCentral,N - W,-0.1107ZZZ,0.08061ZZZ,661,-1.373ZZZ,0.3554ZZZ
+Ammonium,region,South-Central,D - N,0.1095ZZZ,0.07240ZZZ,661,1.512ZZZ,0.2858ZZZ
+Ammonium,region,South-Central,D - W,-0.001234ZZZ,0.08048ZZZ,661,-0.01534ZZZ,0.9999ZZZ
+Ammonium,region,South-Central,N - W,-0.1107ZZZ,0.08061ZZZ,661,-1.373ZZZ,0.3554ZZZ
 Ammonium,region,North,D - N,0.3726ZZZ,0.07240ZZZ,661,5.146ZZZ,< 0.001ZZZ
 Ammonium,region,North,D - W,0.8551ZZZ,0.08048ZZZ,661,10.62ZZZ,< 0.001ZZZ
 Ammonium,region,North,N - W,0.4825ZZZ,0.08061ZZZ,661,5.985ZZZ,< 0.001ZZZ
@@ -29,9 +29,9 @@ Nitrate + Nitrite,region,Suisun Bay,N - W,0.04636ZZZ,0.05704ZZZ,718,0.8127ZZZ,0.
 Nitrate + Nitrite,region,Confluence,D - N,0.2687ZZZ,0.05015ZZZ,718,5.357ZZZ,< 0.001ZZZ
 Nitrate + Nitrite,region,Confluence,D - W,0.3776ZZZ,0.05259ZZZ,718,7.180ZZZ,< 0.001ZZZ
 Nitrate + Nitrite,region,Confluence,N - W,0.1089ZZZ,0.05704ZZZ,718,1.909ZZZ,0.1369ZZZ
-Nitrate + Nitrite,region,SouthCentral,D - N,0.2018ZZZ,0.05003ZZZ,718,4.033ZZZ,< 0.001ZZZ
-Nitrate + Nitrite,region,SouthCentral,D - W,0.1440ZZZ,0.05284ZZZ,718,2.726ZZZ,0.01803ZZZ
-Nitrate + Nitrite,region,SouthCentral,N - W,-0.05774ZZZ,0.05738ZZZ,718,-1.006ZZZ,0.5731ZZZ
+Nitrate + Nitrite,region,South-Central,D - N,0.2018ZZZ,0.05003ZZZ,718,4.033ZZZ,< 0.001ZZZ
+Nitrate + Nitrite,region,South-Central,D - W,0.1440ZZZ,0.05284ZZZ,718,2.726ZZZ,0.01803ZZZ
+Nitrate + Nitrite,region,South-Central,N - W,-0.05774ZZZ,0.05738ZZZ,718,-1.006ZZZ,0.5731ZZZ
 Nitrate + Nitrite,region,North,D - N,0.03813ZZZ,0.05003ZZZ,718,0.7621ZZZ,0.7264ZZZ
 Nitrate + Nitrite,region,North,D - W,0.07453ZZZ,0.05284ZZZ,718,1.411ZZZ,0.3360ZZZ
 Nitrate + Nitrite,region,North,N - W,0.03640ZZZ,0.05738ZZZ,718,0.6344ZZZ,0.8012ZZZ
@@ -53,9 +53,9 @@ Ortho-phosphate,region,Suisun Bay,N - W,0.2057ZZZ,0.06012ZZZ,720,3.422ZZZ,0.0018
 Ortho-phosphate,region,Confluence,D - N,0.1676ZZZ,0.05286ZZZ,720,3.170ZZZ,0.004526ZZZ
 Ortho-phosphate,region,Confluence,D - W,0.4314ZZZ,0.05543ZZZ,720,7.783ZZZ,< 0.001ZZZ
 Ortho-phosphate,region,Confluence,N - W,0.2638ZZZ,0.06012ZZZ,720,4.388ZZZ,< 0.001ZZZ
-Ortho-phosphate,region,SouthCentral,D - N,0.07355ZZZ,0.05273ZZZ,720,1.395ZZZ,0.3442ZZZ
-Ortho-phosphate,region,SouthCentral,D - W,0.2308ZZZ,0.05531ZZZ,720,4.173ZZZ,< 0.001ZZZ
-Ortho-phosphate,region,SouthCentral,N - W,0.1572ZZZ,0.06012ZZZ,720,2.615ZZZ,0.02468ZZZ
+Ortho-phosphate,region,South-Central,D - N,0.07355ZZZ,0.05273ZZZ,720,1.395ZZZ,0.3442ZZZ
+Ortho-phosphate,region,South-Central,D - W,0.2308ZZZ,0.05531ZZZ,720,4.173ZZZ,< 0.001ZZZ
+Ortho-phosphate,region,South-Central,N - W,0.1572ZZZ,0.06012ZZZ,720,2.615ZZZ,0.02468ZZZ
 Ortho-phosphate,region,North,D - N,0.09438ZZZ,0.05273ZZZ,720,1.790ZZZ,0.1737ZZZ
 Ortho-phosphate,region,North,D - W,0.4883ZZZ,0.05531ZZZ,720,8.829ZZZ,< 0.001ZZZ
 Ortho-phosphate,region,North,N - W,0.3939ZZZ,0.06012ZZZ,720,6.551ZZZ,< 0.001ZZZ
@@ -77,9 +77,9 @@ Chlorophyll,region,Suisun Bay,N - W,0.1440ZZZ,0.09809ZZZ,717,1.468ZZZ,0.3068ZZZ
 Chlorophyll,region,Confluence,D - N,0.1335ZZZ,0.08907ZZZ,717,1.499ZZZ,0.2921ZZZ
 Chlorophyll,region,Confluence,D - W,0.2350ZZZ,0.09135ZZZ,717,2.572ZZZ,0.02781ZZZ
 Chlorophyll,region,Confluence,N - W,0.1015ZZZ,0.09809ZZZ,717,1.034ZZZ,0.5554ZZZ
-Chlorophyll,region,SouthCentral,D - N,0.4359ZZZ,0.08907ZZZ,717,4.894ZZZ,< 0.001ZZZ
-Chlorophyll,region,SouthCentral,D - W,0.6325ZZZ,0.09135ZZZ,717,6.923ZZZ,< 0.001ZZZ
-Chlorophyll,region,SouthCentral,N - W,0.1965ZZZ,0.09809ZZZ,717,2.004ZZZ,0.1120ZZZ
+Chlorophyll,region,South-Central,D - N,0.4359ZZZ,0.08907ZZZ,717,4.894ZZZ,< 0.001ZZZ
+Chlorophyll,region,South-Central,D - W,0.6325ZZZ,0.09135ZZZ,717,6.923ZZZ,< 0.001ZZZ
+Chlorophyll,region,South-Central,N - W,0.1965ZZZ,0.09809ZZZ,717,2.004ZZZ,0.1120ZZZ
 Chlorophyll,region,North,D - N,-0.01380ZZZ,0.08907ZZZ,717,-0.1549ZZZ,0.9869ZZZ
 Chlorophyll,region,North,D - W,0.01064ZZZ,0.09135ZZZ,717,0.1165ZZZ,0.9925ZZZ
 Chlorophyll,region,North,N - W,0.02444ZZZ,0.09809ZZZ,717,0.2491ZZZ,0.9664ZZZ

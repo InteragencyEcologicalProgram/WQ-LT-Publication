@@ -59,12 +59,16 @@ devtools::session_info()
 
 ```{r}
 wq_data<-lt_avg_wq%>%
-  mutate(Region=factor(Region, levels=c("Suisun Marsh", "Suisun Bay", "Confluence", "SouthCentral", "North")),
-         Season=factor(Season, levels=c("Winter", "Spring", "Summer", "Fall")),
-         Year_fac=factor(YearAdj),
-         Drought=factor(Drought, levels=c("D", "N", "W")),
-         YearAdj_s=(YearAdj-mean(YearAdj)/sd(YearAdj)),
-         across(c(Secchi, Salinity), list(l=log)))
+  mutate(
+    # Change region name to "South-Central"
+    Region = if_else(Region == "SouthCentral", "South-Central", Region),
+    Region=factor(Region, levels=c("Suisun Marsh", "Suisun Bay", "Confluence", "South-Central", "North")),
+    Season=factor(Season, levels=c("Winter", "Spring", "Summer", "Fall")),
+    Year_fac=factor(YearAdj),
+    Drought=factor(Drought, levels=c("D", "N", "W")),
+    YearAdj_s=(YearAdj-mean(YearAdj)/sd(YearAdj)),
+    across(c(Secchi, Salinity), list(l=log))
+  )
 ```
 
 # Plots

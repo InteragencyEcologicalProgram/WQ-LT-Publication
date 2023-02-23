@@ -8,9 +8,9 @@ Temperature,region,Suisun Bay,N - W,0.2275ZZZ,0.1615ZZZ,900,1.409ZZZ,0.3365ZZZ
 Temperature,region,Confluence,D - N,0.1998ZZZ,0.1416ZZZ,900,1.411ZZZ,0.3357ZZZ
 Temperature,region,Confluence,D - W,0.5373ZZZ,0.1485ZZZ,900,3.617ZZZ,< 0.001ZZZ
 Temperature,region,Confluence,N - W,0.3375ZZZ,0.1615ZZZ,900,2.090ZZZ,0.09243ZZZ
-Temperature,region,SouthCentral,D - N,0.6687ZZZ,0.1416ZZZ,900,4.722ZZZ,< 0.001ZZZ
-Temperature,region,SouthCentral,D - W,0.9439ZZZ,0.1485ZZZ,900,6.355ZZZ,< 0.001ZZZ
-Temperature,region,SouthCentral,N - W,0.2751ZZZ,0.1615ZZZ,900,1.704ZZZ,0.2042ZZZ
+Temperature,region,South-Central,D - N,0.6687ZZZ,0.1416ZZZ,900,4.722ZZZ,< 0.001ZZZ
+Temperature,region,South-Central,D - W,0.9439ZZZ,0.1485ZZZ,900,6.355ZZZ,< 0.001ZZZ
+Temperature,region,South-Central,N - W,0.2751ZZZ,0.1615ZZZ,900,1.704ZZZ,0.2042ZZZ
 Temperature,region,North,D - N,0.9243ZZZ,0.1416ZZZ,900,6.527ZZZ,< 0.001ZZZ
 Temperature,region,North,D - W,1.562ZZZ,0.1485ZZZ,900,10.52ZZZ,< 0.001ZZZ
 Temperature,region,North,N - W,0.6379ZZZ,0.1615ZZZ,900,3.951ZZZ,< 0.001ZZZ
@@ -35,9 +35,9 @@ Salinity,region,Suisun Bay,N - W,0.6617ZZZ,0.09952ZZZ,900,6.649ZZZ,< 0.001ZZZ
 Salinity,region,Confluence,D - N,0.9678ZZZ,0.08728ZZZ,900,11.09ZZZ,< 0.001ZZZ
 Salinity,region,Confluence,D - W,1.642ZZZ,0.09154ZZZ,900,17.94ZZZ,< 0.001ZZZ
 Salinity,region,Confluence,N - W,0.6741ZZZ,0.09952ZZZ,900,6.774ZZZ,< 0.001ZZZ
-Salinity,region,SouthCentral,D - N,0.3813ZZZ,0.08728ZZZ,900,4.369ZZZ,< 0.001ZZZ
-Salinity,region,SouthCentral,D - W,0.5485ZZZ,0.09154ZZZ,900,5.992ZZZ,< 0.001ZZZ
-Salinity,region,SouthCentral,N - W,0.1672ZZZ,0.09952ZZZ,900,1.680ZZZ,0.2134ZZZ
+Salinity,region,South-Central,D - N,0.3813ZZZ,0.08728ZZZ,900,4.369ZZZ,< 0.001ZZZ
+Salinity,region,South-Central,D - W,0.5485ZZZ,0.09154ZZZ,900,5.992ZZZ,< 0.001ZZZ
+Salinity,region,South-Central,N - W,0.1672ZZZ,0.09952ZZZ,900,1.680ZZZ,0.2134ZZZ
 Salinity,region,North,D - N,0.09792ZZZ,0.08728ZZZ,900,1.122ZZZ,0.5008ZZZ
 Salinity,region,North,D - W,0.2064ZZZ,0.09154ZZZ,900,2.255ZZZ,0.06289ZZZ
 Salinity,region,North,N - W,0.1085ZZZ,0.09952ZZZ,900,1.090ZZZ,0.5204ZZZ
@@ -62,9 +62,9 @@ Secchi depth,region,Suisun Bay,N - W,0.1123ZZZ,0.04248ZZZ,870,2.645ZZZ,0.02264ZZ
 Secchi depth,region,Confluence,D - N,0.06375ZZZ,0.03771ZZZ,870,1.690ZZZ,0.2094ZZZ
 Secchi depth,region,Confluence,D - W,0.1038ZZZ,0.04024ZZZ,870,2.580ZZZ,0.02709ZZZ
 Secchi depth,region,Confluence,N - W,0.04008ZZZ,0.04248ZZZ,870,0.9437ZZZ,0.6127ZZZ
-Secchi depth,region,SouthCentral,D - N,0.1476ZZZ,0.03771ZZZ,870,3.915ZZZ,< 0.001ZZZ
-Secchi depth,region,SouthCentral,D - W,0.2254ZZZ,0.04024ZZZ,870,5.600ZZZ,< 0.001ZZZ
-Secchi depth,region,SouthCentral,N - W,0.07772ZZZ,0.04248ZZZ,870,1.830ZZZ,0.1605ZZZ
+Secchi depth,region,South-Central,D - N,0.1476ZZZ,0.03771ZZZ,870,3.915ZZZ,< 0.001ZZZ
+Secchi depth,region,South-Central,D - W,0.2254ZZZ,0.04024ZZZ,870,5.600ZZZ,< 0.001ZZZ
+Secchi depth,region,South-Central,N - W,0.07772ZZZ,0.04248ZZZ,870,1.830ZZZ,0.1605ZZZ
 Secchi depth,region,North,D - N,0.1508ZZZ,0.04017ZZZ,870,3.755ZZZ,< 0.001ZZZ
 Secchi depth,region,North,D - W,0.3798ZZZ,0.04049ZZZ,870,9.380ZZZ,< 0.001ZZZ
 Secchi depth,region,North,N - W,0.2290ZZZ,0.04368ZZZ,870,5.243ZZZ,< 0.001ZZZ

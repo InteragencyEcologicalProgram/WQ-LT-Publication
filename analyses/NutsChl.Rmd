@@ -59,6 +59,15 @@ This is the nutrient and chlorophyll analysis for the Drought paper. It pulls th
 
 First I replaced values below the reporting limit with draws from a uniform distribution, then I averaged by season, region, and year. Then I log-transformed. Sam said he thought log-transforming the mean was better than taking the mean of log-transformed data, and I trust Sam more than me. 
 
+```{r}
+# Change region name to "South-Central" in the nutrient and chlorophyll data sets
+raw_nutr_1975_2021 <- raw_nutr_1975_2021 %>% 
+  mutate(Region = if_else(Region == "SouthCentral", "South-Central", Region))
+
+raw_chla_1975_2021 <- raw_chla_1975_2021 %>% 
+  mutate(Region = if_else(Region == "SouthCentral", "South-Central", Region))
+```
+
 ## Ammonia
 
 I'm going to start with Ammonia. My initial look at Ammonia made it seem pretty boring. I'd lean towards leaving it out of the paper, but I"ll see if including some sort of dummy variable for WWTP upgrades helps at all. 

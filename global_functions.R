@@ -213,3 +213,18 @@ pub_figure_plotter <- function(df_data, # dataframe containing the dataset
   )
 }
 
+# Combine and format plots created from pub_figure_plotter
+# ls_plt is a list of the plot objects to combine, ordered from top to bottom
+# Changes x-axis label of bottom-most plot to "Drought Classification", and
+  # removes the x-axis labels of the other plots
+comb_pub_figs <- function(ls_plt) {
+  # Determine index positions of bottom-most and other plots
+  pos_bott_plt <- length(ls_plt)
+  pos_top_plts <- seq.int(1, pos_bott_plt - 1)
+
+  ls_plt %>%
+    purrr::modify_at(pos_top_plts, ~ .x + ggplot2::xlab(NULL)) %>%
+    purrr::modify_at(pos_bott_plt, ~ .x + ggplot2::xlab("Drought Classification")) %>%
+    patchwork::wrap_plots(ncol = 1)
+}
+

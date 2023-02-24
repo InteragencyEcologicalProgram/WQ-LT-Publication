@@ -819,8 +819,7 @@ Combine all figures of model results for the nutrient and chlorophyll parameters
 
 ```{r}
 # Region plots
-plt_nutr_chla_region <- AmRegions$plt + NNRegion$plt + OPRegion$plt + ChRegion$plt +
-  plot_layout(ncol = 1)
+plt_nutr_chla_region <- comb_pub_figs(list(AmRegions$plt, NNRegion$plt, OPRegion$plt, ChRegion$plt))
 
 ggsave(
   file.path(fp_plots, "nutr_chla_region.jpg"),
@@ -832,8 +831,7 @@ ggsave(
 )
 
 # Season plots
-plt_nutr_chla_season <- AmSeasons$plt + NNSeason$plt + OPSeason$plt + CHSeason$plt +
-  plot_layout(ncol = 1)
+plt_nutr_chla_season <- comb_pub_figs(list(AmSeasons$plt, NNSeason$plt, OPSeason$plt, CHSeason$plt))
 
 ggsave(
   file.path(fp_plots, "nutr_chla_season.jpg"),

@@ -436,8 +436,7 @@ Combine all figures of model results for the water quality parameters into large
 
 ```{r}
 # Region plots
-plt_wq_region <- m_t_contrasts_r$plt + m_sa_contrasts_r$plt + m_se2_contrasts_r$plt +
-  plot_layout(ncol = 1)
+plt_wq_region <- comb_pub_figs(list(m_t_contrasts_r$plt, m_sa_contrasts_r$plt, m_se2_contrasts_r$plt))
 
 ggsave(
   file.path(fp_plots, "water_quality_region.jpg"),
@@ -449,8 +448,7 @@ ggsave(
 )
 
 # Season plots
-plt_wq_season <- m_t_contrasts_s$plt + m_sa_contrasts_s$plt + m_se2_contrasts_s$plt +
-  plot_layout(ncol = 1)
+plt_wq_season <- comb_pub_figs(list(m_t_contrasts_s$plt, m_sa_contrasts_s$plt, m_se2_contrasts_s$plt))
 
 ggsave(
   file.path(fp_plots, "water_quality_season.jpg"),

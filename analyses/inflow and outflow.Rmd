@@ -32,7 +32,6 @@ library(lubridate)
 # devtools::install_github("mountaindboz/DroughtData", ref = "76a387a4549bb1c4e97757b37246efde33ce6d90")
 library(DroughtData)
 library(ggplot2)
-library(ggrepel)
 library(here)
 ```
 
@@ -129,7 +128,6 @@ Total cumulative inflow seasonal hydrograph by Period_year
 ```{r}
 p<-ggplot(d, aes(x=wdoy, y=InflowTotal_cum/InflowTotal_sum, color=Period_year2, group=WY, linetype=Period_year2))+
   geom_line()+
-  geom_text_repel(data=filter(d, wdoy==120 & WY%in%c(1997, 1984)), aes(label=WY), max.overlaps=20, color="black")+
   facet_grid(Drought~., scales="free_y")+
   ylab("Cumulative proportional inflow")+
   xlab("Water day of year")+
@@ -167,7 +165,6 @@ Total cumulative outflow seasonal hydrograph by Period_year
 ```{r}
 p<-ggplot(d, aes(x=wdoy, y=Outflow_cum/Outflow_sum, color=Period_year2, group=WY, linetype=Period_year2))+
   geom_line()+
-  geom_text_repel(data=filter(d, wdoy==120 & WY%in%c(1997, 1984)), aes(label=WY), max.overlaps=20, color="black")+
   facet_grid(Drought~., scales="free_y")+
   ylab("Cumulative proportional outflow")+
   xlab("Water day of year")+

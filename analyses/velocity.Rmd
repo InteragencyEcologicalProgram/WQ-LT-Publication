@@ -20,6 +20,7 @@ library(DroughtData)
 library(sf)
 library(mapview)
 library(stats)
+
 ```
 # Overview
 
@@ -47,20 +48,19 @@ mapview(lat_long_sf, layer.name = "Velocity", cex=10, label = 'site')
 Next up is exploring the relationship with delta outflow, and mean net velocity and maximum absolute tidal velocity at four USGS flow stations. Net velocities only increase considerably during periods of high outflow in Cache Slough during wet years. Higher net velocities in Cache Slough reflect periods of Yolo Bypass inundation - when water management activities divert floodwaters from the mainstem Sacramento River. Tidal velocities generally fall within a similar range across all water year types but exhibit a downward trend during periods of high outflow. The negative velocity direction is consistent with periods of higher freshwater flow that mute tidal forcing.
 
 ```{r}
-fig_3a <- vel_weekly %>%
-  ggplot(aes(x=Log_Outflow_m, y=mean_net_vel_m, color = YearType, shape = net_sign))+
+fig_3A <- vel_weekly %>%
+  ggplot(aes(x=Log_Outflow_m, y=mean_net_vel_m, color = YearType))+
   drt_color_pal_yrtype(aes_type = 'color') +
   geom_point(alpha=0.4, cex = 2.5)+
   facet_wrap(~station, scales = "free") +
   theme (text = element_text (size = 15)) +
   geom_hline(yintercept=0, linetype='solid', col = 'black') +
-  labs(y = expression(paste("mean net vel. (", m," ",s^-1, ")", sep="")), x = expression(paste("log(outflow) (", m^3, " ",s^-1, ")", sep="")), title = "A", color = "Year Type", shape = "Sign") +
-  scale_shape(labels = c("negative", "positive")) +
+  labs(y = expression(paste("mean net vel. (", m," ",s^-1, ")", sep="")), x = expression(paste("log(outflow) (", m^3, " ",s^-1, ")", sep="")), title = "A", color = "Year Type") +
   guides(color = guide_legend('Water year index'))
 
-fig_3a
+fig_3A
 
-fig_3b <- vel_weekly %>%
+fig_3B <- vel_weekly %>%
   ggplot(aes(x=Log_Outflow_m, y=max_abs_tidal_vel_m, color=YearType, shape = tide_sign))+
   geom_point(alpha=0.4, cex = 2.5)+
   drt_color_pal_yrtype(aes_type = 'color') +
@@ -71,7 +71,8 @@ fig_3b <- vel_weekly %>%
   scale_shape(labels = c("negative", "positive"))+
   guides(color = guide_legend('Water year index'))
 
-fig_3b
+fig_3B
+
 ```
 
 
@@ -79,7 +80,7 @@ fig_3b
 To start, delta outflow is similar at the start of most water years except for wet years when outflow is greater at the beginning. Smoothing the data of each water year type shows outflow 'peaks' earlier in the water year during critical and drier years relative to wetter water years. This pattern likely reflects water management activities to increase reservoir storage.
 
 ```{r}
-vel_weekly %>%
+fig_S3 <- vel_weekly %>%
   ggplot(aes(x=wtr_day, y=Log_Outflow_m, color = YearType))+
   drt_color_pal_yrtype(aes_type = 'color') +
   geom_smooth(alpha=1)+
@@ -87,6 +88,7 @@ vel_weekly %>%
   theme_bw()+
   guides(color = guide_legend('Water year index')) +
   labs(x = "Water day of year", y = expression(paste("log(outflow) (", m^3," ", s^-1, ")", sep = "")))
+
 ```
 
 ## Figure S4 - mean net velocity and maximum absolute tidal velocity with WY index across stations
@@ -94,7 +96,7 @@ vel_weekly %>%
 Across all water years, mean net velocity is most always positive at Cache and Jersey but only positive in the wet seasons of wet years at the Middle and Old River stations. For much of the year, the export pumps create net landward velocities in Middle and Old Rivers that is demonstrated by negative velocities. Only during the wet season of wet years does increased freshwater flow overcome the effects of the pumps and create net positive velocities. 
 ```{r}
 # Fig. S4A
-vel_weekly %>%
+fig_S4A <- vel_weekly %>%
   ggplot(aes(x=wtr_day, y=mean_net_vel_m, color = YearType)) +
   geom_smooth() +
   drt_color_pal_yrtype(aes = 'color') +
@@ -106,7 +108,7 @@ vel_weekly %>%
 
 # Fig. S4B
 
-vel_weekly %>%
+fig_S4B <- vel_weekly %>%
   ggplot(aes(x=wtr_day, y=max_abs_tidal_vel_m, color = YearType)) +
   geom_smooth() +
   drt_color_pal_yrtype(aes = 'color') +
@@ -115,6 +117,7 @@ vel_weekly %>%
   scale_y_continuous(n.breaks = 3) +
   theme (text = element_text (size = 12)) +
   guides(color = guide_legend('Water year index'))
+
 ```
 
 

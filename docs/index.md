@@ -4,8 +4,8 @@ layout: default
 
 ## Data Preparation
 
-* [Sampling Effort - discretewq](Sampling_Effort_discretewq.html)
-* [Draft Data Processing Methods](Data_processing_methods.html)
+* Data Processing Methods:
+  * [Water Quality, Nutrients, and Chlorophyll](process_data_wq_nutr_chla.html)
 * [Sampling Effort - raw data in DroughtData](Sampling_Effort_DroughtData.html)
 
 ## Analyses

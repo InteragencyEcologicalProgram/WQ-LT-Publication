@@ -1,0 +1,1330 @@
+---
+title: "Data Processing for the long-term WQ publication"
+subtitle: "Parameters: Water Temperature, Salinity, Secchi depth, Dissolved Ammonia, Dissolved Nitrate + Nitrite, Dissolved Ortho-phosphate, Chlorophyll"
+author: "Dave Bosworth"
+date: '`r format(Sys.Date(), "%B %d, %Y")`'
+output: 
+  html_document: 
+    code_folding: show
+    toc: true
+    toc_depth: 4
+    toc_float:
+      collapsed: false
+editor_options: 
+  chunk_output_type: console
+knit: (function(input, ...) {
+    rmarkdown::render(
+      input,
+      output_dir = here::here("docs"),
+      envir = globalenv()
+    )
+    })
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Purpose
+
+Process the data for the WQ parameters for the long-term WQ publication. Parameters include: Water Temperature, Salinity, Secchi depth, Dissolved Ammonia, Dissolved Nitrate + Nitrite, Dissolved Ortho-phosphate, and Chlorophyll. Data is from the [`discretewq` EDI data package, version 731.7](https://portal.edirepository.org/nis/mapbrowse?packageid=edi.731.7).
+
+# Global code and functions
+
+```{r load packages, message = FALSE, warning = FALSE}
+# Load packages
+library(tidyverse)
+library(dtplyr)
+library(hms)
+library(scales)
+# Make sure we are using `deltamapr` version 1.0.0, commit d0a6f9c22aa074f906176e99a0ed70f97f26fffd
+# install.packages("devtools")
+# devtools::install_github("InteragencyEcologicalProgram/deltamapr", ref = "d0a6f9c22aa074f906176e99a0ed70f97f26fffd")
+library(deltamapr)
+library(sf)
+library(leaflet)
+library(here)
+library(contentid)
+library(qs)
+library(conflicted)
+```
+
+```{r declare conflict pref}
+# Declare package conflict preferences
+conflicts_prefer(dplyr::filter(), hms::hms())
+```
+
+```{r check dir}
+# Check if we are in the correct working directory
+i_am("data_processing/process_data_wq_nutr_chla.Rmd")
+```
+
+```{r session info}
+# Run session info to display package versions
+devtools::session_info()
+```
+
+Load globally-used data:
+
+```{r load global data, message = FALSE}
+# Import region assignments
+df_regions <- read_csv(here("data_processing/region_assignments.csv"))
+  
+# Load Delta shapefile from Brian and only keep SubRegions east of Carquinez Straight
+sf_delta <- R_EDSM_Subregions_Mahardja_FLOAT %>% 
+  filter(
+    !SubRegion %in% c(
+      "Carquinez Strait", 
+      "Lower Napa River", 
+      "San Francisco Bay",
+      "San Pablo Bay",
+      "South Bay",
+      "Upper Napa River" 
+    )
+  ) %>% 
+  select(SubRegion)
+
+# Import year assignments
+df_yr_type <- read_csv(here("data_processing/year_assignments.csv")) %>% rename(YearAdj = Year)
+
+# Define years used in the publication
+lt_yrs <- c(1975:2021)
+
+# Create data frame that contains all possible combinations of year, season, and region
+df_yr_seas_reg <- expand_grid(
+  YearAdj = lt_yrs,
+  Season = c("Winter", "Spring", "Summer", "Fall"),
+  Region = unique(df_regions$Region)
+)
+
+# Define the threshold for the number of years of data that a subregion needs to
+  # have to be included in the long-term averages
+num_yrs_threshold <- round(length(lt_yrs) * 0.75)
+```
+
+Create globally-used functions:
+
+```{r global funcs}
+# Filter data so that there is only one sample per station-day by choosing the
+# data point closest to noon
+filt_daily_dups <- function(df) {
+  # Look for any instances when more than 1 data point was collected at a station-day
+  df_dups <- df %>%
+    count(Source, Station, Date) %>% 
+    filter(n > 1) %>% 
+    select(-n)
+  
+  # Fix duplicates
+  df_dups_fixed <- df %>%
+    inner_join(df_dups, by = c("Source", "Station", "Date")) %>%
+    drop_na(Datetime) %>%
+    mutate(
+      # Create variable for time
+      Time = as_hms(Datetime),
+      # Calculate difference from noon for each data point for later filtering
+      Noon_diff = abs(hms(hours = 12) - Time)
+    ) %>%
+    # Use dtplyr to speed up operations
+    lazy_dt() %>%
+    group_by(Station, Date) %>%
+    # Select only 1 data point per station and date, choose data closest to noon
+    filter(Noon_diff == min(Noon_diff)) %>%
+    # When points are equidistant from noon, select earlier point
+    filter(Time == min(Time)) %>%
+    ungroup() %>%
+    # End dtplyr operation
+    as_tibble() %>%
+    select(-c(Time, Noon_diff))
+
+  # Add back the fixed duplicates
+  df %>%
+    anti_join(df_dups, by = c("Source", "Station", "Date")) %>%
+    bind_rows(df_dups_fixed)
+}
+
+# Plot sampling effort by Station
+plot_samp_effort_sta <- function(df) {
+  df %>%
+    count(Station, YearAdj, name = "num_samples") %>%
+    mutate(Station = fct_rev(factor(Station))) %>%
+    ggplot(aes(x = YearAdj, y = Station, fill = num_samples)) +
+    geom_tile() +
+    scale_x_continuous(
+      limits = c(1974, 2022),
+      breaks = breaks_pretty(20), 
+      expand = expansion()
+    ) +
+    scale_fill_viridis_c(name = "Number of Samples") +
+    theme_bw() +
+    theme(
+      axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
+      legend.position = "top"
+    )
+}
+
+# Plot sampling effort by SubRegion and Season
+plot_samp_effort_subreg <- function(df) {
+  df %>%
+    count(SubRegion, YearAdj, Season, name = "num_samples") %>%
+    mutate(
+      SubRegion = fct_rev(factor(SubRegion)),
+      Season = factor(Season, levels = c("Winter", "Spring", "Summer", "Fall"))
+    ) %>% 
+    ggplot(aes(x = YearAdj, y = SubRegion, fill = num_samples)) +
+    geom_tile() +
+    facet_wrap(vars(Season), nrow = 2) +
+    scale_x_continuous(
+      limits = c(1974, 2022),
+      breaks = breaks_pretty(20), 
+      expand = expansion(mult = 0.02)
+    ) +
+    scale_y_discrete(drop = FALSE) +
+    scale_fill_viridis_c(name = "Number of Samples") +
+    theme_bw() +
+    theme(
+      axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
+      legend.position = "top"
+    )
+}
+
+# Flag data points with Z-scores greater than a specified threshold
+flag_zscore <- function(df, threshold) {
+  df %>%
+    mutate(
+      tmp_mean = mean(Result),
+      tmp_sd = sd(Result),
+      Zscore = if_else(
+        tmp_sd == 0,
+        NA_real_,
+        abs((Result - tmp_mean) / tmp_sd)
+      ),
+      Zscore_flag = case_when(
+        is.na(Zscore) ~ FALSE,
+        Zscore > threshold ~ TRUE,
+        TRUE ~ FALSE
+      )
+    ) %>%
+    select(!starts_with("tmp_"))
+}
+
+# Flag data points with modified z-scores greater than a specified threshold
+flag_modzscore <- function(df, threshold) {
+  df %>%
+    mutate(
+      tmp_median = median(Result),
+      tmp_mad = mad(Result),
+      ModZscore = if_else(
+        tmp_mad == 0,
+        NA_real_,
+        abs(0.6745 * (Result - tmp_median) / tmp_mad)
+      ),
+      ModZscore_flag = case_when(
+        is.na(ModZscore) ~ FALSE,
+        ModZscore > threshold ~ TRUE,
+        TRUE ~ FALSE
+      )
+    ) %>%
+    select(!starts_with("tmp_"))
+}
+
+# Flag <RL values with high reporting limits (greater than a specified
+  # percentile of the data)
+flag_high_rl <- function(df, perc_thresh) {
+  threshold <- df %>%
+    summarize(quant = quantile(Result, probs = perc_thresh)) %>%
+    pull(quant)
+
+  df %>% mutate(HighRL_flag = if_else(Sign == "<" & Result > threshold, TRUE, FALSE))
+}
+
+replace_blw_rl <- function(df, min_val = 0.00001, seed = 1) {
+  # Pull out values that are below the RL
+  df_blw_rl <- df %>% filter(Sign == "<")
+
+  # Replace below RL values with simulated ones
+  withr::with_seed(
+    # Set seed for reproducibility
+    seed = seed,
+    df_blw_rl_sim <- df_blw_rl %>% 
+      mutate(Result = round(runif(nrow(df_blw_rl), min = min_val, max = Result), 6))
+  )
+
+  # Add simulated values back to main data frame
+  df %>% filter(Sign != "<") %>% bind_rows(df_blw_rl_sim)
+}
+
+# Calculate seasonal-regional averages of raw data
+calc_seas_reg_avg <- function(df) {
+  df %>%
+    # Calculate monthly mean for each region
+    group_by(Month, Season, Region, YearAdj) %>%
+    summarize(Result_month_mean = mean(Result), .groups = "drop") %>% 
+    # Fill in NAs for data_var for any missing Season, Region, YearAdj
+    # combinations to make sure all seasons and regions are represented when
+    # averaging
+    complete(Season, Region, YearAdj) %>% 
+    # Calculate seasonal-regional averages for each year
+    group_by(Season, Region, YearAdj) %>%
+    summarize(Result = mean(Result_month_mean), .groups = "drop")
+}
+```
+
+# Import and Prepare Data
+
+```{r import all data, warning = FALSE}
+# Register a contentid for the WQ data from the discretewq EDI data package
+# This only needs to be done once
+# register(
+#   "https://portal.edirepository.org/nis/dataviewer?packageid=edi.731.7&entityid=6c5f35b1d316e39c8de0bfadfb3c9692"
+# )
+
+# Define contentid for the WQ data from the discretewq EDI data package
+id_dwq <- "hash://sha256/c5397df66c7c0e407c0bcd422711e3aab2713023a4aa3d24ff80de58a68f0cf9"
+
+# Resolve the contentid for the WQ data from the discretewq EDI data package -
+  # storing a local copy for faster import
+file_dwq <- resolve(id_dwq, store = TRUE)
+
+# Import WQ data from the discretewq EDI data package from the local copy using
+  # its contentid
+df_dwq <- read_csv(
+  file = file_dwq,
+  # Select a subset of columns
+  col_select = c(
+    Source,
+    Station,
+    Latitude,
+    Longitude,
+    Date,
+    Datetime,
+    Temperature,
+    Salinity,
+    Secchi,
+    contains(c("Chlorophyll", "DissAmmonia", "DissNitrateNitrite", "DissOrthophos"))
+  ) 
+)
+```
+
+```{r prepare all data}
+# Prepare data for parameters of interest
+df_dwq_c <- df_dwq %>% 
+  # Convert Datetime to PST
+  mutate(Datetime = with_tz(Datetime, tzone = "Etc/GMT+8")) %>% 
+  # Remove records without lat-long coordinates
+  drop_na(Latitude, Longitude) %>% 
+  # Assign SubRegions to the stations
+  st_as_sf(coords = c("Longitude", "Latitude"), crs = 4326, remove = FALSE) %>%
+  st_transform(crs = st_crs(sf_delta)) %>%
+  st_join(sf_delta, join = st_intersects) %>%
+  # Remove any data outside our subregions of interest
+  filter(!is.na(SubRegion)) %>%
+  st_drop_geometry() %>% 
+  # Add variables for adjusted calendar year, month, and season
+    # Adjusted calendar year: December-November, with December of the previous calendar year
+    # included with the following year
+  mutate(
+    Month = month(Date),
+    YearAdj = if_else(Month == 12, year(Date) + 1, year(Date)),
+    Season = case_when(
+      Month %in% 3:5 ~ "Spring",
+      Month %in% 6:8 ~ "Summer",
+      Month %in% 9:11 ~ "Fall",
+      Month %in% c(12, 1, 2) ~ "Winter"
+    )
+  ) %>% 
+  # Restrict data to 1975-2021
+  filter(YearAdj %in% lt_yrs)
+```
+
+# Temporal Scale of all Surveys
+
+Let's look at which surveys we can use for the long-term WQ publication. First, we'll look at the temporal scale of all of the surveys available.
+
+```{r temporal all}
+# Number of Years for each survey
+df_dwq_c %>% 
+  distinct(Source, YearAdj) %>% 
+  count(Source, name = "NumYears") %>% 
+  arrange(desc(NumYears))
+
+# Period of record for each survey
+df_dwq_c %>% 
+  group_by(Source) %>% 
+  summarize(min_date = min(Date), max_date = max(Date)) %>% 
+  arrange(min_date)
+```
+
+Overall, for all parameters, it looks like all surveys except for SLS, USBR, and EDSM have collected at least 20 years of data. We will assume that these surveys have adequate temporal coverage for the long-term analysis.
+
+```{r filter surveys}
+# Only include surveys with adequate temporal coverage
+df_dwq_lt <- df_dwq_c %>% filter(!Source %in% c("SLS", "USBR", "EDSM"))
+```
+
+# All Stations Map
+
+Next, let's take a look at a map of all stations.
+
+```{r all stations map}
+sf_stations <- df_dwq_lt %>% 
+  distinct(Source, Station, Latitude, Longitude) %>% 
+  # Convert to sf object
+  st_as_sf(coords = c("Longitude", "Latitude"), crs = 4326, remove = FALSE)
+
+# Define color palette for Surveys 
+color_pal_survey <- colorFactor(palette = "viridis", domain = sf_stations$Source)
+
+# Create map using leaflet
+leaflet() %>% 
+  addTiles() %>%
+  addCircleMarkers(
+    data = sf_stations,
+    radius = 5,
+    fillColor = ~color_pal_survey(Source),
+    fillOpacity = 0.8,
+    weight = 0.5,
+    color = "black",
+    opacity = 1,
+    label = paste0("Survey: ", sf_stations$Source, ", Station: ", sf_stations$Station)
+  ) %>% 
+  addLegend(
+    position = "topright",
+    pal = color_pal_survey,
+    values = sf_stations$Source,
+    title = "Survey:"
+  )
+```
+
+Some of the stations from the Suisun Marsh survey are located in small backwater channels and dead-end sloughs which represent a much different habitat than the sampling locations from the other surveys which tend to be in larger, open water channel habitat. We'll keep the stations located in Suisun, Montezuma, and Nurse Sloughs from the Suisun Marsh survey, since they seem to be in the larger channels in the area.
+
+Also, there are a few questionable sampling locations from SKT and YBFMP, but I don't want to dig too deep with these for now.
+
+```{r filter suisun stations}
+df_dwq_lt_filt <- df_dwq_lt %>% 
+  filter(!(Source == "Suisun" & !str_detect(Station, "(Suisun\\s)SU|MZ|NS")))
+```
+
+# Water Quality Measurements
+
+Next, we'll process the water quality measurement data: Water Temperature, Salinity, and Secchi depth.
+
+```{r prepare wq meas}
+# Create a nested data frame to run processing functions on
+ndf_wq_meas <- 
+  tibble(
+    Parameter = c(
+      "Temperature",
+      "Salinity",
+      "Secchi"
+    ),
+    df_data = rep(list(df_dwq_lt_filt), 3)
+  ) %>% 
+  # Prepare data for each Parameter
+  mutate(
+    df_data = map2(
+      df_data,
+      Parameter,
+      ~ drop_na(.x, all_of(.y)) %>% 
+        select(
+          Source, 
+          Station,
+          Latitude,
+          Longitude,
+          SubRegion,
+          YearAdj,
+          Month,
+          Season,
+          Date,
+          Datetime,
+          all_of(.y)
+        ) %>% 
+        # Filter data so that there is only one sample per station-day
+        filt_daily_dups()
+    )
+  )
+
+# Make sure there is only one sample per station-day for each parameter
+map(ndf_wq_meas$df_data, ~ count(.x, Source, Station, Date) %>% filter(n > 1))
+
+# Unnest the nested data frame into a long format
+df_wq_meas_c1 <- ndf_wq_meas %>% 
+  mutate(df_data = map2(df_data, Parameter, ~ rename(.x, Result = all_of(.y)))) %>% 
+  unnest(df_data)
+```
+
+## Temporal Coverage
+
+Now let's take a closer look at the temporal data coverage for each Station and parameter.
+
+### Sampling Effort by Station {.tabset .tabset-pills}
+
+```{r samp effort plots by station wq meas}
+# Create sampling effort by station plots for each Parameter and Source
+ndf_wq_meas_se_sta_plt <- df_wq_meas_c1 %>% 
+  nest(.by = c(Parameter, Source), .key = "df_data") %>% 
+  mutate(plt = map(df_data, plot_samp_effort_sta)) %>% 
+  nest(.by = Parameter, .key = "ndf_data_source")
+```
+
+```{r print samp effort plots by station wq meas, echo = FALSE, results = "asis", fig.width = 8, fig.height = 11}
+for (i in 1:nrow(ndf_wq_meas_se_sta_plt)) {
+  # Create subheadings for each Parameter
+  cat("#### ", ndf_wq_meas_se_sta_plt$Parameter[i], " {.tabset .tabset-pills}\n\n")
+  for (j in 1:nrow(ndf_wq_meas_se_sta_plt$ndf_data_source[[i]])) {
+    # Create subheadings for each Survey
+    cat("##### ", ndf_wq_meas_se_sta_plt$ndf_data_source[[i]]$Source[j], "\n\n")
+    # Print plot
+    print(ndf_wq_meas_se_sta_plt$ndf_data_source[[i]]$plt[[j]])
+    cat("\n\n")
+  }
+}
+```
+
+### Remove Sparse Surveys
+
+Salinity data from DJFMP is only available for the past three years and NCRO only sampled Secchi depth for the past four years, so we won't include these survey-parameter combinations in the analyses. For the USGS-CAWSC survey, only station 11447650 (Sacramento River at Freeport) was sampled on a long-term basis for Water Temperature and Salinity, so we'll only include this station from the USGS-CAWSC survey.
+
+```{r remove sparse surveys wq meas}
+df_wq_meas_c2 <- df_wq_meas_c1 %>% 
+  filter(
+    !(Source == "USGS_CAWSC" & !str_detect(Station, "USGS-11447650$")),
+    !(Parameter == "Salinity" & Source == "DJFMP"),
+    !(Parameter == "Secchi" & Source == "NCRO")
+  )
+```
+
+## Filter Subregions
+
+Not all of the subregions were sampled consistently from 1975-2021. To make sure that we only include the subregions that were sampled adequately, we will require that a subregion needs to have data for at least 75% of the 47 years between 1975 to 2021 (35 years) for each season.
+
+```{r filter subreg wq meas}
+df_wq_meas_c3 <- df_wq_meas_c2 %>%
+  nest(.by = Parameter, .key = "df_data") %>% 
+  mutate(
+    df_subreg_seas = map(
+      df_data,
+      ~ distinct(.x, SubRegion, YearAdj, Season) %>%
+        count(SubRegion, Season, name = "NumYears") %>%
+        group_by(SubRegion) %>%
+        filter(min(NumYears) >= num_yrs_threshold) %>%
+        ungroup() %>% 
+        # make sure each season meets the threshold for each SubRegion
+        count(SubRegion) %>%
+        filter(n == 4)
+    ),
+    df_data_filt = map2(
+      df_data, df_subreg_seas,
+      ~ filter(.x, SubRegion %in% unique(.y$SubRegion))
+    )
+  ) %>% 
+  select(Parameter, df_data_filt) %>% 
+  unnest(df_data_filt)
+```
+
+### View Results {.tabset .tabset-pills}
+
+Let's take a look at the sampling effort for the remaining subregions for each season after filtering for each water quality measurement parameter.
+
+```{r samp effort plots by subreg wq meas}
+# Create sampling effort by SubRegion plots for each Parameter
+ndf_wq_meas_se_subreg_plt <- df_wq_meas_c3 %>%
+  nest(.by = Parameter, .key = "df_data") %>% 
+  mutate(plt = map(df_data, plot_samp_effort_subreg))
+```
+
+```{r print samp effort plots by subreg wq meas, echo = FALSE, results = "asis", fig.width = 9, fig.height = 8}
+for (i in 1:nrow(ndf_wq_meas_se_subreg_plt)) {
+  # Create subheadings for each Parameter
+  cat("#### ", ndf_wq_meas_se_subreg_plt$Parameter[i], "\n\n")
+  # Print plot
+  print(ndf_wq_meas_se_subreg_plt$plt[[i]])
+  cat("\n\n")
+}
+```
+
+## Remove Outliers
+
+First, we'll look at the min-max ranges of each of the water quality measurement parameters, to see if there are any obvious outliers to exclude from the data set.
+
+```{r calc min max wq meas}
+df_wq_meas_c3 %>% 
+  summarize(
+    min_val = min(Result),
+    max_val = max(Result),
+    .by = Parameter
+  )
+```
+
+All water quality measurement parameters have questionable minimum values and Temperature and Salinity have questionable maximum values. Let's take a closer look at these to see if we should omit them from the data set.
+
+```{r investigate min max wq meas}
+# Truncate data so that it displays better
+vars_rm_view <- c("Source", "Latitude", "Longitude", "Month", "Datetime")
+
+df_wq_meas_c3_view <- df_wq_meas_c3 %>% select(!any_of(vars_rm_view))
+
+# Minimum Temperature values
+df_wq_meas_c3_view %>% 
+  filter(Parameter == "Temperature") %>% 
+  slice_min(Result, n = 10)
+
+# The minimum temperature value at S42 in Suisun Marsh looks suspicious.
+# Let's look at all the data in that SubRegion in Spring 1983
+df_wq_meas_c3_view %>% 
+  filter(
+    Parameter == "Temperature",
+    SubRegion == "Suisun Marsh",
+    YearAdj == 1983,
+    Season == "Spring"
+  ) %>% 
+  arrange(Date) %>% 
+  print(n = 25)
+
+# Maximum Temperature values
+df_wq_meas_c3_view %>% 
+  filter(Parameter == "Temperature") %>% 
+  slice_max(Result, n = 10)
+
+# Minimum Salinity values
+df_wq_meas_c3_view %>% 
+  filter(Parameter == "Salinity") %>% 
+  slice_min(Result, n = 10)
+
+# Maximum Salinity values
+df_wq_meas_c3_view %>% 
+  filter(Parameter == "Salinity") %>% 
+  slice_max(Result, n = 10)
+
+# The maximum salinity value at STN 520 in the Confluence SubRegion looks suspicious.
+# Let's look at all the data in that SubRegion in Summer 1991
+df_wq_meas_c3_view %>% 
+  filter(
+    Parameter == "Salinity",
+    SubRegion == "Confluence",
+    YearAdj == 1991,
+    Season == "Summer"
+  ) %>% 
+  arrange(Date) %>% 
+  print(n = 30)
+
+# Minimum Secchi depth values
+df_wq_meas_c3_view %>% 
+  filter(Parameter == "Secchi") %>% 
+  slice_min(Result, n = 20)
+```
+
+The following values are obviously out of range of reasonable limits for the parameter and will be excluded from the data set:
+
+* Temperature value of 2 collected on 5/3/1983 at S42
+* Temperature value of 116 collected on 3/23/2017 at USGS-11447650
+* Salinity value of 44.1 collected on 7/5/1991 at STN 520
+* Salinity values equal to zero
+
+```{r rm out of range wq meas}
+df_wq_meas_c4 <- df_wq_meas_c3 %>% 
+  filter(
+    !(Parameter == "Temperature" & Result <= 2),
+    !(Parameter == "Temperature" & Result > 30),
+    !(Parameter == "Salinity" & Result <= 0),
+    !(Parameter == "Salinity" & Result > 30)
+  )
+```
+
+Next, we'll look for outliers by using a Z-score test flagging data points that are more than 15 SDs away from the mean of each subregion.
+
+```{r flag and inspect outliers wq meas}
+df_wq_meas_flag <- df_wq_meas_c4 %>%
+  group_by(Parameter, SubRegion) %>% 
+  flag_zscore(threshold = 15) %>% 
+  ungroup()
+
+# View flagged data points
+df_wq_meas_flag_view <- df_wq_meas_flag %>% select(!any_of(vars_rm_view))
+df_wq_meas_flag_view %>% filter(Zscore_flag)
+
+# Salinity in Lower San Joaquin River in Summer 1999
+df_wq_meas_flag_view %>% 
+  filter(
+    Parameter == "Salinity",
+    SubRegion == "Lower San Joaquin River",
+    YearAdj == 1999,
+    Season == "Summer"
+  ) %>% 
+  arrange(Date)
+
+# Salinity in Sacramento River near Rio Vista from Nov 2000 - Feb 2001
+df_wq_meas_flag_view %>% 
+  filter(
+    Parameter == "Salinity",
+    SubRegion == "Sacramento River near Rio Vista",
+    Date >= "2000-11-01" & Date <= "2001-02-28"
+  ) %>% 
+  arrange(Date) %>% 
+  print(n = 50)
+
+# Salinity in Middle Sacramento River from Aug-Dec 2006
+df_wq_meas_flag_view %>% 
+  filter(
+    Parameter == "Salinity",
+    SubRegion == "Middle Sacramento River",
+    Date >= "2006-08-01" & Date <= "2006-12-31"
+  ) %>% 
+  arrange(Date)
+ 
+# Salinity in San Joaquin River at Prisoners Pt from Feb-May 1995
+df_wq_meas_flag_view %>% 
+  filter(
+    Parameter == "Salinity",
+    SubRegion == "San Joaquin River at Prisoners Pt",
+    Date >= "1995-02-01" & Date <= "1995-05-31"
+  ) %>% 
+  arrange(Date) %>% 
+  print(n = 40)
+
+# Salinity in Lower Mokelumne River from Aug-Dec 2001
+df_wq_meas_flag_view %>% 
+  filter(
+    Parameter == "Salinity",
+    SubRegion == "Lower Mokelumne River",
+    Date >= "2001-08-01" & Date <= "2001-12-31"
+  ) %>% 
+  arrange(Date)
+
+# Salinity in Victoria Canal in Summer 2008
+df_wq_meas_flag_view %>% 
+  filter(
+    Parameter == "Salinity",
+    SubRegion == "Victoria Canal",
+    YearAdj == 2008,
+    Season == "Summer"
+  ) %>% 
+  arrange(Date)
+
+# Secchi depth in Honker Bay from Oct 2019 - Feb 2020
+df_wq_meas_flag_view %>% 
+  filter(
+    Parameter == "Secchi",
+    SubRegion == "Honker Bay",
+    Date >= "2019-10-01" & Date <= "2020-02-28"
+  ) %>% 
+  arrange(Date)
+```
+
+After inspecting the data flagged by the Z-score test, a few of the values appear to be valid based on best professional judgment:
+
+* Salinity value collected at FMWT 908 on 3/14/1995
+* Salinity values collected at FMWT 919, FMWT 920, and FMWT 923 on 11/15/2001
+
+We will exclude the remaining values flagged by the Z-score test.
+
+```{r rm flagged outliers wq meas}
+# Un-flag the values listed above and remove the remaining flagged data points
+  # from the data set
+df_wq_meas_c5 <- df_wq_meas_flag %>%
+  mutate(
+    Zscore_flag = case_when(
+      Parameter == "Salinity" & Station == "FMWT 908" & Date == "1995-03-14" ~ FALSE,
+      Parameter == "Salinity" & Station %in% c("FMWT 919", "FMWT 920", "FMWT 923") & Date == "2001-11-15" ~ FALSE,
+      TRUE ~ Zscore_flag
+    )
+  ) %>% 
+  filter(!Zscore_flag) %>% 
+  select(!starts_with("Zscore"))
+```
+
+## Calculate Averages
+
+Finally, we'll calculate seasonal-regional averages for each adjusted water year for each water quality measurement parameter.
+
+```{r calc averages wq meas, message = FALSE}
+# Add regions and keep raw WQ measurement data as an object to export
+raw_wq_meas <- df_wq_meas_c5 %>% 
+  left_join(df_regions, by = join_by(SubRegion)) %>% 
+  relocate(Region, .before = SubRegion) %>% 
+  relocate(Parameter, .before = Result)
+
+# Calculate seasonal-regional averages
+df_wq_meas_avg <- raw_wq_meas %>% 
+  nest(.by = Parameter, .key = "df_data") %>% 
+  mutate(df_data = map(df_data, calc_seas_reg_avg)) %>% 
+  unnest(df_data) %>% 
+  pivot_wider(names_from = Parameter, values_from = Result)
+
+# Make sure each Year-Season-Region combination is represented and add Year Type info
+lt_avg_wq_meas <- reduce(list(df_yr_seas_reg, df_yr_type, df_wq_meas_avg), left_join)
+```
+
+# Nutrients
+
+Now we'll process the nutrient data: Dissolved Ammonia, Dissolved Nitrate + Nitrite, and Dissolved Ortho-phosphate. First, we'll clean up a few issues with the Reporting Limits.
+
+```{r prepare rl nutr}
+# The EMP data set has a few non-detect values without reporting limits - we'll
+  # fill in 0.01 for the reporting limits for these values for now as suggested by
+  # Sarah Perry.
+df_nutr_c1 <- df_dwq_lt_filt %>% 
+  select(-c(Temperature, Salinity, Secchi, starts_with("Chlorophyll"))) %>% 
+  mutate(
+    DissAmmonia = if_else(DissAmmonia_Sign == "<" & is.na(DissAmmonia), 0.01, DissAmmonia),
+    DissNitrateNitrite = if_else(DissNitrateNitrite_Sign == "<" & is.na(DissNitrateNitrite), 0.01, DissNitrateNitrite),
+    DissOrthophos = if_else(DissOrthophos_Sign == "<" & is.na(DissOrthophos), 0.01, DissOrthophos)
+  ) %>% 
+  # Remove records with NA values for all nutrient parameters
+  filter(!if_all(c(DissAmmonia, DissNitrateNitrite, DissOrthophos), is.na)) %>%
+  # Fill in "=" for the _Sign variables for the USGS_SFBS data for now since
+  # they are all NA.
+  mutate(across(ends_with("_Sign"), ~ if_else(is.na(.x), "=", .x)))
+
+# For the USGS_SFBS survey, if at least one of the nutrient parameters has a
+  # value reported, then we will assume that the other parameters were below the
+  # reporting limit for that station and day. We'll use RL values provided by USGS
+  # for 2006-present. We assumed these were constant throughout the entire
+  # monitoring program including in years earlier than 2006.
+df_nutr_sfbs_blw_rl <- df_nutr_c1 %>%
+  filter(Source == "USGS_SFBS") %>%
+  filter(if_any(c(DissAmmonia, DissNitrateNitrite, DissOrthophos), is.na)) %>%
+  mutate(
+    DissAmmonia_Sign = if_else(is.na(DissAmmonia), "<", DissAmmonia_Sign),
+    DissAmmonia = if_else(DissAmmonia_Sign == "<", 0.0007, DissAmmonia),
+    DissNitrateNitrite_Sign = if_else(is.na(DissNitrateNitrite), "<", DissNitrateNitrite_Sign),
+    DissNitrateNitrite = if_else(DissNitrateNitrite_Sign == "<", 0.0007, DissNitrateNitrite),
+    DissOrthophos_Sign = if_else(is.na(DissOrthophos), "<", DissOrthophos_Sign),
+    DissOrthophos = if_else(DissOrthophos_Sign == "<", 0.0015, DissOrthophos)
+  )
+
+# Add back the USGS_SFBS data
+df_nutr_c2 <- df_nutr_c1 %>%
+  anti_join(df_nutr_sfbs_blw_rl, by = c("Source", "Station", "Datetime")) %>%
+  bind_rows(df_nutr_sfbs_blw_rl)
+```
+
+Next, we'll filter the data for each nutrient parameter so there is only one sample collected per day at a station, and we'll restructure the data for continued processing.
+
+```{r prepare nutr}
+# Create a nested data frame to run processing functions on
+ndf_nutr <- 
+  tibble(
+    Parameter = c(
+      "DissAmmonia",
+      "DissNitrateNitrite",
+      "DissOrthophos"
+    ),
+    df_data = rep(list(df_nutr_c2), 3)
+  ) %>% 
+  # Prepare data for each Parameter
+  mutate(
+    df_data = map2(
+      df_data,
+      Parameter,
+      ~ drop_na(.x, all_of(.y)) %>% 
+        select(
+          Source, 
+          Station,
+          Latitude,
+          Longitude,
+          SubRegion,
+          YearAdj,
+          Month,
+          Season,
+          Date,
+          Datetime,
+          contains(.y)
+        ) %>% 
+        # Filter data so that there is only one sample per station-day
+        filt_daily_dups()
+    )
+  )
+
+# Make sure there is only one sample per station-day for each parameter
+map(ndf_nutr$df_data, ~ count(.x, Source, Station, Date) %>% filter(n > 1))
+
+# Unnest the nested data frame into a long format
+df_nutr_c3 <- ndf_nutr %>% 
+  mutate(
+    df_data = map2(
+      df_data, 
+      Parameter, 
+      ~ rename(
+        .x, 
+        Result = all_of(.y),
+        Sign = ends_with("_Sign")
+      )
+    )
+  ) %>% 
+  unnest(df_data)
+```
+
+## Temporal Coverage
+
+Now let's take a closer look at the temporal data coverage for each Station and parameter.
+
+### Sampling Effort by Station {.tabset .tabset-pills}
+
+```{r samp effort plots by station nutr}
+# Create sampling effort by station plots for each Parameter and Source
+ndf_nutr_se_sta_plt <- df_nutr_c3 %>% 
+  nest(.by = c(Parameter, Source), .key = "df_data") %>% 
+  mutate(plt = map(df_data, plot_samp_effort_sta)) %>% 
+  nest(.by = Parameter, .key = "ndf_data_source")
+```
+
+```{r print samp effort plots by station nutr, echo = FALSE, results = "asis", fig.width = 8, fig.height = 11}
+for (i in 1:nrow(ndf_nutr_se_sta_plt)) {
+  # Create subheadings for each Parameter
+  cat("#### ", ndf_nutr_se_sta_plt$Parameter[i], " {.tabset .tabset-pills}\n\n")
+  for (j in 1:nrow(ndf_nutr_se_sta_plt$ndf_data_source[[i]])) {
+    # Create subheadings for each Survey
+    cat("##### ", ndf_nutr_se_sta_plt$ndf_data_source[[i]]$Source[j], "\n\n")
+    # Print plot
+    print(ndf_nutr_se_sta_plt$ndf_data_source[[i]]$plt[[j]])
+    cat("\n\n")
+  }
+}
+```
+
+### Remove Sparse Surveys
+
+For the USGS-CAWSC survey, only station 11447650 (Sacramento River at Freeport) was sampled on a long-term basis for nutrients, so we'll only include this station from the USGS-CAWSC survey.
+
+```{r remove sparse surveys nutr}
+df_nutr_c4 <- df_nutr_c3 %>% filter(!(Source == "USGS_CAWSC" & !str_detect(Station, "USGS-11447650$")))
+```
+
+## Filter Subregions
+
+Not all of the subregions were sampled consistently from 1975-2021. To make sure that we only include the subregions that were sampled adequately, we will require that a subregion needs to have data for at least 75% of the 47 years between 1975 to 2021 (35 years) for each season.
+
+```{r filter subreg nutr}
+df_nutr_c5 <- df_nutr_c4 %>%
+  nest(.by = Parameter, .key = "df_data") %>% 
+  mutate(
+    df_subreg_seas = map(
+      df_data,
+      ~ distinct(.x, SubRegion, YearAdj, Season) %>%
+        count(SubRegion, Season, name = "NumYears") %>%
+        group_by(SubRegion) %>%
+        filter(min(NumYears) >= num_yrs_threshold) %>%
+        ungroup() %>% 
+        # make sure each season meets the threshold for each SubRegion
+        count(SubRegion) %>%
+        filter(n == 4)
+    ),
+    df_data_filt = map2(
+      df_data, df_subreg_seas,
+      ~ filter(.x, SubRegion %in% unique(.y$SubRegion))
+    )
+  ) %>% 
+  select(Parameter, df_data_filt) %>% 
+  unnest(df_data_filt)
+```
+
+### View Results {.tabset .tabset-pills}
+
+Let's take a look at the sampling effort for the remaining subregions for each season after filtering for each nutrient parameter.
+
+```{r samp effort plots by subreg nutr}
+# Create sampling effort by SubRegion plots for each Parameter
+ndf_nutr_se_subreg_plt <- df_nutr_c5 %>%
+  nest(.by = Parameter, .key = "df_data") %>% 
+  mutate(plt = map(df_data, plot_samp_effort_subreg))
+```
+
+```{r print samp effort plots by subreg nutr, echo = FALSE, results = "asis", fig.width = 9, fig.height = 8}
+for (i in 1:nrow(ndf_nutr_se_subreg_plt)) {
+  # Create subheadings for each Parameter
+  cat("#### ", ndf_nutr_se_subreg_plt$Parameter[i], "\n\n")
+  # Print plot
+  print(ndf_nutr_se_subreg_plt$plt[[i]])
+  cat("\n\n")
+}
+```
+
+## Remove Outliers
+
+First, we'll look at the min-max ranges of each of the nutrient parameters, to see if there are any obvious outliers to exclude from the data set.
+
+```{r calc min max nutr}
+df_nutr_c5 %>% 
+  summarize(
+    min_val = min(Result),
+    max_val = max(Result),
+    .by = Parameter
+  )
+```
+
+Let's take a closer look at the minimum DissAmmonia values and the maximum values of all nutrient parameters these to see if we should omit them from the data set.
+
+```{r investigate min max nutr}
+# Truncate data so that it displays better
+df_nutr_c5_view <- df_nutr_c5 %>% select(!any_of(vars_rm_view))
+
+# Minimum DissAmmonia values
+df_nutr_c5_view %>% 
+  filter(Parameter == "DissAmmonia") %>% 
+  slice_min(Result, n = 10)
+
+# Maximum DissAmmonia values
+df_nutr_c5_view %>% 
+  filter(Parameter == "DissAmmonia") %>% 
+  slice_max(Result, n = 10)
+
+# Maximum DissNitrateNitrite values
+df_nutr_c5_view %>% 
+  filter(Parameter == "DissNitrateNitrite") %>% 
+  slice_max(Result, n = 10)
+
+# Maximum DissOrthophos values
+df_nutr_c5_view %>% 
+  filter(Parameter == "DissOrthophos") %>% 
+  slice_max(Result, n = 10)
+```
+
+A few of these values look questionable. For now, we will exclude the one DissAmmonia value equal to zero from the data set, and see if the other values are flagged by the modified Z-score test.
+
+```{r rm out of range nutr}
+df_nutr_c6 <- df_nutr_c5 %>% filter(Result > 0)
+```
+
+There are a few values that are less than the reporting limit with reporting limits that are very high compared to the range of the values for the parameter (> 75th percentile). This includes the highest DissOrthophos value in the data set. We will flag and take a closer look at these values for possible removal from the data set.
+
+```{r flag and inspect high rl values nutr}
+df_nutr_high_rl_flag <- df_nutr_c6 %>% 
+  nest(.by = Parameter, .key = "df_data") %>% 
+  mutate(df_data = map(df_data, .f = flag_high_rl, perc_thresh = 0.75)) %>% 
+  unnest(df_data)
+
+# View flagged data points
+df_nutr_high_rl_flag %>% 
+  filter(HighRL_flag) %>% 
+  select(!any_of(vars_rm_view)) %>% 
+  print(n = 40)
+
+# View range of values for each parameter
+df_nutr_c6 %>% 
+  summarize(
+    min_val = min(Result),
+    first_quantile = quantile(Result, probs = 0.25),
+    median = median(Result),
+    third_quantile = quantile(Result, probs = 0.75),
+    max_val = max(Result),
+    .by = Parameter
+  )
+```
+
+Upon closer inspection, all values that are less than the reporting limit with reporting limits that are greater than the 75th percentile of the values for the parameter should be removed from the data set.
+
+```{r rm high rl values nutr}
+df_nutr_c7 <- df_nutr_high_rl_flag %>% 
+  filter(!HighRL_flag) %>% 
+  select(-HighRL_flag)
+```
+
+Next, we'll look for outliers by using a modified Z-score test flagging data points with scores greater than 15 grouped by subregion.
+
+```{r flag and inspect outliers nutr}
+df_nutr_modzscore_flag <- df_nutr_c7 %>%
+  group_by(Parameter, SubRegion) %>% 
+  flag_modzscore(threshold = 15) %>% 
+  ungroup()
+
+# View flagged data points
+df_nutr_modzscore_flag_view <- df_nutr_modzscore_flag %>% select(!any_of(vars_rm_view))
+df_nutr_modzscore_flag_view %>% filter(ModZscore_flag)
+
+# DissAmmonia in Old River from Nov 1995 - Mar 1996
+df_nutr_modzscore_flag_view %>% 
+  filter(
+    Parameter == "DissAmmonia",
+    SubRegion == "Old River",
+    Date >= "1995-11-01" & Date <= "1996-03-31"
+  ) %>% 
+  arrange(Date)
+
+# DissAmmonia in San Joaquin River near Stockton from Nov 2003 - Apr 2004
+df_nutr_modzscore_flag_view %>% 
+  filter(
+    Parameter == "DissAmmonia",
+    SubRegion == "San Joaquin River near Stockton",
+    Date >= "2003-11-01" & Date <= "2004-04-30"
+  ) %>% 
+  arrange(Date)
+
+# DissNitrateNitrite in Old River from May 2017 - Sept 2017
+df_nutr_modzscore_flag_view %>% 
+  filter(
+    Parameter == "DissNitrateNitrite",
+    SubRegion == "Old River",
+    Date >= "2017-05-01" & Date <= "2017-09-30"
+  ) %>% 
+  arrange(Date)
+
+# DissNitrateNitrite in Lower Sacramento River from Apr 2017 - Aug 2017
+df_nutr_modzscore_flag_view %>% 
+  filter(
+    Parameter == "DissNitrateNitrite",
+    SubRegion == "Lower Sacramento River",
+    Date >= "2017-04-01" & Date <= "2017-08-31"
+  ) %>% 
+  arrange(Date)
+
+# DissNitrateNitrite in Lower Sacramento River from Nov 2018 - Mar 2019
+df_nutr_modzscore_flag_view %>% 
+  filter(
+    Parameter == "DissNitrateNitrite",
+    SubRegion == "Lower Sacramento River",
+    Date >= "2018-11-01" & Date <= "2019-03-31"
+  ) %>% 
+  arrange(Date)
+```
+
+After inspecting the data flagged by the modified Z-score test, the DissAmmonia values appear to be valid based on best professional judgment, so we will only exclude the DissNitrateNitrite values flagged by the modified Z-score test.
+
+```{r rm flagged outliers nutr}
+# Un-flag the DissAmmonia values and remove the DissNitrateNitrite flagged data
+  # points from the data set
+df_nutr_c8 <- df_nutr_modzscore_flag %>%
+  mutate(ModZscore_flag = if_else(Parameter == "DissAmmonia", FALSE, ModZscore_flag)) %>% 
+  filter(!ModZscore_flag) %>% 
+  select(!starts_with("ModZscore"))
+```
+
+## Calculate Averages
+
+Finally, we'll calculate seasonal-regional averages for each adjusted water year for each nutrient parameter. Before calculating the averages, we will need to replace values measured below the analytical reporting limit with a random number of uniform distribution between zero and the reporting limit.
+
+```{r calc averages nutr, message = FALSE}
+# Add regions and keep raw nutrient data as an object to export
+raw_nutr <- df_nutr_c8 %>% 
+  left_join(df_regions, by = join_by(SubRegion)) %>% 
+  relocate(Region, .before = SubRegion) %>% 
+  relocate(Parameter, .before = Sign)
+
+# Calculate seasonal-regional averages, substituting random numbers from a
+  # uniform distribution for the <RL values
+df_nutr_avg <- raw_nutr %>% 
+  nest(.by = Parameter, .key = "df_data") %>% 
+  mutate(
+    df_data = map(
+      df_data, 
+      ~ replace_blw_rl(.x, min_val = 0) %>% 
+        calc_seas_reg_avg()
+    )
+  ) %>% 
+  unnest(df_data) %>% 
+  pivot_wider(names_from = Parameter, values_from = Result)
+
+# Make sure each Year-Season-Region combination is represented and add Year Type info
+lt_avg_nutr <- 
+  reduce(list(df_yr_seas_reg, df_yr_type, df_nutr_avg), left_join) %>% 
+  # Remove Suisun Marsh Region since all values are NA
+  filter(Region != "Suisun Marsh")
+```
+
+# Chlorophyll
+
+Lastly, we'll process the discrete Chlorophyll data.
+
+```{r prepare chla}
+# Prepare data for continued processing
+df_chla_c1 <- df_dwq_lt_filt %>% 
+  select(
+    Source, 
+    Station,
+    Latitude,
+    Longitude,
+    SubRegion,
+    YearAdj,
+    Month,
+    Season,
+    Date,
+    Datetime,
+    contains("Chlorophyll")
+  ) %>% 
+  # Remove records without Chlorophyll data
+  drop_na(Chlorophyll) %>% 
+  # Fill in "=" for the NA values in Chlorophyll_Sign
+  mutate(Chlorophyll_Sign = if_else(is.na(Chlorophyll_Sign), "=", Chlorophyll_Sign)) %>% 
+  # Filter data so that there is only one sample per station-day
+  filt_daily_dups() %>% 
+  # Rename Sign and Result variables to be compatible with later functions
+  rename(
+    Result = Chlorophyll,
+    Sign = Chlorophyll_Sign
+  )
+
+# Make sure there is only one sample per station-day
+df_chla_c1 %>% count(Source, Station, Date) %>% filter(n > 1)
+```
+
+## Temporal Coverage
+
+Now let's take a closer look at the temporal data coverage for each Station.
+
+### Sampling Effort by Station {.tabset .tabset-pills}
+
+```{r samp effort plots by station chla}
+# Create sampling effort by station plots for each Parameter and Source
+ndf_chla_se_sta_plt <- df_chla_c1 %>% 
+  nest(.by = Source, .key = "df_data") %>% 
+  mutate(plt = map(df_data, plot_samp_effort_sta))
+```
+
+```{r print samp effort plots by station chla, echo = FALSE, results = "asis", fig.width = 8, fig.height = 11}
+for (i in 1:nrow(ndf_chla_se_sta_plt)) {
+  # Create subheadings for each Survey
+  cat("#### ", ndf_chla_se_sta_plt$Source[i], "\n\n")
+  # Print plot
+  print(ndf_chla_se_sta_plt$plt[[i]])
+  cat("\n\n")
+}
+```
+
+### Remove Sparse Surveys
+
+For the USGS-CAWSC survey, chlorophyll data is available from 2015-2021 for most of the stations, so we'll exclude this survey from the chlorophyll analyses.
+
+```{r remove sparse surveys chla}
+df_chla_c2 <- df_chla_c1 %>% filter(Source != "USGS_CAWSC")
+```
+
+## Filter Subregions
+
+Not all of the subregions were sampled consistently from 1975-2021. To make sure that we only include the subregions that were sampled adequately, we will require that a subregion needs to have data for at least 75% of the 47 years between 1975 to 2021 (35 years) for each season.
+
+```{r filter subreg chla}
+df_chla_subreg_seas <- df_chla_c2 %>%
+  distinct(SubRegion, YearAdj, Season) %>%
+  count(SubRegion, Season, name = "NumYears") %>%
+  group_by(SubRegion) %>%
+  filter(min(NumYears) >= 35) %>%
+  ungroup() %>% 
+  # make sure each season meets the threshold for each SubRegion
+  count(SubRegion) %>%
+  filter(n == 4)
+
+df_chla_c3 <- df_chla_c2 %>% filter(SubRegion %in% unique(df_chla_subreg_seas$SubRegion))
+```
+
+### View Results
+
+Let's take a look at the sampling effort for the remaining subregions for each season after filtering.
+
+```{r samp effort plots by subreg chla, fig.width = 9, fig.height = 8}
+plot_samp_effort_subreg(df_chla_c3)
+```
+
+## Remove Outliers
+
+First, we'll look at the min-max ranges for Chlorophyll, to see if there are any obvious outliers to exclude from the data set.
+
+```{r calc min max chla}
+summary(df_chla_c3$Result)
+```
+
+Let's take a closer look at the maximum Chlorophyll values to see if we should omit them from the data set.
+
+```{r investigate max chla}
+df_chla_c3 %>% 
+  select(!any_of(vars_rm_view)) %>% 
+  slice_max(Result, n = 20)
+```
+
+The maximum Chlorophyll values appear to be valid. Next, we'll look for values that are less than the reporting limit with reporting limits that are very high compared to the range of the values for the parameter (> 75th percentile).
+
+```{r flag and inspect high rl values chla}
+df_chla_high_rl_flag <- flag_high_rl(df_chla_c3, perc_thresh = 0.75)
+
+# View flagged data points
+df_chla_high_rl_flag %>% filter(HighRL_flag)
+```
+
+None of the Chlorophyll values less than the reporting limit have RL values that are greater than the 75th percentile of the data. Next, we'll look for outliers by using a modified Z-score test flagging data points with scores greater than 15 grouped by subregion.
+
+```{r flag and inspect outliers chla}
+df_chla_modzscore_flag <- df_chla_c3 %>%
+  group_by(SubRegion) %>% 
+  flag_modzscore(threshold = 15) %>% 
+  ungroup()
+
+# View flagged data points
+df_chla_modzscore_flag_view <- df_chla_modzscore_flag %>% select(!any_of(vars_rm_view))
+  
+df_chla_modzscore_flag_view %>% 
+  filter(ModZscore_flag) %>% 
+  arrange(SubRegion, desc(Result)) %>% 
+  print(n = 180)
+
+# San Joaquin River at Prisoners Pt from 1982-1984
+df_chla_modzscore_flag_view %>% 
+  filter(
+    YearAdj %in% 1982:1984,
+    SubRegion == "San Joaquin River at Prisoners Pt",
+  ) %>% 
+  arrange(Date) %>% 
+  print(n = 50)
+
+# San Joaquin River near Stockton from 1975-1977
+df_chla_modzscore_flag_view %>% 
+  filter(
+    YearAdj %in% 1975:1977,
+    SubRegion == "San Joaquin River near Stockton",
+  ) %>% 
+  arrange(Date) %>% 
+  print(n = 60)
+```
+
+After inspecting the data flagged by the modified Z-score test, the Chlorophyll values appear to be valid based on best professional judgment, so we won't exclude any of the flagged values.
+
+## Calculate Averages
+
+Finally, we'll calculate seasonal-regional averages for each adjusted water year. Before calculating the averages, we will need to replace values measured below the analytical reporting limit with a random number of uniform distribution between zero and the reporting limit.
+
+```{r calc averages chla, message = FALSE}
+# Add regions and keep raw chlorophyll data as an object to export
+raw_chla <- df_chla_c3 %>% 
+  left_join(df_regions, by = join_by(SubRegion)) %>% 
+  relocate(Region, .before = SubRegion)
+
+# Calculate seasonal-regional averages, substituting random numbers from a
+  # uniform distribution for the <RL values
+df_chla_avg <- raw_chla %>% 
+  replace_blw_rl(min_val = 0) %>% 
+  calc_seas_reg_avg() %>% 
+  rename(Chlorophyll = Result)
+
+# Make sure each Year-Season-Region combination is represented and add Year Type info
+lt_avg_chla <- 
+  reduce(list(df_yr_seas_reg, df_yr_type, df_chla_avg), left_join) %>% 
+  # Remove Suisun Marsh Region since all values are NA
+  filter(Region != "Suisun Marsh")
+```
+
+# Export Data
+
+Export raw data for all parameters as .qs files. Also export, long-term average data both as .csv and .rds files for the analyses.
+
+```{r export data, eval = FALSE}
+# Combine all data frames of raw data into a named list
+ls_data_raw <- lst(
+  raw_wq_meas,
+  raw_nutr,
+  raw_chla
+)
+
+# Export raw data frames as qs files
+ls_data_raw %>% iwalk(\(x, idx) qsave(x, file = here("data", paste0(idx, ".qs"))))
+
+# Combine all data frames of long-term average data into a named list
+ls_data_lt_avg <- lst(
+  lt_avg_wq_meas,
+  lt_avg_nutr,
+  lt_avg_chla
+)
+
+# Export long-term average data frames as csv files
+ls_data_lt_avg %>% iwalk(\(x, idx) write_csv(x, file = here("data", paste0(idx, ".csv"))))
+
+# Export long-term average data frames as rds files
+ls_data_lt_avg %>% iwalk(\(x, idx) saveRDS(x, file = here("data", paste0(idx, ".rds"))))
+```
+

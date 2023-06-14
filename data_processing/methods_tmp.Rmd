@@ -1,0 +1,503 @@
+---
+title: "methods_tmp"
+author: "Dave Bosworth"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Remove Sparse Surveys
+
+DJFMP only sampled salinity for the past three years and NCRO only sampled Secchi depth for the past four years, so we won't include these survey-parameter combinations in the analyses. For the USGS-CAWSC stations, only station 11447650 (Sacramento River at Freeport) was sampled on a long-term basis for Water Temperature, Salinity, Dissolved Ammonia, Nitrate+Nitrite, and Orthophosphate, so we'll only include this station from the USGS-CAWSC survey. Also, Chlorophyll wasn't sampled consistently at any of the USGS-CAWSC stations. We'll exclude this data from our data set before continuing.
+
+```{r remove sparse surveys}
+ndf_dwq_lt_filt <- ndf_dwq_lt_filt %>% 
+  mutate(
+    df_data = case_when(
+      Parameter == "Salinity" ~ modify_depth(df_data, 1, ~ filter(.x, Source != "DJFMP")),
+      Parameter == "Secchi" ~ modify_depth(df_data, 1, ~ filter(.x, Source != "NCRO")),
+      Parameter == "Chlorophyll" ~ modify_depth(df_data, 1, ~ filter(.x, Source != "USGS_CAWSC")),
+      TRUE ~ df_data
+    ),
+    df_data = if_else(
+      str_detect(Parameter, "^Temp|^Sal|^Diss"),
+      modify_depth(df_data, 1, ~ filter(.x, !(Source == "USGS_CAWSC" & Station != "USGS-11447650"))),
+      df_data
+    )
+  )
+```
+
+## Sampling Effort by Subregion {.tabset .tabset-pills}
+
+Before we start removing subregions and stations, let's take a look at the sampling effort for each subregion and parameter combination.
+
+```{r create samp effort plots by subregion}
+# Plot function
+plot_samp_effort_subreg <- function(df) {
+  # Create a vector of all possible SubRegions
+  subreg_all <- sf_delta %>% distinct(SubRegion) %>% pull(SubRegion)
+  
+  # Create plot
+  df %>%
+    count(SubRegion, YearAdj, name = "num_samples") %>%
+    mutate(SubRegion = fct_rev(factor(SubRegion, levels = subreg_all))) %>% 
+    ggplot(aes(x = YearAdj, y = SubRegion, fill = num_samples)) +
+    geom_tile() +
+    scale_x_continuous(
+      limits = c(1974, 2022),
+      breaks = breaks_pretty(20), 
+      expand = expansion()
+    ) +
+    scale_y_discrete(drop = FALSE) +
+    scale_fill_viridis_c(name = "Number of Samples") +
+    theme_bw() +
+    theme(
+      axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
+      legend.position = "top"
+    )
+}
+
+# Create sampling effort by SubRegion plots for each Parameter
+ndf_dwq_se_subreg_plt <- ndf_dwq_lt_filt %>% 
+  transmute(
+    Parameter,
+    plt = map(df_data, plot_samp_effort_subreg)
+  )
+```
+
+```{r print samp effort plots by subreg, echo = FALSE, results = "asis", fig.width = 8, fig.height = 8}
+for (i in 1:nrow(ndf_dwq_se_subreg_plt)) {
+  # Create subheadings for each Parameter
+  cat("### ", ndf_dwq_se_subreg_plt$Parameter[i], "\n\n")
+  # Print plot
+  print(ndf_dwq_se_subreg_plt$plt[[i]])
+  cat("\n\n")
+}
+```
+
+# Filter Subregions
+
+```{r define num years threshold, include = FALSE}
+num_yrs_threshold <- round(length(1975:2021) * 0.75)
+```
+
+Since not all of the subregions were sampled consistently from 1975-2021, we'll only keep the Subregions that contain data for at least 75% of the `r length(1975:2021)` years between 1975 to 2021, which is `r num_yrs_threshold` years. We'll first remove the subregions that have data for less than `r num_yrs_threshold` years overall before considering the temporal coverage by month.
+
+```{r filter subregions overall}
+ndf_dwq_lt_filt <- ndf_dwq_lt_filt %>% 
+  mutate(
+    df_subreg = map(
+      df_data, 
+      ~ distinct(.x, SubRegion, YearAdj) %>% 
+        count(SubRegion, name = "NumYears") %>% 
+        filter(NumYears >= num_yrs_threshold) # num_yrs_threshold = 35
+    ),
+    df_data_filt = map2(
+      df_data, df_subreg, 
+      ~ filter(.x, SubRegion %in% unique(.y$SubRegion))
+    )
+  )
+```
+
+## Sampling Effort by Month {.tabset .tabset-pills}
+
+Let's take a look at the sampling effort for each subregion and parameter by month for the remaining subregions.
+
+```{r create samp effort plots by month}
+# Plot function
+plot_samp_effort_month <- function(df) {
+  df %>%
+    mutate(Month = fct_rev(month(Date, label = TRUE))) %>% 
+    count(SubRegion, YearAdj, Month, name = "num_samples") %>%
+    ggplot(aes(x = YearAdj, y = Month, fill = num_samples)) +
+    geom_tile() +
+    facet_wrap(vars(SubRegion)) +
+    scale_x_continuous(
+      limits = c(1974, 2022),
+      breaks = breaks_pretty(10), 
+      expand = expansion()
+    ) +
+    scale_fill_viridis_c(name = "Number of Samples") +
+    theme_bw() +
+    theme(
+      axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
+      legend.position = "top"
+    )
+}
+
+# Create sampling effort by Month plots for each Parameter
+ndf_dwq_se_month_plt <- ndf_dwq_lt_filt %>% 
+  transmute(
+    Parameter,
+    plt = map(df_data_filt, plot_samp_effort_month)
+  )
+```
+
+```{r print samp effort plots by month, echo = FALSE, results = "asis", fig.width = 9, fig.height = 11}
+for (i in 1:nrow(ndf_dwq_se_month_plt)) {
+  # Create subheadings for each Parameter
+  cat("### ", ndf_dwq_se_month_plt$Parameter[i], "\n\n")
+  # Print plot
+  print(ndf_dwq_se_month_plt$plt[[i]])
+  cat("\n\n")
+}
+```
+
+## Filter by Month
+
+Now, we will require that a subregion has data for at least `r num_yrs_threshold` years for each **month** to make sure that the months were sampled adequately.
+
+```{r filter subregions by month}
+ndf_dwq_lt_filt <- ndf_dwq_lt_filt %>% 
+  mutate(
+    df_subreg_month = map(
+      df_data_filt, 
+      ~ distinct(.x, SubRegion, YearAdj, Month) %>% 
+        count(SubRegion, Month, name = "NumYears") %>% 
+        group_by(SubRegion) %>% 
+        filter(min(NumYears) >= num_yrs_threshold) %>%  # num_yrs_threshold = 35
+        ungroup()
+    ),
+    df_data_filt_month = map2(
+      df_data_filt, df_subreg_month, 
+      ~ filter(.x, SubRegion %in% unique(.y$SubRegion))
+    )
+  )
+```
+
+### View Results {.tabset .tabset-pills}
+
+Let's take a look at which subregions remain and how it compares to what we did in the long-term analysis for the 2021 Drought Synthesis report.
+
+```{r prepare results subregion by month, message = FALSE}
+# Import Chlorophyll data used in the long-term analysis for the 2021 Drought
+  # Synthesis report and add lat-long coordinates
+df_chla_ds_lt <- read_csv(here("analyses/Archive/chla_data_stats_LT2.csv")) %>% 
+  mutate(Source = if_else(Source == "USGS-SFBRMP", "USGS_SFBS", Source)) %>% 
+  left_join(st_drop_geometry(sf_stations), by = c("Source", "Station"))
+
+# Pull out SubRegions for each parameter after using the filtering steps by month
+ndf_subreg_month <- ndf_dwq_lt_filt %>% 
+  transmute(
+    Parameter,
+    df_subreg = map(df_subreg_month, ~ distinct(.x, SubRegion))
+  ) %>% 
+  add_row(
+    Parameter = c(
+      "AllSubregions", 
+      "DrtSynthWQ",
+      "DrtSynthNutr",
+      "DrtSynthChla"
+    ),
+    df_subreg = list(
+      # Add all possible SubRegions from sf_delta
+      sf_delta %>% distinct(SubRegion),
+      # Add SubRegions used in the long-term analysis for the 2021 Drought Synthesis report
+      DroughtData::raw_wq_1975_2021 %>% distinct(SubRegion),
+      DroughtData::raw_nutr_1975_2021 %>% distinct(SubRegion),
+      df_chla_ds_lt %>% distinct(SubRegion)
+    ),
+    .before = 1
+  )
+
+# Create a list of character vectors to define the suffixes for the reducing full join
+lst_suffix_month <- map(ndf_subreg_month$Parameter[-1], ~ c("", paste0("_", .x)))
+
+# Create a custom function for the full join
+join_subregions <- function(df1, df2, suff) {
+  full_join(df1, df2, by = "SubRegion", suffix = suff, keep = TRUE)
+}
+
+# Define parameter levels
+param_levels <- c(
+  "DrtSynthWQ",
+  "Temperature",
+  "Salinity",
+  "Secchi",
+  "DrtSynthNutr",
+  "DissAmmonia",
+  "DissNitrateNitrite",
+  "DissOrthophos",
+  "DrtSynthChla",
+  "Chlorophyll"
+)
+
+# Run reducing full join and clean up data frame for plotting
+df_subreg_month <- reduce2(ndf_subreg_month$df_subreg, lst_suffix_month, join_subregions) %>% 
+  mutate(across(contains("_"), ~ if_else(!is.na(.x), "Yes", "No"))) %>% 
+  rename_with(~ str_extract(.x, "(?<=_).+"), contains("_")) %>% 
+  pivot_longer(cols = -SubRegion, names_to = "Parameter", values_to = "Included") %>% 
+  mutate(
+    Parameter = factor(Parameter, levels = param_levels),
+    SubRegion = fct_rev(factor(SubRegion))
+  )
+
+# Create a function for the SubRegion comparison tile plots
+plot_reg_comp <- function(df) {
+  df %>% 
+    ggplot(aes(x = Parameter, y = SubRegion, fill = Included)) + 
+    geom_tile()
+}
+```
+
+#### All Parameters
+
+```{r plot results subregion by month all, echo = FALSE, fig.height = 7, fig.width = 8}
+plot_reg_comp(df_subreg_month) + 
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+```
+
+#### Water Quality Parameters
+
+```{r plot results subregion by month wq, echo = FALSE, fig.height = 6}
+df_subreg_month %>% 
+  filter(Parameter %in% c("DrtSynthWQ", "Temperature", "Salinity", "Secchi")) %>% 
+  plot_reg_comp()
+```
+
+#### Nutrients
+
+```{r plot results subregion by month nutr, echo = FALSE, fig.height = 6}
+df_subreg_month %>% 
+  filter(Parameter %in% c("DrtSynthNutr", "DissAmmonia", "DissNitrateNitrite", "DissOrthophos")) %>% 
+  plot_reg_comp()
+```
+
+#### Chlorophyll
+
+```{r plot results subregion by month chla, echo = FALSE, fig.height = 6}
+df_subreg_month %>% 
+  filter(Parameter %in% c("DrtSynthChla", "Chlorophyll")) %>% 
+  plot_reg_comp()
+```
+
+## Sampling Effort by Season {.tabset .tabset-pills}
+
+Filtering on a month level may be too restrictive, so let's take a look at the sampling effort for each subregion and parameter by season.
+
+```{r create samp effort plots by season}
+# Plot function
+plot_samp_effort_seas <- function(df) {
+  df %>%
+    count(SubRegion, YearAdj, Season, name = "num_samples") %>%
+    mutate(
+      SubRegion = fct_rev(factor(SubRegion)),
+      Season = factor(Season, levels = c("Winter", "Spring", "Summer", "Fall"))
+    ) %>%
+    ggplot(aes(x = YearAdj, y = SubRegion, fill = num_samples)) +
+    geom_tile() +
+    facet_wrap(vars(Season)) +
+    scale_x_continuous(
+      limits = c(1974, 2022),
+      breaks = breaks_pretty(10), 
+      expand = expansion()
+    ) +
+    scale_fill_viridis_c(name = "Number of Samples") +
+    theme_bw() +
+    theme(
+      axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
+      legend.position = "top"
+    )
+}
+
+# Create sampling effort by Season plots for each Parameter
+ndf_dwq_se_seas_plt <- ndf_dwq_lt_filt %>% 
+  transmute(
+    Parameter,
+    plt = map(df_data_filt, plot_samp_effort_seas)
+  )
+```
+
+```{r print samp effort plots by season, echo = FALSE, results = "asis", fig.width = 9, fig.height = 9}
+for (i in 1:nrow(ndf_dwq_se_seas_plt)) {
+  # Create subheadings for each Parameter
+  cat("### ", ndf_dwq_se_seas_plt$Parameter[i], "\n\n")
+  # Print plot
+  print(ndf_dwq_se_seas_plt$plt[[i]])
+  cat("\n\n")
+}
+```
+
+## Filter by Season
+
+Instead of filtering on a monthly level, let's see what happens if we require that a subregion has data for at least `r num_yrs_threshold` years for each **season** to make sure that the seasons were sampled adequately.
+
+```{r filter subregions by season}
+ndf_dwq_lt_filt <- ndf_dwq_lt_filt %>% 
+  mutate(
+    df_subreg_seas = map(
+      df_data_filt, 
+      ~ distinct(.x, SubRegion, YearAdj, Season) %>% 
+        count(SubRegion, Season, name = "NumYears") %>% 
+        group_by(SubRegion) %>% 
+        filter(min(NumYears) >= num_yrs_threshold) %>%  # num_yrs_threshold = 35
+        ungroup()
+    ),
+    df_data_filt_seas = map2(
+      df_data_filt, df_subreg_seas, 
+      ~ filter(.x, SubRegion %in% unique(.y$SubRegion))
+    )
+  )
+```
+
+### View Results {.tabset .tabset-pills}
+
+Again, set's take a look at which subregions remain and how it compares to what we did in the long-term analysis for the 2021 Drought Synthesis report.
+
+```{r prepare results subregion by season, message = FALSE}
+# Pull out SubRegions for each parameter after using the filtering steps by season
+ndf_subreg_seas <- ndf_dwq_lt_filt %>% 
+  transmute(
+    Parameter,
+    df_subreg = map(df_subreg_seas, ~ distinct(.x, SubRegion))
+  ) %>% 
+  add_row(
+    Parameter = c(
+      "AllSubregions", 
+      "DrtSynthWQ",
+      "DrtSynthNutr",
+      "DrtSynthChla"
+    ),
+    df_subreg = list(
+      # Add all possible SubRegions from sf_delta
+      sf_delta %>% distinct(SubRegion),
+      # Add SubRegions used in the long-term analysis for the 2021 Drought Synthesis report
+      DroughtData::raw_wq_1975_2021 %>% distinct(SubRegion),
+      DroughtData::raw_nutr_1975_2021 %>% distinct(SubRegion),
+      df_chla_ds_lt %>% distinct(SubRegion)
+    ),
+    .before = 1
+  )
+
+# Create a list of character vectors to define the suffixes for the reducing full join
+lst_suffix_seas <- map(ndf_subreg_seas$Parameter[-1], ~ c("", paste0("_", .x)))
+
+# Run reducing full join and clean up data frame for plotting
+df_subreg_seas <- reduce2(ndf_subreg_seas$df_subreg, lst_suffix_seas, join_subregions) %>% 
+  mutate(across(contains("_"), ~ if_else(!is.na(.x), "Yes", "No"))) %>% 
+  rename_with(~ str_extract(.x, "(?<=_).+"), contains("_")) %>% 
+  pivot_longer(cols = -SubRegion, names_to = "Parameter", values_to = "Included") %>% 
+  mutate(
+    Parameter = factor(Parameter, levels = param_levels),
+    SubRegion = fct_rev(factor(SubRegion))
+  )
+```
+
+#### All Parameters
+
+```{r plot results subregion by season all, echo = FALSE, fig.height = 7, fig.width = 8}
+plot_reg_comp(df_subreg_seas) + 
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+```
+
+#### Water Quality Parameters
+
+```{r plot results subregion by season wq, echo = FALSE, fig.height = 6}
+df_subreg_seas %>% 
+  filter(Parameter %in% c("DrtSynthWQ", "Temperature", "Salinity", "Secchi")) %>% 
+  plot_reg_comp()
+```
+
+#### Nutrients
+
+```{r plot results subregion by season nutr, echo = FALSE, fig.height = 6}
+df_subreg_seas %>% 
+  filter(Parameter %in% c("DrtSynthNutr", "DissAmmonia", "DissNitrateNitrite", "DissOrthophos")) %>% 
+  plot_reg_comp()
+```
+
+#### Chlorophyll
+
+```{r plot results subregion by season chla, echo = FALSE, fig.height = 6}
+df_subreg_seas %>% 
+  filter(Parameter %in% c("DrtSynthChla", "Chlorophyll")) %>% 
+  plot_reg_comp()
+```
+
+# Thoughts
+
+Filtering the subregions by including only those that have data for at least `r num_yrs_threshold` years for each **season** seems to by slightly more permissive than filtering on the monthly level for DissAmmonia and Chlorophyll. Comparing the seasonal approach to the core station approach as seen in [`discretewq` Sampling Effort document](https://interagencyecologicalprogram.github.io/WQ-LT-Publication/Sampling_Effort_discretewq.html), the water quality parameters lose a few subregions overall, and the nutrient and chlorophyll parameters gain a few subregions. 
+
+I am leaning towards using the filtering subregions by the seasonal level approach. If we decide on this as our spatial and temporal filtering method, are all regions covered adequately for the analyses? Let's see...
+
+# Regional coverage
+
+Let's look at the regional coverage assuming that we'll use the seasonal level approach to filter our data, and compare it to what we used in the long-term analysis for the 2021 Drought Synthesis report.
+
+```{r regional coverage}
+# Bring in Region-Subregion crosswalk from the Drought Synthesis and add Grant
+  # Line Canal and Old River subregion to it
+df_regions_mod <- DroughtData:::df_regions %>% 
+  distinct(SubRegion, Region) %>% 
+  add_row(SubRegion = "Grant Line Canal and Old River", Region = "SouthCentral")
+
+# Pull out Regions for each parameter after using the filtering steps by season,
+  # and count number of subregions in each region
+ndf_regions <- ndf_dwq_lt_filt %>% 
+  transmute(
+    Parameter,
+    df_region = map(df_data_filt_seas, ~ distinct(.x, SubRegion))
+  ) %>% 
+  add_row(
+    Parameter = c(
+      "DrtSynthWQ",
+      "DrtSynthNutr",
+      "DrtSynthChla"
+    ),
+    df_region = list(
+      # Add SubRegions used in the long-term analysis for the 2021 Drought Synthesis report
+      DroughtData::raw_wq_1975_2021 %>% distinct(SubRegion),
+      DroughtData::raw_nutr_1975_2021 %>% distinct(SubRegion),
+      df_chla_ds_lt %>% distinct(SubRegion)
+    ),
+    .before = 1
+  ) %>% 
+  mutate(
+    df_region = map(
+      df_region,
+      ~ left_join(.x, df_regions_mod, by = "SubRegion") %>% 
+        count(Region)
+    ),
+    Parameter = factor(Parameter, levels = param_levels)
+  ) %>% 
+  arrange(Parameter) %>% 
+  mutate(Parameter = as.character(Parameter))
+
+# Print out region counts
+for (i in 1:nrow(ndf_regions)) {
+  print(ndf_regions$Parameter[i])
+  print(ndf_regions$df_region[[i]])
+}
+```
+
+It looks like all of the same regions are covered as in the long-term analysis for the 2021 Drought Synthesis report with less subregions in some of the regions now. 
+
+# Nutrients
+
+```{r}
+# The EMP data set has a few non-detect values without reporting limits -
+      # we'll fill in 0.01 for the reporting limits for these values for now as
+      # suggested by Sarah Perry.
+    # DissAmmonia = if_else(DissAmmonia_Sign == "<" & is.na(DissAmmonia), 0.01, DissAmmonia),
+    # DissNitrateNitrite = if_else(DissNitrateNitrite_Sign == "<" & is.na(DissNitrateNitrite), 0.01, DissNitrateNitrite),
+    # DissOrthophos = if_else(DissOrthophos_Sign == "<" & is.na(DissOrthophos), 0.01, DissOrthophos)
+```
+
+Let's take a look at which subregions remain for each water quality measurement parameter.
+
+```{r view results subregion wq meas, message = FALSE}
+# Pull out SubRegions for each parameter after using the filtering steps by season
+ndf_wq_meas_filt2 %>% 
+  select(Parameter, df_subreg_seas) %>% 
+  unnest(df_subreg_seas) %>% 
+  select(-n) %>% 
+  mutate(Included = "Yes") %>% 
+  group_by(Parameter) %>% 
+  complete(SubRegion = unique(sf_delta$SubRegion), fill = list(Included = "No")) %>% 
+  ungroup() %>% 
+  mutate(SubRegion = fct_rev(factor(SubRegion))) %>% 
+  ggplot(aes(x = Parameter, y = SubRegion, fill = Included)) + geom_tile()
+```

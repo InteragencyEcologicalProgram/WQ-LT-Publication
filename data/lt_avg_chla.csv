@@ -1,0 +1,753 @@
+YearAdj,Season,Region,SVIndex,YearType,Drought,Chlorophyll
+1975,Winter,Confluence,9.35,Wet,W,1.871
+1975,Winter,North,9.35,Wet,W,2.84
+1975,Winter,SouthCentral,9.35,Wet,W,5.3429166666666665
+1975,Winter,Suisun Bay,9.35,Wet,W,1.6360000000000001
+1975,Spring,Confluence,9.35,Wet,W,4.8053333333333335
+1975,Spring,North,9.35,Wet,W,2.4
+1975,Spring,SouthCentral,9.35,Wet,W,15.759444444444444
+1975,Spring,Suisun Bay,9.35,Wet,W,6.885666666666666
+1975,Summer,Confluence,9.35,Wet,W,8.800833333333333
+1975,Summer,North,9.35,Wet,W,3.2666666666666666
+1975,Summer,SouthCentral,9.35,Wet,W,25.325
+1975,Summer,Suisun Bay,9.35,Wet,W,16.761333333333333
+1975,Fall,Confluence,9.35,Wet,W,5.061249999999999
+1975,Fall,North,9.35,Wet,W,1.375
+1975,Fall,SouthCentral,9.35,Wet,W,12.285277777777779
+1975,Fall,Suisun Bay,9.35,Wet,W,8.0175
+1976,Winter,Confluence,5.29,Critical,D,3.6286666666666667
+1976,Winter,North,5.29,Critical,D,2.6766666666666667
+1976,Winter,SouthCentral,5.29,Critical,D,4.596666666666667
+1976,Winter,Suisun Bay,5.29,Critical,D,8.459666666666667
+1976,Spring,Confluence,5.29,Critical,D,20.55516666666667
+1976,Spring,North,5.29,Critical,D,3.9166666666666665
+1976,Spring,SouthCentral,5.29,Critical,D,45.791792929292924
+1976,Spring,Suisun Bay,5.29,Critical,D,16.775416666666665
+1976,Summer,Confluence,5.29,Critical,D,5.6165
+1976,Summer,North,5.29,Critical,D,4.735
+1976,Summer,SouthCentral,5.29,Critical,D,41.159823232323234
+1976,Summer,Suisun Bay,5.29,Critical,D,9.327083333333334
+1976,Fall,Confluence,5.29,Critical,D,4.999037037037037
+1976,Fall,North,5.29,Critical,D,3.8850000000000002
+1976,Fall,SouthCentral,5.29,Critical,D,15.516839826839828
+1976,Fall,Suisun Bay,5.29,Critical,D,4.0275
+1977,Winter,Confluence,3.11,Critical,D,2.8473333333333333
+1977,Winter,North,3.11,Critical,D,4.303333333333333
+1977,Winter,SouthCentral,3.11,Critical,D,4.55
+1977,Winter,Suisun Bay,3.11,Critical,D,3.18
+1977,Spring,Confluence,3.11,Critical,D,6.4368181818181816
+1977,Spring,North,3.11,Critical,D,23.51666666666667
+1977,Spring,SouthCentral,3.11,Critical,D,40.11666666666667
+1977,Spring,Suisun Bay,3.11,Critical,D,4.051319444444444
+1977,Summer,Confluence,3.11,Critical,D,7.739347826086957
+1977,Summer,North,3.11,Critical,D,12.350000000000001
+1977,Summer,SouthCentral,3.11,Critical,D,30.150934343434344
+1977,Summer,Suisun Bay,3.11,Critical,D,4.760833333333333
+1977,Fall,Confluence,3.11,Critical,D,6.281222222222222
+1977,Fall,North,3.11,Critical,D,8.543333333333333
+1977,Fall,SouthCentral,3.11,Critical,D,8.274722222222222
+1977,Fall,Suisun Bay,3.11,Critical,D,3.248194444444444
+1978,Winter,Confluence,8.65,Above Normal,N,1.8352380952380953
+1978,Winter,North,8.65,Above Normal,N,2.84
+1978,Winter,SouthCentral,8.65,Above Normal,N,2.647777777777778
+1978,Winter,Suisun Bay,8.65,Above Normal,N,1.9338690476190477
+1978,Spring,Confluence,8.65,Above Normal,N,2.6094110275689224
+1978,Spring,North,8.65,Above Normal,N,2.3716666666666666
+1978,Spring,SouthCentral,8.65,Above Normal,N,7.687095959595959
+1978,Spring,Suisun Bay,8.65,Above Normal,N,4.55875
+1978,Summer,Confluence,8.65,Above Normal,N,7.950016469038208
+1978,Summer,North,8.65,Above Normal,N,6.536666666666667
+1978,Summer,SouthCentral,8.65,Above Normal,N,14.776388888888889
+1978,Summer,Suisun Bay,8.65,Above Normal,N,16.01800505050505
+1978,Fall,Confluence,8.65,Above Normal,N,6.274047619047619
+1978,Fall,North,8.65,Above Normal,N,2.08
+1978,Fall,SouthCentral,8.65,Above Normal,N,10.477500000000001
+1978,Fall,Suisun Bay,8.65,Above Normal,N,21.110694444444444
+1979,Winter,Confluence,6.67,Below Normal,N,1.8142424242424242
+1979,Winter,North,6.67,Below Normal,N,2.5366666666666666
+1979,Winter,SouthCentral,6.67,Below Normal,N,6.1305555555555555
+1979,Winter,Suisun Bay,6.67,Below Normal,N,3.1425
+1979,Spring,Confluence,6.67,Below Normal,N,3.5967251461988305
+1979,Spring,North,6.67,Below Normal,N,2.9283333333333332
+1979,Spring,SouthCentral,6.67,Below Normal,N,15.151515151515152
+1979,Spring,Suisun Bay,6.67,Below Normal,N,5.754444444444444
+1979,Summer,Confluence,6.67,Below Normal,N,11.17529292929293
+1979,Summer,North,6.67,Below Normal,N,2.99
+1979,Summer,SouthCentral,6.67,Below Normal,N,14.041444444444444
+1979,Summer,Suisun Bay,6.67,Below Normal,N,25.646628787878786
+1979,Fall,Confluence,6.67,Below Normal,N,7.9408432539682545
+1979,Fall,North,6.67,Below Normal,N,1.9366666666666665
+1979,Fall,SouthCentral,6.67,Below Normal,N,8.871611111111111
+1979,Fall,Suisun Bay,6.67,Below Normal,N,14.073194444444445
+1980,Winter,Confluence,9.04,Above Normal,N,1.3535757575757574
+1980,Winter,North,9.04,Above Normal,N,0.9299999999999999
+1980,Winter,SouthCentral,9.04,Above Normal,N,3.131666666666667
+1980,Winter,Suisun Bay,9.04,Above Normal,N,1.5243650793650794
+1980,Spring,Confluence,9.04,Above Normal,N,4.648128858024691
+1980,Spring,North,9.04,Above Normal,N,4.636666666666667
+1980,Spring,SouthCentral,9.04,Above Normal,N,8.768055555555556
+1980,Spring,Suisun Bay,9.04,Above Normal,N,5.335
+1980,Summer,Confluence,9.04,Above Normal,N,6.230107226107226
+1980,Summer,North,9.04,Above Normal,N,3.52
+1980,Summer,SouthCentral,9.04,Above Normal,N,11.685732323232322
+1980,Summer,Suisun Bay,9.04,Above Normal,N,18.05638888888889
+1980,Fall,Confluence,9.04,Above Normal,N,6.407631766381766
+1980,Fall,North,9.04,Above Normal,N,2.64
+1980,Fall,SouthCentral,9.04,Above Normal,N,11.143611111111111
+1980,Fall,Suisun Bay,9.04,Above Normal,N,13.1
+1981,Winter,Confluence,6.21,Dry,N,1.3638125
+1981,Winter,North,6.21,Dry,N,1.73
+1981,Winter,SouthCentral,6.21,Dry,N,2.8858333333333333
+1981,Winter,Suisun Bay,6.21,Dry,N,2.348125
+1981,Spring,Confluence,6.21,Dry,N,12.067150670794634
+1981,Spring,North,6.21,Dry,N,2.0983333333333336
+1981,Spring,SouthCentral,6.21,Dry,N,17.454
+1981,Spring,Suisun Bay,6.21,Dry,N,8.057916666666667
+1981,Summer,Confluence,6.21,Dry,N,5.543651416122004
+1981,Summer,North,6.21,Dry,N,0.8033333333333333
+1981,Summer,SouthCentral,6.21,Dry,N,9.095858585858586
+1981,Summer,Suisun Bay,6.21,Dry,N,12.387916666666667
+1981,Fall,Confluence,6.21,Dry,N,4.844814814814815
+1981,Fall,North,6.21,Dry,N,1.085
+1981,Fall,SouthCentral,6.21,Dry,N,7.469722222222223
+1981,Fall,Suisun Bay,6.21,Dry,N,6.1866666666666665
+1982,Winter,Confluence,12.76,Wet,W,1.5925555555555555
+1982,Winter,North,12.76,Wet,W,1.315
+1982,Winter,SouthCentral,12.76,Wet,W,2.494
+1982,Winter,Suisun Bay,12.76,Wet,W,1.99125
+1982,Spring,Confluence,12.76,Wet,W,2.4136140350877193
+1982,Spring,North,12.76,Wet,W,3.4216666666666664
+1982,Spring,SouthCentral,12.76,Wet,W,5.039040404040404
+1982,Spring,Suisun Bay,12.76,Wet,W,4.51
+1982,Summer,Confluence,12.76,Wet,W,17.586666666666666
+1982,Summer,North,12.76,Wet,W,2.2416666666666667
+1982,Summer,SouthCentral,12.76,Wet,W,16.776641414141416
+1982,Summer,Suisun Bay,12.76,Wet,W,15.463750000000001
+1982,Fall,Confluence,12.76,Wet,W,12.73638596491228
+1982,Fall,North,12.76,Wet,W,1.1866666666666665
+1982,Fall,SouthCentral,12.76,Wet,W,9.623888888888889
+1982,Fall,Suisun Bay,12.76,Wet,W,14.325833333333334
+1983,Winter,Confluence,15.29,Wet,W,1.3386666666666667
+1983,Winter,North,15.29,Wet,W,1.4966666666666666
+1983,Winter,SouthCentral,15.29,Wet,W,2.1627777777777775
+1983,Winter,Suisun Bay,15.29,Wet,W,1.2225000000000001
+1983,Spring,Confluence,15.29,Wet,W,2.526666666666667
+1983,Spring,North,15.29,Wet,W,2.9333333333333336
+1983,Spring,SouthCentral,15.29,Wet,W,6.809444444444445
+1983,Spring,Suisun Bay,15.29,Wet,W,3.1008333333333336
+1983,Summer,Confluence,15.29,Wet,W,3.7716666666666665
+1983,Summer,North,15.29,Wet,W,0.9266666666666667
+1983,Summer,SouthCentral,15.29,Wet,W,6.767222222222222
+1983,Summer,Suisun Bay,15.29,Wet,W,5.275833333333333
+1983,Fall,Confluence,15.29,Wet,W,7.160333333333334
+1983,Fall,North,15.29,Wet,W,0.7833333333333333
+1983,Fall,SouthCentral,15.29,Wet,W,4.481277777777778
+1983,Fall,Suisun Bay,15.29,Wet,W,3.254166666666667
+1984,Winter,Confluence,10,Wet,W,1.3188333333333333
+1984,Winter,North,10,Wet,W,1.3366666666666667
+1984,Winter,SouthCentral,10,Wet,W,3.1733333333333333
+1984,Winter,Suisun Bay,10,Wet,W,1.5275
+1984,Spring,Confluence,10,Wet,W,4.245444444444444
+1984,Spring,North,10,Wet,W,2.32
+1984,Spring,SouthCentral,10,Wet,W,9.562777777777777
+1984,Spring,Suisun Bay,10,Wet,W,9.1466666666666665
+1984,Summer,Confluence,10,Wet,W,8.988666666666667
+1984,Summer,North,10,Wet,W,1.7783333333333333
+1984,Summer,SouthCentral,10,Wet,W,15.68969696969697
+1984,Summer,Suisun Bay,10,Wet,W,8.70625
+1984,Fall,Confluence,10,Wet,W,13.582666666666666
+1984,Fall,North,10,Wet,W,1.75
+1984,Fall,SouthCentral,10,Wet,W,12.212787878787879
+1984,Fall,Suisun Bay,10,Wet,W,12.3625
+1985,Winter,Confluence,6.47,Dry,N,1.1488148148148147
+1985,Winter,North,6.47,Dry,N,2.2133333333333334
+1985,Winter,SouthCentral,6.47,Dry,N,3.402888888888889
+1985,Winter,Suisun Bay,6.47,Dry,N,1.8266666666666669
+1985,Spring,Confluence,6.47,Dry,N,8.558166666666667
+1985,Spring,North,6.47,Dry,N,3.935
+1985,Spring,SouthCentral,6.47,Dry,N,17.176237373737372
+1985,Spring,Suisun Bay,6.47,Dry,N,5.0175
+1985,Summer,Confluence,6.47,Dry,N,5.584666666666666
+1985,Summer,North,6.47,Dry,N,3.086666666666667
+1985,Summer,SouthCentral,6.47,Dry,N,12.719722222222222
+1985,Summer,Suisun Bay,6.47,Dry,N,9.545833333333333
+1985,Fall,Confluence,6.47,Dry,N,4.591444444444445
+1985,Fall,North,6.47,Dry,N,1.0316666666666667
+1985,Fall,SouthCentral,6.47,Dry,N,8.649141414141415
+1985,Fall,Suisun Bay,6.47,Dry,N,4.38
+1986,Winter,Confluence,9.96,Wet,N,0.9488333333333333
+1986,Winter,North,9.96,Wet,N,1.9033333333333333
+1986,Winter,SouthCentral,9.96,Wet,N,2.233888888888889
+1986,Winter,Suisun Bay,9.96,Wet,N,1.3258333333333334
+1986,Spring,Confluence,9.96,Wet,N,5.845694444444444
+1986,Spring,North,9.96,Wet,N,2.8833333333333337
+1986,Spring,SouthCentral,9.96,Wet,N,5.674222222222222
+1986,Spring,Suisun Bay,9.96,Wet,N,5.248333333333333
+1986,Summer,Confluence,9.96,Wet,N,17.046684210526315
+1986,Summer,North,9.96,Wet,N,1.9333333333333333
+1986,Summer,SouthCentral,9.96,Wet,N,19.74787878787879
+1986,Summer,Suisun Bay,9.96,Wet,N,16.610833333333332
+1986,Fall,Confluence,9.96,Wet,N,2.876666666666667
+1986,Fall,North,9.96,Wet,N,0.6950000000000001
+1986,Fall,SouthCentral,9.96,Wet,N,4.841666666666667
+1986,Fall,Suisun Bay,9.96,Wet,N,5.956666666666667
+1987,Winter,Confluence,5.86,Dry,D,1.9293333333333333
+1987,Winter,North,5.86,Dry,D,1.5966666666666667
+1987,Winter,SouthCentral,5.86,Dry,D,1.8210555555555554
+1987,Winter,Suisun Bay,5.86,Dry,D,3.5258333333333334
+1987,Spring,Confluence,5.86,Dry,D,7.035185185185185
+1987,Spring,North,5.86,Dry,D,1.39
+1987,Spring,SouthCentral,5.86,Dry,D,11.493055555555555
+1987,Spring,Suisun Bay,5.86,Dry,D,3.8754166666666667
+1987,Summer,Confluence,5.86,Dry,D,4.388305068226121
+1987,Summer,North,5.86,Dry,D,1.0816666666666666
+1987,Summer,SouthCentral,5.86,Dry,D,5.901161616161616
+1987,Summer,Suisun Bay,5.86,Dry,D,2.85625
+1987,Fall,Confluence,5.86,Dry,D,3.5115
+1987,Fall,North,5.86,Dry,D,0.9
+1987,Fall,SouthCentral,5.86,Dry,D,10.613333333333333
+1987,Fall,Suisun Bay,5.86,Dry,D,1.2645833333333334
+1988,Winter,Confluence,4.65,Critical,D,0.954862433862434
+1988,Winter,North,4.65,Critical,D,1.085
+1988,Winter,SouthCentral,4.65,Critical,D,3.3016666666666663
+1988,Winter,Suisun Bay,4.65,Critical,D,1.3652777777777778
+1988,Spring,Confluence,4.65,Critical,D,7.128236517218973
+1988,Spring,North,4.65,Critical,D,1.2616666666666667
+1988,Spring,SouthCentral,4.65,Critical,D,9.368333333333332
+1988,Spring,Suisun Bay,4.65,Critical,D,1.9602083333333333
+1988,Summer,Confluence,4.65,Critical,D,4.922839506172839
+1988,Summer,North,4.65,Critical,D,0.9916666666666667
+1988,Summer,SouthCentral,4.65,Critical,D,10.546388888888888
+1988,Summer,Suisun Bay,4.65,Critical,D,1.7677361111111112
+1988,Fall,Confluence,4.65,Critical,D,1.6067041446208112
+1988,Fall,North,4.65,Critical,D,1.0033333333333334
+1988,Fall,SouthCentral,4.65,Critical,D,7.485611111111111
+1988,Fall,Suisun Bay,4.65,Critical,D,1.0387121212121213
+1989,Winter,Confluence,6.13,Dry,D,0.9936865079365079
+1989,Winter,North,6.13,Dry,D,1.0799999999999998
+1989,Winter,SouthCentral,6.13,Dry,D,11.406666666666666
+1989,Winter,Suisun Bay,6.13,Dry,D,0.9598412698412698
+1989,Spring,Confluence,6.13,Dry,D,3.857015873015873
+1989,Spring,North,6.13,Dry,D,1.75
+1989,Spring,SouthCentral,6.13,Dry,D,7.225185185185184
+1989,Spring,Suisun Bay,6.13,Dry,D,1.7372222222222222
+1989,Summer,Confluence,6.13,Dry,D,3.8296242424242424
+1989,Summer,North,6.13,Dry,D,1.2583333333333333
+1989,Summer,SouthCentral,6.13,Dry,D,8.091944444444444
+1989,Summer,Suisun Bay,6.13,Dry,D,2.2169444444444446
+1989,Fall,Confluence,6.13,Dry,D,2.7586
+1989,Fall,North,6.13,Dry,D,0.8366666666666667
+1989,Fall,SouthCentral,6.13,Dry,D,9.875833333333333
+1989,Fall,Suisun Bay,6.13,Dry,D,1.3180555555555555
+1990,Winter,Confluence,4.81,Critical,D,0.9120982905982906
+1990,Winter,North,4.81,Critical,D,2.16
+1990,Winter,SouthCentral,4.81,Critical,D,5.326666666666667
+1990,Winter,Suisun Bay,4.81,Critical,D,0.86125
+1990,Spring,Confluence,4.81,Critical,D,2.1717333333333335
+1990,Spring,North,4.81,Critical,D,1.8783333333333334
+1990,Spring,SouthCentral,4.81,Critical,D,9.859722222222222
+1990,Spring,Suisun Bay,4.81,Critical,D,1.2091666666666667
+1990,Summer,Confluence,4.81,Critical,D,2.642273015873016
+1990,Summer,North,4.81,Critical,D,1.3166666666666667
+1990,Summer,SouthCentral,4.81,Critical,D,8.828518518518518
+1990,Summer,Suisun Bay,4.81,Critical,D,1.5302272727272728
+1990,Fall,Confluence,4.81,Critical,D,2.034
+1990,Fall,North,4.81,Critical,D,1.0333333333333334
+1990,Fall,SouthCentral,4.81,Critical,D,8.295833333333334
+1990,Fall,Suisun Bay,4.81,Critical,D,1.7104166666666667
+1991,Winter,Confluence,4.21,Critical,D,1.3826507936507937
+1991,Winter,North,4.21,Critical,D,2.48
+1991,Winter,SouthCentral,4.21,Critical,D,11.001666666666667
+1991,Winter,Suisun Bay,4.21,Critical,D,0.9727380952380953
+1991,Spring,Confluence,4.21,Critical,D,3.1286376811594203
+1991,Spring,North,4.21,Critical,D,1.6500000000000001
+1991,Spring,SouthCentral,4.21,Critical,D,10.510277777777777
+1991,Spring,Suisun Bay,4.21,Critical,D,1.8583333333333332
+1991,Summer,Confluence,4.21,Critical,D,2.3288434782608696
+1991,Summer,North,4.21,Critical,D,0.845
+1991,Summer,SouthCentral,4.21,Critical,D,14.03675925925926
+1991,Summer,Suisun Bay,4.21,Critical,D,1.9552777777777777
+1991,Fall,Confluence,4.21,Critical,D,2.0691888888888887
+1991,Fall,North,4.21,Critical,D,0.7033333333333334
+1991,Fall,SouthCentral,4.21,Critical,D,10.444722222222222
+1991,Fall,Suisun Bay,4.21,Critical,D,1.399861111111111
+1992,Winter,Confluence,4.06,Critical,D,1.04834126984127
+1992,Winter,North,4.06,Critical,D,1.3366666666666667
+1992,Winter,SouthCentral,4.06,Critical,D,4.614444444444445
+1992,Winter,Suisun Bay,4.06,Critical,D,1.1084722222222223
+1992,Spring,Confluence,4.06,Critical,D,4.771333333333334
+1992,Spring,North,4.06,Critical,D,1.3116666666666665
+1992,Spring,SouthCentral,4.06,Critical,D,12.480404040404041
+1992,Spring,Suisun Bay,4.06,Critical,D,2.7230555555555553
+1992,Summer,Confluence,4.06,Critical,D,2.233559420289855
+1992,Summer,North,4.06,Critical,D,1.1616666666666666
+1992,Summer,SouthCentral,4.06,Critical,D,10.39800505050505
+1992,Summer,Suisun Bay,4.06,Critical,D,1.7079696969696971
+1992,Fall,Confluence,4.06,Critical,D,1.4279166666666667
+1992,Fall,North,4.06,Critical,D,0.33999999999999997
+1992,Fall,SouthCentral,4.06,Critical,D,4.748055555555555
+1992,Fall,Suisun Bay,4.06,Critical,D,1.2216666666666667
+1993,Winter,Confluence,8.54,Above Normal,N,0.956034188034188
+1993,Winter,North,8.54,Above Normal,N,2.16
+1993,Winter,SouthCentral,8.54,Above Normal,N,4.316
+1993,Winter,Suisun Bay,8.54,Above Normal,N,1.045
+1993,Spring,Confluence,8.54,Above Normal,N,9.546444444444445
+1993,Spring,North,8.54,Above Normal,N,3.1133333333333333
+1993,Spring,SouthCentral,8.54,Above Normal,N,15.265
+1993,Spring,Suisun Bay,8.54,Above Normal,N,3.9558333333333335
+1993,Summer,Confluence,8.54,Above Normal,N,5.844666666666667
+1993,Summer,North,8.54,Above Normal,N,1.7033333333333334
+1993,Summer,SouthCentral,8.54,Above Normal,N,11.555
+1993,Summer,Suisun Bay,8.54,Above Normal,N,3.8673809523809526
+1993,Fall,Confluence,8.54,Above Normal,N,1.653119658119658
+1993,Fall,North,8.54,Above Normal,N,1.09
+1993,Fall,SouthCentral,8.54,Above Normal,N,4.937222222222222
+1993,Fall,Suisun Bay,8.54,Above Normal,N,0.7433333333333333
+1994,Winter,Confluence,5.02,Critical,N,0.7751587301587302
+1994,Winter,North,5.02,Critical,N,1.3633333333333333
+1994,Winter,SouthCentral,5.02,Critical,N,2.434
+1994,Winter,Suisun Bay,5.02,Critical,N,0.8333333333333334
+1994,Spring,Confluence,5.02,Critical,N,2.798
+1994,Spring,North,5.02,Critical,N,1.58
+1994,Spring,SouthCentral,5.02,Critical,N,8.605555555555556
+1994,Spring,Suisun Bay,5.02,Critical,N,1.6454166666666667
+1994,Summer,Confluence,5.02,Critical,N,1.8306666666666667
+1994,Summer,North,5.02,Critical,N,0.8975
+1994,Summer,SouthCentral,5.02,Critical,N,4.998333333333333
+1994,Summer,Suisun Bay,5.02,Critical,N,1.7838888888888889
+1994,Fall,Confluence,5.02,Critical,N,1.0187555555555554
+1994,Fall,North,5.02,Critical,N,0.49666666666666665
+1994,Fall,SouthCentral,5.02,Critical,N,4.695
+1994,Fall,Suisun Bay,5.02,Critical,N,1.1823611111111112
+1995,Winter,Confluence,12.89,Wet,W,0.6014102564102565
+1995,Winter,North,12.89,Wet,W,1.2733333333333334
+1995,Winter,SouthCentral,12.89,Wet,W,1.7361111111111112
+1995,Winter,Suisun Bay,12.89,Wet,W,0.7820833333333334
+1995,Spring,Confluence,12.89,Wet,W,3.0650000000000004
+1995,Spring,North,12.89,Wet,W,2.5566666666666666
+1995,Spring,SouthCentral,12.89,Wet,W,2.8543333333333334
+1995,Spring,Suisun Bay,12.89,Wet,W,4.023611111111111
+1995,Summer,Confluence,12.89,Wet,W,2.1554700854700855
+1995,Summer,North,12.89,Wet,W,1.15
+1995,Summer,SouthCentral,12.89,Wet,W,5.189555555555556
+1995,Summer,Suisun Bay,12.89,Wet,W,2.9366666666666665
+1995,Fall,Confluence,12.89,Wet,W,1.483029304029304
+1995,Fall,North,12.89,Wet,W,1.28
+1995,Fall,SouthCentral,12.89,Wet,W,2.1016666666666666
+1995,Fall,Suisun Bay,12.89,Wet,W,1.3825
+1996,Winter,Confluence,10.26,Wet,W,1.015074074074074
+1996,Winter,North,10.26,Wet,W,1.99
+1996,Winter,SouthCentral,10.26,Wet,W,1.3900000000000001
+1996,Winter,Suisun Bay,10.26,Wet,W,0.8171428571428571
+1996,Spring,Confluence,10.26,Wet,W,2.2935185185185185
+1996,Spring,North,10.26,Wet,W,2.61
+1996,Spring,SouthCentral,10.26,Wet,W,3.6033333333333335
+1996,Spring,Suisun Bay,10.26,Wet,W,2.362857142857143
+1996,Summer,Confluence,10.26,Wet,W,1.9253333333333333
+1996,Summer,North,10.26,Wet,W,1.88
+1996,Summer,SouthCentral,10.26,Wet,W,4.46
+1996,Summer,Suisun Bay,10.26,Wet,W,1.55
+1996,Fall,Confluence,10.26,Wet,W,1.3742121212121212
+1996,Fall,North,10.26,Wet,W,3.0366666666666666
+1996,Fall,SouthCentral,10.26,Wet,W,2.727777777777778
+1996,Fall,Suisun Bay,10.26,Wet,W,1.3485714285714288
+1997,Winter,Confluence,10.82,Wet,W,1.2789166666666667
+1997,Winter,North,10.82,Wet,W,2.1033333333333335
+1997,Winter,SouthCentral,10.82,Wet,W,1.7666666666666666
+1997,Winter,Suisun Bay,10.82,Wet,W,1.2219047619047618
+1997,Spring,Confluence,10.82,Wet,W,3.071888888888889
+1997,Spring,North,10.82,Wet,W,6.18
+1997,Spring,SouthCentral,10.82,Wet,W,10.684444444444445
+1997,Spring,Suisun Bay,10.82,Wet,W,2.264747474747475
+1997,Summer,Confluence,10.82,Wet,W,2.02
+1997,Summer,North,10.82,Wet,W,2.1666666666666665
+1997,Summer,SouthCentral,10.82,Wet,W,2.6033333333333335
+1997,Summer,Suisun Bay,10.82,Wet,W,1.6452380952380952
+1997,Fall,Confluence,10.82,Wet,W,1.8023333333333333
+1997,Fall,North,10.82,Wet,W,1.0733333333333333
+1997,Fall,SouthCentral,10.82,Wet,W,2.8511111111111114
+1997,Fall,Suisun Bay,10.82,Wet,W,1.5929365079365079
+1998,Winter,Confluence,13.31,Wet,W,0.8967777777777778
+1998,Winter,North,13.31,Wet,W,1.35
+1998,Winter,SouthCentral,13.31,Wet,W,1.1133333333333333
+1998,Winter,Suisun Bay,13.31,Wet,W,1.0503174603174603
+1998,Spring,Confluence,13.31,Wet,W,3.626583333333333
+1998,Spring,North,13.31,Wet,W,1.6366666666666667
+1998,Spring,SouthCentral,13.31,Wet,W,6.935555555555555
+1998,Spring,Suisun Bay,13.31,Wet,W,3.862857142857143
+1998,Summer,Confluence,13.31,Wet,W,2.5033333333333334
+1998,Summer,North,13.31,Wet,W,2.0833333333333335
+1998,Summer,SouthCentral,13.31,Wet,W,5.561111111111111
+1998,Summer,Suisun Bay,13.31,Wet,W,2.7495238095238097
+1998,Fall,Confluence,13.31,Wet,W,3.1148148148148147
+1998,Fall,North,13.31,Wet,W,1.36
+1998,Fall,SouthCentral,13.31,Wet,W,5.2555555555555555
+1998,Fall,Suisun Bay,13.31,Wet,W,2.0607142857142855
+1999,Winter,Confluence,9.8,Wet,W,1.5675000000000001
+1999,Winter,North,9.8,Wet,W,2
+1999,Winter,SouthCentral,9.8,Wet,W,3.5833333333333335
+1999,Winter,Suisun Bay,9.8,Wet,W,1.6247619047619046
+1999,Spring,Confluence,9.8,Wet,W,2.953968253968254
+1999,Spring,North,9.8,Wet,W,2.7366666666666664
+1999,Spring,SouthCentral,9.8,Wet,W,8.235555555555555
+1999,Spring,Suisun Bay,9.8,Wet,W,4.477777777777778
+1999,Summer,Confluence,9.8,Wet,W,2.67475
+1999,Summer,North,9.8,Wet,W,2.5433333333333334
+1999,Summer,SouthCentral,9.8,Wet,W,12.051139657444006
+1999,Summer,Suisun Bay,9.8,Wet,W,2.78984126984127
+1999,Fall,Confluence,9.8,Wet,W,2.1210168350168352
+1999,Fall,North,9.8,Wet,W,1.6
+1999,Fall,SouthCentral,9.8,Wet,W,6.0911033411033415
+1999,Fall,Suisun Bay,9.8,Wet,W,1.9319047619047618
+2000,Winter,Confluence,8.94,Above Normal,W,1.4092592592592592
+2000,Winter,North,8.94,Above Normal,W,1.5550000000000002
+2000,Winter,SouthCentral,8.94,Above Normal,W,2.3144444444444443
+2000,Winter,Suisun Bay,8.94,Above Normal,W,1.5965079365079364
+2000,Spring,Confluence,8.94,Above Normal,W,2.7375555555555557
+2000,Spring,North,8.94,Above Normal,W,3.46
+2000,Spring,SouthCentral,8.94,Above Normal,W,6.436997711399711
+2000,Spring,Suisun Bay,8.94,Above Normal,W,8.939761904761905
+2000,Summer,Confluence,8.94,Above Normal,W,2.39825
+2000,Summer,North,8.94,Above Normal,W,3.1533333333333333
+2000,Summer,SouthCentral,8.94,Above Normal,W,22.612349582784365
+2000,Summer,Suisun Bay,8.94,Above Normal,W,1.5366666666666666
+2000,Fall,Confluence,8.94,Above Normal,W,2.3986666666666667
+2000,Fall,North,8.94,Above Normal,W,1.8166666666666667
+2000,Fall,SouthCentral,8.94,Above Normal,W,17.380085638998683
+2000,Fall,Suisun Bay,8.94,Above Normal,W,1.4276190476190476
+2001,Winter,Confluence,5.76,Dry,D,1.2230158730158731
+2001,Winter,North,5.76,Dry,D,3
+2001,Winter,SouthCentral,5.76,Dry,D,5.218944444444444
+2001,Winter,Suisun Bay,5.76,Dry,D,1.4287157287157288
+2001,Spring,Confluence,5.76,Dry,D,3.3996666666666666
+2001,Spring,North,5.76,Dry,D,3.4633333333333334
+2001,Spring,SouthCentral,5.76,Dry,D,9.853079490557752
+2001,Spring,Suisun Bay,5.76,Dry,D,1.786190476190476
+2001,Summer,Confluence,5.76,Dry,D,2.684111111111111
+2001,Summer,North,5.76,Dry,D,2.93
+2001,Summer,SouthCentral,5.76,Dry,D,22.01951558959974
+2001,Summer,Suisun Bay,5.76,Dry,D,2.1906349206349205
+2001,Fall,Confluence,5.76,Dry,D,1.914925925925926
+2001,Fall,North,5.76,Dry,D,2.4466666666666668
+2001,Fall,SouthCentral,5.76,Dry,D,10.392028985507245
+2001,Fall,Suisun Bay,5.76,Dry,D,1.638095238095238
+2002,Winter,Confluence,6.35,Dry,D,1.4563333333333333
+2002,Winter,North,6.35,Dry,D,3.776666666666667
+2002,Winter,SouthCentral,6.35,Dry,D,2.9294444444444445
+2002,Winter,Suisun Bay,6.35,Dry,D,1.207936507936508
+2002,Spring,Confluence,6.35,Dry,D,6.078333333333333
+2002,Spring,North,6.35,Dry,D,3.0833333333333335
+2002,Spring,SouthCentral,6.35,Dry,D,17.660469916556874
+2002,Spring,Suisun Bay,6.35,Dry,D,4.855238095238095
+2002,Summer,Confluence,6.35,Dry,D,3.807666666666667
+2002,Summer,North,6.35,Dry,D,2.7
+2002,Summer,SouthCentral,6.35,Dry,D,41.452331545266325
+2002,Summer,Suisun Bay,6.35,Dry,D,2.0601587301587303
+2002,Fall,Confluence,6.35,Dry,D,2.0423333333333336
+2002,Fall,North,6.35,Dry,D,2.16
+2002,Fall,SouthCentral,6.35,Dry,D,19.519561971458774
+2002,Fall,Suisun Bay,6.35,Dry,D,1.8171428571428572
+2003,Winter,Confluence,8.21,Above Normal,N,1.2833333333333332
+2003,Winter,North,8.21,Above Normal,N,1.6033333333333335
+2003,Winter,SouthCentral,8.21,Above Normal,N,4.713611111111112
+2003,Winter,Suisun Bay,8.21,Above Normal,N,1.6085714285714285
+2003,Spring,Confluence,8.21,Above Normal,N,4.093740740740741
+2003,Spring,North,8.21,Above Normal,N,3.1566666666666667
+2003,Spring,SouthCentral,8.21,Above Normal,N,27.741450026581603
+2003,Spring,Suisun Bay,8.21,Above Normal,N,3.6644444444444444
+2003,Summer,Confluence,8.21,Above Normal,N,2.8858333333333333
+2003,Summer,North,8.21,Above Normal,N,2.42
+2003,Summer,SouthCentral,8.21,Above Normal,N,42.06375619604567
+2003,Summer,Suisun Bay,8.21,Above Normal,N,3.010952380952381
+2003,Fall,Confluence,8.21,Above Normal,N,2.197
+2003,Fall,North,8.21,Above Normal,N,1.5616666666666665
+2003,Fall,SouthCentral,8.21,Above Normal,N,13.503058335697016
+2003,Fall,Suisun Bay,8.21,Above Normal,N,2.343809523809524
+2004,Winter,Confluence,7.51,Below Normal,N,1.2563333333333333
+2004,Winter,North,7.51,Below Normal,N,1.6533333333333333
+2004,Winter,SouthCentral,7.51,Below Normal,N,2.7820833333333335
+2004,Winter,Suisun Bay,7.51,Below Normal,N,1.2666666666666666
+2004,Spring,Confluence,7.51,Below Normal,N,4.353611111111111
+2004,Spring,North,7.51,Below Normal,N,6.965
+2004,Spring,SouthCentral,7.51,Below Normal,N,9.500416666666666
+2004,Spring,Suisun Bay,7.51,Below Normal,N,3.0757738095238096
+2004,Summer,Confluence,7.51,Below Normal,N,2.3275
+2004,Summer,North,7.51,Below Normal,N,2.3083333333333336
+2004,Summer,SouthCentral,7.51,Below Normal,N,34.039256535947715
+2004,Summer,Suisun Bay,7.51,Below Normal,N,2.4814285714285713
+2004,Fall,Confluence,7.51,Below Normal,N,1.5893055555555555
+2004,Fall,North,7.51,Below Normal,N,2.3266666666666667
+2004,Fall,SouthCentral,7.51,Below Normal,N,10.138581983518044
+2004,Fall,Suisun Bay,7.51,Below Normal,N,1.705873015873016
+2005,Winter,Confluence,8.49,Above Normal,W,0.8668350168350168
+2005,Winter,North,8.49,Above Normal,W,1.4300000000000002
+2005,Winter,SouthCentral,8.49,Above Normal,W,1.0258333333333334
+2005,Winter,Suisun Bay,8.49,Above Normal,W,0.8220159682539683
+2005,Spring,Confluence,8.49,Above Normal,W,2.2348181818181816
+2005,Spring,North,8.49,Above Normal,W,2.9233333333333333
+2005,Spring,SouthCentral,8.49,Above Normal,W,7.651450617283951
+2005,Spring,Suisun Bay,8.49,Above Normal,W,3.1867592592592593
+2005,Summer,Confluence,8.49,Above Normal,W,2.4843650793650793
+2005,Summer,North,8.49,Above Normal,W,1.53
+2005,Summer,SouthCentral,8.49,Above Normal,W,15.842369644153957
+2005,Summer,Suisun Bay,8.49,Above Normal,W,2.3305555555555557
+2005,Fall,Confluence,8.49,Above Normal,W,1.6400000000000001
+2005,Fall,North,8.49,Above Normal,W,1.26
+2005,Fall,SouthCentral,8.49,Above Normal,W,7.406258297258297
+2005,Fall,Suisun Bay,8.49,Above Normal,W,2.176190476190476
+2006,Winter,Confluence,13.2,Wet,W,1.7086616161616162
+2006,Winter,North,13.2,Wet,W,2.36
+2006,Winter,SouthCentral,13.2,Wet,W,2.6164814814814816
+2006,Winter,Suisun Bay,13.2,Wet,W,1.7623280423280423
+2006,Spring,Confluence,13.2,Wet,W,3.448962962962963
+2006,Spring,North,13.2,Wet,W,2.643333333333333
+2006,Spring,SouthCentral,13.2,Wet,W,5.891595441595442
+2006,Spring,Suisun Bay,13.2,Wet,W,3.719047619047619
+2006,Summer,Confluence,13.2,Wet,W,2.867247474747475
+2006,Summer,North,13.2,Wet,W,2.43
+2006,Summer,SouthCentral,13.2,Wet,W,17.91934126984127
+2006,Summer,Suisun Bay,13.2,Wet,W,2.6329166666666666
+2006,Fall,Confluence,13.2,Wet,W,1.8516666666666666
+2006,Fall,North,13.2,Wet,W,1.9000000000000001
+2006,Fall,SouthCentral,13.2,Wet,W,3.935550802139037
+2006,Fall,Suisun Bay,13.2,Wet,W,1.7480952380952381
+2007,Winter,Confluence,6.19,Dry,D,1.588888888888889
+2007,Winter,North,6.19,Dry,D,2.1
+2007,Winter,SouthCentral,6.19,Dry,D,9.547851851851853
+2007,Winter,Suisun Bay,6.19,Dry,D,1.6347023809523809
+2007,Spring,Confluence,6.19,Dry,D,2.415580808080808
+2007,Spring,North,6.19,Dry,D,4.42
+2007,Spring,SouthCentral,6.19,Dry,D,28.688368280326486
+2007,Spring,Suisun Bay,6.19,Dry,D,2.8926587301587303
+2007,Summer,Confluence,6.19,Dry,D,1.95325
+2007,Summer,North,6.19,Dry,D,1.8733333333333333
+2007,Summer,SouthCentral,6.19,Dry,D,51.0186037414966
+2007,Summer,Suisun Bay,6.19,Dry,D,2.0490476190476192
+2007,Fall,Confluence,6.19,Dry,D,1.7870202020202022
+2007,Fall,North,6.19,Dry,D,0.7466666666666667
+2007,Fall,SouthCentral,6.19,Dry,D,11.331728036175711
+2007,Fall,Suisun Bay,6.19,Dry,D,2.3123809523809524
+2008,Winter,Confluence,5.16,Critical,D,1.362436507936508
+2008,Winter,North,5.16,Critical,D,3.206666666666667
+2008,Winter,SouthCentral,5.16,Critical,D,3.683549019607843
+2008,Winter,Suisun Bay,5.16,Critical,D,1.630952380952381
+2008,Spring,Confluence,5.16,Critical,D,5.319924242424243
+2008,Spring,North,5.16,Critical,D,3.4333333333333336
+2008,Spring,SouthCentral,5.16,Critical,D,30.678349206349207
+2008,Spring,Suisun Bay,5.16,Critical,D,3.0152579365079366
+2008,Summer,Confluence,5.16,Critical,D,2.7830555555555554
+2008,Summer,North,5.16,Critical,D,3.493333333333333
+2008,Summer,SouthCentral,5.16,Critical,D,39.792981299656525
+2008,Summer,Suisun Bay,5.16,Critical,D,3.023333333333333
+2008,Fall,Confluence,5.16,Critical,D,1.8872222222222221
+2008,Fall,North,5.16,Critical,D,1.5933333333333333
+2008,Fall,SouthCentral,5.16,Critical,D,13.253294491129784
+2008,Fall,Suisun Bay,5.16,Critical,D,1.8871428571428572
+2009,Winter,Confluence,5.78,Dry,D,1.97
+2009,Winter,North,5.78,Dry,D,2.9766666666666666
+2009,Winter,SouthCentral,5.78,Dry,D,7.658111111111111
+2009,Winter,Suisun Bay,5.78,Dry,D,1.7304761904761905
+2009,Spring,Confluence,5.78,Dry,D,2.518787878787879
+2009,Spring,North,5.78,Dry,D,2.276666666666667
+2009,Spring,SouthCentral,5.78,Dry,D,29.03913454235589
+2009,Spring,Suisun Bay,5.78,Dry,D,3.1138690476190476
+2009,Summer,Confluence,5.78,Dry,D,2.661388888888889
+2009,Summer,North,5.78,Dry,D,1.6966666666666665
+2009,Summer,SouthCentral,5.78,Dry,D,46.76253106254322
+2009,Summer,Suisun Bay,5.78,Dry,D,2.7630357142857145
+2009,Fall,Confluence,5.78,Dry,D,1.8475
+2009,Fall,North,5.78,Dry,D,1.1466666666666667
+2009,Fall,SouthCentral,5.78,Dry,D,7.484209401709402
+2009,Fall,Suisun Bay,5.78,Dry,D,1.8376190476190477
+2010,Winter,Confluence,7.08,Below Normal,D,1.5182777777777778
+2010,Winter,North,7.08,Below Normal,D,1.6300000000000001
+2010,Winter,SouthCentral,7.08,Below Normal,D,5.583350383631713
+2010,Winter,Suisun Bay,7.08,Below Normal,D,1.6571428571428573
+2010,Spring,Confluence,7.08,Below Normal,D,8.53850815850816
+2010,Spring,North,7.08,Below Normal,D,1.84
+2010,Spring,SouthCentral,7.08,Below Normal,D,11.629149382716049
+2010,Spring,Suisun Bay,7.08,Below Normal,D,7.676388888888889
+2010,Summer,Confluence,7.08,Below Normal,D,3.3333849483849485
+2010,Summer,North,7.08,Below Normal,D,1.7833333333333332
+2010,Summer,SouthCentral,7.08,Below Normal,D,25.120654347529346
+2010,Summer,Suisun Bay,7.08,Below Normal,D,3.3983597883597887
+2010,Fall,Confluence,7.08,Below Normal,D,2.0482400932400933
+2010,Fall,North,7.08,Below Normal,D,0.8933333333333334
+2010,Fall,SouthCentral,7.08,Below Normal,D,5.132806553911205
+2010,Fall,Suisun Bay,7.08,Below Normal,D,2.8974603174603173
+2011,Winter,Confluence,10.54,Wet,N,1.2744322344322345
+2011,Winter,North,10.54,Wet,N,2.296666666666667
+2011,Winter,SouthCentral,10.54,Wet,N,2.3650112233445566
+2011,Winter,Suisun Bay,10.54,Wet,N,1.2557142857142858
+2011,Spring,Confluence,10.54,Wet,N,2.9561363636363636
+2011,Spring,North,10.54,Wet,N,4.083333333333334
+2011,Spring,SouthCentral,10.54,Wet,N,4.629431818181818
+2011,Spring,Suisun Bay,10.54,Wet,N,4.346712962962963
+2011,Summer,Confluence,10.54,Wet,N,2.728741258741259
+2011,Summer,North,10.54,Wet,N,2.87
+2011,Summer,SouthCentral,10.54,Wet,N,8.558986549848619
+2011,Summer,Suisun Bay,10.54,Wet,N,3.500138888888889
+2011,Fall,Confluence,10.54,Wet,N,4.6712393162393155
+2011,Fall,North,10.54,Wet,N,1.9233333333333333
+2011,Fall,SouthCentral,10.54,Wet,N,4.079964630779848
+2011,Fall,Suisun Bay,10.54,Wet,N,3.34
+2012,Winter,Confluence,6.89,Below Normal,D,1.5349230769230768
+2012,Winter,North,6.89,Below Normal,D,4.616666666666667
+2012,Winter,SouthCentral,6.89,Below Normal,D,5.730608496732026
+2012,Winter,Suisun Bay,6.89,Below Normal,D,1.4874603174603176
+2012,Spring,Confluence,6.89,Below Normal,D,2.5193803418803418
+2012,Spring,North,6.89,Below Normal,D,4.056666666666667
+2012,Spring,SouthCentral,6.89,Below Normal,D,8.68628141316547
+2012,Spring,Suisun Bay,6.89,Below Normal,D,3.7796296296296297
+2012,Summer,Confluence,6.89,Below Normal,D,3.4199609279609278
+2012,Summer,North,6.89,Below Normal,D,2.9266666666666667
+2012,Summer,SouthCentral,6.89,Below Normal,D,27.51477658045977
+2012,Summer,Suisun Bay,6.89,Below Normal,D,2.5966666666666667
+2012,Fall,Confluence,6.89,Below Normal,D,6.238162393162393
+2012,Fall,North,6.89,Below Normal,D,1.4733333333333334
+2012,Fall,SouthCentral,6.89,Below Normal,D,8.229260934178743
+2012,Fall,Suisun Bay,6.89,Below Normal,D,1.8836904761904762
+2013,Winter,Confluence,5.83,Dry,D,1.4610299145299146
+2013,Winter,North,5.83,Dry,D,2.6966666666666668
+2013,Winter,SouthCentral,5.83,Dry,D,2.9949159420289857
+2013,Winter,Suisun Bay,5.83,Dry,D,1.5535714285714284
+2013,Spring,Confluence,5.83,Dry,D,10.198247863247863
+2013,Spring,North,5.83,Dry,D,4.22
+2013,Spring,SouthCentral,5.83,Dry,D,5.2764825593395255
+2013,Spring,Suisun Bay,5.83,Dry,D,2.8991666666666664
+2013,Summer,Confluence,5.83,Dry,D,2.743888888888889
+2013,Summer,North,5.83,Dry,D,2.236666666666667
+2013,Summer,SouthCentral,5.83,Dry,D,19.31224116161616
+2013,Summer,Suisun Bay,5.83,Dry,D,2.2088888888888887
+2013,Fall,Confluence,5.83,Dry,D,2.1822893772893774
+2013,Fall,North,5.83,Dry,D,1.6766666666666665
+2013,Fall,SouthCentral,5.83,Dry,D,4.527536231884058
+2013,Fall,Suisun Bay,5.83,Dry,D,1.9573015873015873
+2014,Winter,Confluence,4.07,Critical,D,1.9020879120879122
+2014,Winter,North,4.07,Critical,D,3.9366666666666665
+2014,Winter,SouthCentral,4.07,Critical,D,6.385873015873016
+2014,Winter,Suisun Bay,4.07,Critical,D,2.5877777777777777
+2014,Spring,Confluence,4.07,Critical,D,3.423992673992674
+2014,Spring,North,4.07,Critical,D,3.51
+2014,Spring,SouthCentral,4.07,Critical,D,10.36298270219729
+2014,Spring,Suisun Bay,4.07,Critical,D,2.747777777777778
+2014,Summer,Confluence,4.07,Critical,D,3.0205882352941176
+2014,Summer,North,4.07,Critical,D,1.7566666666666666
+2014,Summer,SouthCentral,4.07,Critical,D,8.287857309408603
+2014,Summer,Suisun Bay,4.07,Critical,D,2.3666666666666667
+2014,Fall,Confluence,4.07,Critical,D,3.638196881091618
+2014,Fall,North,4.07,Critical,D,0.96
+2014,Fall,SouthCentral,4.07,Critical,D,9.074601960784314
+2014,Fall,Suisun Bay,4.07,Critical,D,2.1966666666666668
+2015,Winter,Confluence,4,Critical,D,1.1354594017094017
+2015,Winter,North,4,Critical,D,1.3633333333333333
+2015,Winter,SouthCentral,4,Critical,D,3.4487888198757766
+2015,Winter,Suisun Bay,4,Critical,D,1.1972222222222222
+2015,Spring,Confluence,4,Critical,D,6.013310185185185
+2015,Spring,North,4,Critical,D,2.4966666666666666
+2015,Spring,SouthCentral,4,Critical,D,10.474395553904
+2015,Spring,Suisun Bay,4,Critical,D,2.416111111111111
+2015,Summer,Confluence,4,Critical,D,3.2596084656084656
+2015,Summer,North,4,Critical,D,1.5366666666666666
+2015,Summer,SouthCentral,4,Critical,D,5.2080274774774775
+2015,Summer,Suisun Bay,4,Critical,D,3.9527380952380953
+2015,Fall,Confluence,4,Critical,D,2.2919305555555556
+2015,Fall,North,4,Critical,D,1.11
+2015,Fall,SouthCentral,4,Critical,D,5.755047846889952
+2015,Fall,Suisun Bay,4,Critical,D,1.4344444444444444
+2016,Winter,Confluence,6.71,Below Normal,D,3.6409663147310205
+2016,Winter,North,6.71,Below Normal,D,1.3933333333333335
+2016,Winter,SouthCentral,6.71,Below Normal,D,5.6421698924731185
+2016,Winter,Suisun Bay,6.71,Below Normal,D,1.4816931216931217
+2016,Spring,Confluence,6.71,Below Normal,D,21.030630341880343
+2016,Spring,North,6.71,Below Normal,D,1.9133333333333333
+2016,Spring,SouthCentral,6.71,Below Normal,D,9.578226727982162
+2016,Spring,Suisun Bay,6.71,Below Normal,D,7.817354497354497
+2016,Summer,Confluence,6.71,Below Normal,D,7.366160714285715
+2016,Summer,North,6.71,Below Normal,D,1.5666666666666667
+2016,Summer,SouthCentral,6.71,Below Normal,D,32.68685152129817
+2016,Summer,Suisun Bay,6.71,Below Normal,D,2.751984126984127
+2016,Fall,Confluence,6.71,Below Normal,D,1.91493567251462
+2016,Fall,North,6.71,Below Normal,D,1.3733333333333333
+2016,Fall,SouthCentral,6.71,Below Normal,D,14.449433621933622
+2016,Fall,Suisun Bay,6.71,Below Normal,D,2.08752380952381
+2017,Winter,Confluence,14.14,Wet,N,2.2422549019607843
+2017,Winter,North,14.14,Wet,N,1.52
+2017,Winter,SouthCentral,14.14,Wet,N,2.4728955453149
+2017,Winter,Suisun Bay,14.14,Wet,N,2.555761904761905
+2017,Spring,Confluence,14.14,Wet,N,3.0066153846153845
+2017,Spring,North,14.14,Wet,N,3.48
+2017,Spring,SouthCentral,14.14,Wet,N,3.300666666666667
+2017,Spring,Suisun Bay,14.14,Wet,N,4.245
+2017,Summer,Confluence,14.14,Wet,N,6.258208333333333
+2017,Summer,North,14.14,Wet,N,3.9833333333333334
+2017,Summer,SouthCentral,14.14,Wet,N,6.944702380952381
+2017,Summer,Suisun Bay,14.14,Wet,N,3.280952380952381
+2017,Fall,Confluence,14.14,Wet,N,2.1570992063492063
+2017,Fall,North,14.14,Wet,N,1.9466666666666665
+2017,Fall,SouthCentral,14.14,Wet,N,3.928551454680487
+2017,Fall,Suisun Bay,14.14,Wet,N,2.108690476190476
+2018,Winter,Confluence,7.14,Below Normal,N,1.5383518845315904
+2018,Winter,North,7.14,Below Normal,N,2.4566666666666666
+2018,Winter,SouthCentral,7.14,Below Normal,N,1.9167494545454544
+2018,Winter,Suisun Bay,7.14,Below Normal,N,1.8585714285714285
+2018,Spring,Confluence,7.14,Below Normal,N,3.206923076923077
+2018,Spring,North,7.14,Below Normal,N,4.616666666666666
+2018,Spring,SouthCentral,7.14,Below Normal,N,3.200358024691358
+2018,Spring,Suisun Bay,7.14,Below Normal,N,3.6261838624338627
+2018,Summer,Confluence,7.14,Below Normal,N,3.112535947712418
+2018,Summer,North,7.14,Below Normal,N,1.8766666666666667
+2018,Summer,SouthCentral,7.14,Below Normal,N,9.654626171937073
+2018,Summer,Suisun Bay,7.14,Below Normal,N,2.6623809523809525
+2018,Fall,Confluence,7.14,Below Normal,N,1.5372464901960785
+2018,Fall,North,7.14,Below Normal,N,0.6675846666666666
+2018,Fall,SouthCentral,7.14,Below Normal,N,4.992436047619048
+2018,Fall,Suisun Bay,7.14,Below Normal,N,2.1846031746031747
+2019,Winter,Confluence,10.34,Wet,N,1.2803860722610723
+2019,Winter,North,10.34,Wet,N,1.31
+2019,Winter,SouthCentral,10.34,Wet,N,1.615591742857143
+2019,Winter,Suisun Bay,10.34,Wet,N,1.4482539682539683
+2019,Spring,Confluence,10.34,Wet,N,2.944798534798535
+2019,Spring,North,10.34,Wet,N,2.08
+2019,Spring,SouthCentral,10.34,Wet,N,1.824429678932179
+2019,Spring,Suisun Bay,10.34,Wet,N,3.0424074074074072
+2019,Summer,Confluence,10.34,Wet,N,2.303878722222222
+2019,Summer,North,10.34,Wet,N,1.24
+2019,Summer,SouthCentral,10.34,Wet,N,7.209038692857143
+2019,Summer,Suisun Bay,10.34,Wet,N,3.597850529100529
+2019,Fall,Confluence,10.34,Wet,N,1.874813753968254
+2019,Fall,North,10.34,Wet,N,0.915354
+2019,Fall,SouthCentral,10.34,Wet,N,2.9830223099415205
+2019,Fall,Suisun Bay,10.34,Wet,N,1.920653476190476
+2020,Winter,Confluence,6.12,Dry,D,1.5078882706552708
+2020,Winter,North,6.12,Dry,D,1.8399999999999999
+2020,Winter,SouthCentral,6.12,Dry,D,4.144956019813519
+2020,Winter,Suisun Bay,6.12,Dry,D,1.7766666666666666
+2020,Spring,Confluence,6.12,Dry,D,2.04
+2020,Spring,North,6.12,Dry,D,1.74
+2020,Spring,SouthCentral,6.12,Dry,D,1.5827365344696969
+2020,Spring,Suisun Bay,6.12,Dry,D,1.84
+2020,Summer,Confluence,6.12,Dry,D,2.9835384615384615
+2020,Summer,North,6.12,Dry,D,1.1433333333333333
+2020,Summer,SouthCentral,6.12,Dry,D,7.487351394736843
+2020,Summer,Suisun Bay,6.12,Dry,D,1.9371957777777777
+2020,Fall,Confluence,6.12,Dry,D,2.2929944273504272
+2020,Fall,North,6.12,Dry,D,0.68
+2020,Fall,SouthCentral,6.12,Dry,D,3.2213517116427433
+2020,Fall,Suisun Bay,6.12,Dry,D,1.4033333333333333
+2021,Winter,Confluence,3.8,Critical,D,1.734
+2021,Winter,North,3.8,Critical,D,0.74
+2021,Winter,SouthCentral,3.8,Critical,D,2.317647730769231
+2021,Winter,Suisun Bay,3.8,Critical,D,NA
+2021,Spring,Confluence,3.8,Critical,D,3.995576923076923
+2021,Spring,North,3.8,Critical,D,0.698809
+2021,Spring,SouthCentral,3.8,Critical,D,2.8080119813258637
+2021,Spring,Suisun Bay,3.8,Critical,D,3.112222222222222
+2021,Summer,Confluence,3.8,Critical,D,3.903846153846154
+2021,Summer,North,3.8,Critical,D,0.8733333333333333
+2021,Summer,SouthCentral,3.8,Critical,D,5.995801851851851
+2021,Summer,Suisun Bay,3.8,Critical,D,4.5888888888888895
+2021,Fall,Confluence,3.8,Critical,D,1.6659029203431373
+2021,Fall,North,3.8,Critical,D,0.561368
+2021,Fall,SouthCentral,3.8,Critical,D,1.4584803472222223
+2021,Fall,Suisun Bay,3.8,Critical,D,2.336190476190476

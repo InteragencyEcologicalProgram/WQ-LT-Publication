@@ -1,5 +1,5 @@
 ---
-title: "Long-term WQ: Sampling Effort from DroughtData"
+title: "Long-term WQ: Sampling Effort"
 author: "Dave Bosworth"
 date: '`r format(Sys.Date(), "%B %d, %Y")`'
 output: 
@@ -25,7 +25,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Purpose
 
-Look at the sampling effort for the various parameters to be included in the long-term WQ publication. This will help us decide how to structure our ANOVA models. This document also contains the code used to create a map and a summary table of the surveys, parameters, and periods of record for the publication.
+Look at the sampling effort for the various parameters to be included in the long-term WQ publication. This will help us decide how to structure our ANOVA models. Sampling effort is visualized with tile plots of samples collected by region and season and maps displaying spatial coverage. This document also contains a summary table of the surveys, parameters, and periods of record for the publication.
 
 
 # Global code and functions
@@ -33,19 +33,21 @@ Look at the sampling effort for the various parameters to be included in the lon
 ```{r load packages, message = FALSE, warning = FALSE}
 # Load packages
 library(tidyverse)
-library(lubridate)
 library(scales)
-# Make sure we are using `DroughtData` version 2.0.0, commit 76a387a4549bb1c4e97757b37246efde33ce6d90
-# install.packages("devtools")
-# devtools::install_github("mountaindboz/DroughtData", ref = "76a387a4549bb1c4e97757b37246efde33ce6d90")
-library(DroughtData)
 library(sf)
+library(qs)
 library(here)
+library(conflicted)
+```
+
+```{r declare conflict pref}
+# Declare package conflict preferences
+conflicts_prefer(dplyr::filter())
 ```
 
 ```{r check dir}
 # Check if we are in the correct working directory
-i_am("Sampling_Effort_DroughtData.Rmd")
+i_am("data_processing/Sampling_Effort_DroughtData.Rmd")
 ```
 
 ```{r session info}
@@ -53,8 +55,15 @@ i_am("Sampling_Effort_DroughtData.Rmd")
 devtools::session_info()
 ```
 
+# Import and Prepare Data
 
-# Prepare Data
+```{r import data}
+# Define file paths for raw data for WQ measurements, nutrients, and chlorophyll
+fp_raw_data <- dir(path = here("data"), pattern = "^raw.+qs$", full.names = TRUE)
+
+# Import and combine raw data
+df_raw_data <- map(fp_raw_data, qread) %>% list_rbind()
+```
 
 ```{r prepare data}
 # Define factor level for Region
@@ -74,37 +83,25 @@ season_lev <- c(
   "Fall"
 )
 
-# Create a nested data frame and prepare to run the summary plot function on
-ndf_lt_wq <- 
-  tibble(
-    Parameter = c(
-      "Temperature",
-      "Salinity",
-      "Secchi",
-      "DissAmmonia",
-      "DissNitrateNitrite",
-      "DissOrthophos",
-      "Chlorophyll"
-    ),
-    df_data = c(
-      rep(list(raw_wq_1975_2021), 3),
-      rep(list(raw_nutr_1975_2021), 3),
-      list(raw_chla_1975_2021)
-    )
-  ) %>% 
+# Define factor level for Parameter
+param_lev <- c(
+  "Temperature",
+  "Salinity",
+  "Secchi",
+  "DissAmmonia",
+  "DissNitrateNitrite",
+  "DissOrthophos",
+  "Chlorophyll"
+)
+
+# Prepare raw data to run the summary plot function on
+df_raw_data_c <- df_raw_data %>% 
   mutate(
-    df_data_c = map2(
-      df_data, 
-      Parameter,
-      ~ drop_na(.x, all_of(.y)) %>% 
-        mutate(
-          Region = factor(Region, levels = region_lev),
-          Season = factor(Season, levels = season_lev)
-        )
-    )
+    Region = factor(Region, levels = region_lev),
+    Season = factor(Season, levels = season_lev),
+    Parameter = factor(Parameter, levels = param_lev)
   )
 ```
-
 
 # Create Plots
 
@@ -128,82 +125,47 @@ plot_samp_effort <- function(df) {
 
 ```{r create plots}
 # Create plots for each Parameter
-ndf_lt_wq_plt <- ndf_lt_wq %>% mutate(plt = map(df_data_c, .f = plot_samp_effort))
+ndf_se_plt <- df_raw_data_c %>% 
+  nest(.by = Parameter, .key = "df_data") %>% 
+  mutate(plt = map(df_data, .f = plot_samp_effort)) %>% 
+  arrange(Parameter)
 ```
 
 # Sampling Effort {.tabset .tabset-pills}
 
 ```{r print plots, echo = FALSE, results = "asis", fig.width = 8, fig.height = 7}
-for (i in 1:nrow(ndf_lt_wq_plt)) {
+for (i in 1:nrow(ndf_se_plt)) {
   # Create subheadings for each Parameter
-  cat("## ", ndf_lt_wq_plt$Parameter[i], "\n\n")
+  cat("## ", ndf_se_plt$Parameter[i], "\n\n")
   # Print plot
-  print(ndf_lt_wq_plt$plt[[i]])
+  print(ndf_se_plt$plt[[i]])
   cat("\n\n")
 }
 ```
+
+# Regional Coverage
+
+Placeholder
 
 # Survey Summary Table
 
 Create a table of the surveys used for each parameter in the publication and their periods of record. This table is used in the publication.
 
 ```{r summarize survey data}
-df_survey_summ <- ndf_lt_wq %>%
-  transmute(
-    Parameter,
-    df_survey = map(
-      df_data_c,
-      ~ group_by(.x, Source) %>%
-        summarize(min_yr = min(YearAdj), max_yr = max(YearAdj))
-    )
+df_survey_summ <- df_raw_data_c %>%
+  summarize(
+    min_yr = min(YearAdj), 
+    max_yr = max(YearAdj),
+    .by = c(Source, Parameter)
   ) %>% 
-  unnest(df_survey) %>% 
-  relocate(Source) %>% 
   arrange(Source, Parameter)
 
-print(df_survey_summ, n = 40)
+print(df_survey_summ, n = 50)
 ```
 
 Export survey summary table to be used in the publication.
 
 ```{r export survey summary}
 df_survey_summ %>% write_csv(here("outputs/survey_summary_table.csv"))
-```
-
-# Sampling Location Map
-
-Create a two panel map of the sampling locations and regions used in the publication. One panel is for the water quality parameters and velocity stations, and the other panel is for the nutrient and chlorophyll data. This map is used in the publication.
-
-```{r prepare station coords}
-# Prepare sampling location coordinates
-# Water quality measurements (water temperature, salinity, Secchi depth)
-sf_wq_meas <- ndf_lt_wq %>% 
-  filter(Parameter %in% c("Temperature", "Salinity", "Secchi")) %>% 
-  transmute(df_coords = map(df_data_c, ~ distinct(.x, Source, Station, Latitude, Longitude))) %>% 
-  unnest(df_coords) %>% 
-  distinct() %>% 
-  st_as_sf(coords = c("Longitude", "Latitude"), crs = 4326, remove = FALSE)
-
-# Nutrients and chlorophyll
-sf_nutr_chl <- ndf_lt_wq %>% 
-  filter(Parameter %in% c("DissAmmonia", "DissNitrateNitrite", "DissOrthophos", "Chlorophyll")) %>% 
-  transmute(df_coords = map(df_data_c, ~ distinct(.x, Source, Station, Latitude, Longitude))) %>% 
-  unnest(df_coords) %>% 
-  distinct() %>% 
-  st_as_sf(coords = c("Longitude", "Latitude"), crs = 4326, remove = FALSE)
-
-# Water velocity stations
-
-
-# Region polygons
-
-
-# Waterways basemap
-
-
-# States and CA maps for inset
-
-
-
 ```
 

@@ -1283,7 +1283,8 @@ Finally, we'll calculate seasonal-regional averages for each adjusted water year
 # Add regions and keep raw chlorophyll data as an object to export
 raw_chla <- df_chla_c3 %>% 
   left_join(df_regions, by = join_by(SubRegion)) %>% 
-  relocate(Region, .before = SubRegion)
+  relocate(Region, .before = SubRegion) %>% 
+  mutate(Parameter = "Chlorophyll", .before = Sign) 
 
 # Calculate seasonal-regional averages, substituting random numbers from a
   # uniform distribution for the <RL values

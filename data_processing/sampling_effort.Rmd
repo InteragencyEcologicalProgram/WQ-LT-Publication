@@ -128,7 +128,8 @@ plot_samp_effort <- function(df) {
 ndf_se_plt <- df_raw_data_c %>% 
   nest(.by = Parameter, .key = "df_data") %>% 
   mutate(plt = map(df_data, .f = plot_samp_effort)) %>% 
-  arrange(Parameter)
+  arrange(Parameter) %>% 
+  mutate(Parameter = as.character(Parameter))
 ```
 
 # Sampling Effort {.tabset .tabset-pills}

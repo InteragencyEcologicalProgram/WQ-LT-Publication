@@ -20,20 +20,20 @@ model_plotter <- function(model, data, parameter) {
     parameter == "Temperature" ~ " (°C)",
     parameter == "Salinity_l" ~ " (log)",
     parameter == "Secchi_l" ~ " (log)",
-    parameter == "LogAm" ~ " (log)",
-    parameter == "LogNat" ~ " (log)",
-    parameter == "LogPhos" ~ " (log)",
-    parameter == "LogChl" ~ " (log)"
+    parameter == "DissAmmonia_l" ~ " (log)",
+    parameter == "DissNitrateNitrite_l" ~ " (log)",
+    parameter == "DissOrthophos_l" ~ " (log)",
+    parameter == "Chlorophyll_l" ~ " (log)"
   )
 
   parameter_label <- dplyr::case_when(
     parameter == "Secchi_l" ~ "secchi depth",
     parameter == "Salinity_l" ~ "salinity",
     parameter == "Temperature" ~ "temperature",
-    parameter == "LogAm" ~ "ammonia",
-    parameter == "LogNat" ~ "nitrate",
-    parameter == "LogPhos" ~ "phosphate",
-    parameter == "LogChl" ~ "chlorophyll"
+    parameter == "DissAmmonia_l" ~ "ammonia",
+    parameter == "DissNitrateNitrite_l" ~ "nitrate",
+    parameter == "DissOrthophos_l" ~ "phosphate",
+    parameter == "Chlorophyll_l" ~ "chlorophyll"
   )
 
   p_hist <- ggplot2::ggplot(data, ggplot2::aes(x = .data$Residuals)) +
@@ -245,5 +245,27 @@ color_pal_drought <- function(aes_type = c("fill", "color"), scale_title = "Drou
     ggplot2::scale_fill_manual(name = scale_title, values = pal_drought)
   } else {
     ggplot2::scale_color_manual(name = scale_title, values = pal_drought)
+  }
+}
+
+# Define color palette for the year type classifications
+color_pal_yrtype <- function(aes_type = c("fill", "color"), scale_title = "Year Type") {
+  # Evaluate choices for aes_type
+  aes_type <- match.arg(aes_type, c("fill", "color"))
+
+  # Define color palette for the Year Type categories
+  pal_yrtype <- c(
+    "Critical" = "#FDE333",
+    "Dry" = "#53CC67",
+    "Below Normal" = "#009B95",
+    "Above Normal" = "#00588B",
+    "Wet" = "#4B0055"
+  )
+
+  # Apply palette based on aes_type
+  if (aes_type == "fill") {
+    ggplot2::scale_fill_manual(name = scale_title, values = pal_yrtype)
+  } else {
+    ggplot2::scale_color_manual(name = scale_title, values = pal_yrtype)
   }
 }

@@ -1,37 +1,37 @@
 Model,Parameter,Sum Sq,Df,F value,Pr(>F)
-Ammonium,(Intercept),141.4ZZZ,1,944.5ZZZ,< 0.001ZZZ
-Ammonium,Drought,0.03335ZZZ,2,0.1114ZZZ,0.8946ZZZ
-Ammonium,Region,41.21ZZZ,3,91.74ZZZ,< 0.001ZZZ
-Ammonium,Season,18.81ZZZ,3,41.88ZZZ,< 0.001ZZZ
-Ammonium,StocktonUpgrade,2.422ZZZ,1,16.17ZZZ,< 0.001ZZZ
-Ammonium,Drought:Region,9.927ZZZ,6,11.05ZZZ,< 0.001ZZZ
-Ammonium,Drought:Season,7.431ZZZ,6,8.273ZZZ,< 0.001ZZZ
-Ammonium,Region:Season,45.63ZZZ,9,33.86ZZZ,< 0.001ZZZ
-Ammonium,Region:StocktonUpgrade,22.81ZZZ,3,50.77ZZZ,< 0.001ZZZ
-Ammonium,Residuals,98.97ZZZ,661,ZZZ,ZZZ
-Nitrate + Nitrite,(Intercept),31.55ZZZ,1,375.1ZZZ,< 0.001ZZZ
-Nitrate + Nitrite,Drought,3.236ZZZ,2,19.24ZZZ,< 0.001ZZZ
-Nitrate + Nitrite,Region,42.53ZZZ,3,168.6ZZZ,< 0.001ZZZ
-Nitrate + Nitrite,Season,2.962ZZZ,3,11.74ZZZ,< 0.001ZZZ
-Nitrate + Nitrite,Drought:Region,3.083ZZZ,6,6.110ZZZ,< 0.001ZZZ
-Nitrate + Nitrite,Drought:Season,2.520ZZZ,6,4.993ZZZ,< 0.001ZZZ
-Nitrate + Nitrite,Region:Season,6.662ZZZ,9,8.801ZZZ,< 0.001ZZZ
-Nitrate + Nitrite,Residuals,60.38ZZZ,718,ZZZ,ZZZ
-Ortho-phosphate,(Intercept),182.7ZZZ,1,1956.ZZZ,< 0.001ZZZ
-Ortho-phosphate,Drought,3.517ZZZ,2,18.82ZZZ,< 0.001ZZZ
-Ortho-phosphate,Region,1.799ZZZ,3,6.418ZZZ,< 0.001ZZZ
-Ortho-phosphate,Season,1.111ZZZ,3,3.965ZZZ,0.008084ZZZ
-Ortho-phosphate,Drought:Region,1.469ZZZ,6,2.621ZZZ,0.01608ZZZ
-Ortho-phosphate,Drought:Season,1.546ZZZ,6,2.758ZZZ,0.01173ZZZ
-Ortho-phosphate,Region:Season,7.513ZZZ,9,8.935ZZZ,< 0.001ZZZ
-Ortho-phosphate,Residuals,67.27ZZZ,720,ZZZ,ZZZ
-Chlorophyll,(Intercept),20.09ZZZ,1,81.32ZZZ,< 0.001ZZZ
-Chlorophyll,Drought,0.006508ZZZ,2,0.01317ZZZ,0.9869ZZZ
-Chlorophyll,Region,72.84ZZZ,3,98.30ZZZ,< 0.001ZZZ
-Chlorophyll,Season,20.28ZZZ,3,27.37ZZZ,< 0.001ZZZ
-Chlorophyll,Regime,16.61ZZZ,1,67.22ZZZ,< 0.001ZZZ
-Chlorophyll,Drought:Region,10.31ZZZ,6,6.957ZZZ,< 0.001ZZZ
-Chlorophyll,Drought:Season,6.807ZZZ,6,4.593ZZZ,< 0.001ZZZ
-Chlorophyll,Region:Season,30.05ZZZ,9,13.52ZZZ,< 0.001ZZZ
-Chlorophyll,Region:Regime,10.37ZZZ,3,13.99ZZZ,< 0.001ZZZ
-Chlorophyll,Residuals,177.1ZZZ,717,ZZZ,ZZZ
+Ammonium,(Intercept),74.97ZZZ,1,502.8ZZZ,< 0.001ZZZ
+Ammonium,Drought,1.779ZZZ,2,5.968ZZZ,0.002700ZZZ
+Ammonium,Region,1.656ZZZ,3,3.702ZZZ,0.01160ZZZ
+Ammonium,Season,23.03ZZZ,3,51.48ZZZ,< 0.001ZZZ
+Ammonium,StocktonUpgrade,0.8526ZZZ,1,5.719ZZZ,0.01706ZZZ
+Ammonium,Drought:Region,9.670ZZZ,6,10.81ZZZ,< 0.001ZZZ
+Ammonium,Drought:Season,7.447ZZZ,6,8.325ZZZ,< 0.001ZZZ
+Ammonium,Region:Season,46.16ZZZ,9,34.40ZZZ,< 0.001ZZZ
+Ammonium,Region:StocktonUpgrade,22.85ZZZ,3,51.09ZZZ,< 0.001ZZZ
+Ammonium,Residuals,98.55ZZZ,661,ZZZ,ZZZ
+Nitrate + Nitrite,(Intercept),16.83ZZZ,1,196.2ZZZ,< 0.001ZZZ
+Nitrate + Nitrite,Drought,1.099ZZZ,2,6.409ZZZ,0.001742ZZZ
+Nitrate + Nitrite,Region,40.84ZZZ,3,158.7ZZZ,< 0.001ZZZ
+Nitrate + Nitrite,Season,1.315ZZZ,3,5.112ZZZ,0.001665ZZZ
+Nitrate + Nitrite,Drought:Region,3.374ZZZ,6,6.557ZZZ,< 0.001ZZZ
+Nitrate + Nitrite,Drought:Season,2.380ZZZ,6,4.626ZZZ,< 0.001ZZZ
+Nitrate + Nitrite,Region:Season,6.875ZZZ,9,8.906ZZZ,< 0.001ZZZ
+Nitrate + Nitrite,Residuals,61.58ZZZ,718,ZZZ,ZZZ
+Ortho-phosphate,(Intercept),195.7ZZZ,1,2101.ZZZ,< 0.001ZZZ
+Ortho-phosphate,Drought,1.298ZZZ,2,6.968ZZZ,0.001007ZZZ
+Ortho-phosphate,Region,11.07ZZZ,3,39.60ZZZ,< 0.001ZZZ
+Ortho-phosphate,Season,2.329ZZZ,3,8.333ZZZ,< 0.001ZZZ
+Ortho-phosphate,Drought:Region,1.814ZZZ,6,3.246ZZZ,0.003731ZZZ
+Ortho-phosphate,Drought:Season,1.550ZZZ,6,2.773ZZZ,0.01132ZZZ
+Ortho-phosphate,Region:Season,7.531ZZZ,9,8.983ZZZ,< 0.001ZZZ
+Ortho-phosphate,Residuals,67.07ZZZ,720,ZZZ,ZZZ
+Chlorophyll,(Intercept),2.067ZZZ,1,8.185ZZZ,0.004347ZZZ
+Chlorophyll,Drought,1.138ZZZ,2,2.252ZZZ,0.1059ZZZ
+Chlorophyll,Region,34.55ZZZ,3,45.60ZZZ,< 0.001ZZZ
+Chlorophyll,Season,13.18ZZZ,3,17.39ZZZ,< 0.001ZZZ
+Chlorophyll,Regime,30.42ZZZ,1,120.4ZZZ,< 0.001ZZZ
+Chlorophyll,Drought:Region,9.933ZZZ,6,6.555ZZZ,< 0.001ZZZ
+Chlorophyll,Drought:Season,6.877ZZZ,6,4.538ZZZ,< 0.001ZZZ
+Chlorophyll,Region:Season,30.34ZZZ,9,13.35ZZZ,< 0.001ZZZ
+Chlorophyll,Region:Regime,10.46ZZZ,3,13.81ZZZ,< 0.001ZZZ
+Chlorophyll,Residuals,181.1ZZZ,717,ZZZ,ZZZ

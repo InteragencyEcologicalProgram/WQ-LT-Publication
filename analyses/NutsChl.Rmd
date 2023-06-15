@@ -36,15 +36,11 @@ library(lmerTest)
 library(DHARMa)
 library(effects)
 library(visreg)
-# Make sure we are using `DroughtData` version 2.0.0, commit 76a387a4549bb1c4e97757b37246efde33ce6d90
-# install.packages("devtools")
-# devtools::install_github("mountaindboz/DroughtData", ref = "76a387a4549bb1c4e97757b37246efde33ce6d90")
-library(DroughtData)
 library(knitr)
 library(kableExtra)
 library(here)
 
-source(here("global_functions.R"))
+source(here("analyses/global_analysis_functions.R"))
 ```
 
 Display R and package versions:
@@ -53,20 +49,32 @@ Display R and package versions:
 devtools::session_info()
 ```
 
-# Analyses
-
-This is the nutrient and chlorophyll analysis for the Drought paper. It pulls the data that Dave organized in the Drought Data package.
-
-First I replaced values below the reporting limit with draws from a uniform distribution, then I averaged by season, region, and year. Then I log-transformed. Sam said he thought log-transforming the mean was better than taking the mean of log-transformed data, and I trust Sam more than me. 
+# Load data
 
 ```{r}
-# Change region name to "South-Central" in the nutrient and chlorophyll data sets
-raw_nutr_1975_2021 <- raw_nutr_1975_2021 %>% 
-  mutate(Region = if_else(Region == "SouthCentral", "South-Central", Region))
+# Import long-term average data for the nutrients
+nutr_data <- read_rds(here("data/lt_avg_nutr.rds"))
 
-raw_chla_1975_2021 <- raw_chla_1975_2021 %>% 
-  mutate(Region = if_else(Region == "SouthCentral", "South-Central", Region))
+# Import long-term average data for chlorophyll
+chla_data <- read_rds(here("data/lt_avg_chla.rds"))
+
+# Combine nutrient and chlorophyll data and prepare for analyses
+nutr_chla_data_c <- 
+  full_join(nutr_data, chla_data, by = join_by(YearAdj, Season, Region, SVIndex, YearType, Drought)) %>% 
+  mutate(
+    # Change region name to "South-Central"
+    Region = if_else(Region == "SouthCentral", "South-Central", Region),
+    Region = factor(Region, levels = c("Suisun Marsh", "Suisun Bay", "Confluence", "South-Central", "North")),
+    Season = factor(Season, levels = c("Winter", "Spring", "Summer", "Fall")),
+    Year_fac = factor(YearAdj),
+    YearType = factor(YearType, levels = c("Critical", "Dry", "Below Normal", "Above Normal", "Wet")),
+    Drought = factor(Drought, levels = c("D", "N", "W")),
+    YearAdj_s = (YearAdj - mean(YearAdj) / sd(YearAdj)),
+    across(c(starts_with("Diss"), Chlorophyll), list(l = log))
+  )
 ```
+
+# Analyses
 
 ## Ammonia
 
@@ -77,79 +85,61 @@ the ammonium source is primarily municipal wastewater (Jassby 2008). Comparison 
 
 Ammonium at the monthly scale Analyses of water-quality time series data can yield different insights into processes depending on the time scale considered. As an example, I explored regression models to identify the key drivers of ammonium variability at the monthly scale to compare against analyses at the annual scale. This was motivated by the strong monthly pattern of ammonium trends—largest increases in winter and smallest in summer (Fig. 6B), suggesting a possible influence of seasonal temperature variability. The data series included 346 monthly measurements beginning January 1987. The best fitting model described monthly ammonium variability as a function of three variables—Outflow and TKN loading (as above), and temperature. Monthly ammonium was a nonlinear and negative function of Outflow and a linear positive function of TKN loading (Fig. 9)—the same functional responses observed at the annual scale (Fig. 8D). The Outflow effect was −2.1 and the TKN-loading effect was +1.0. However, at the monthly time scale, temperature had the largest effect (−5.8) through a negative linear relationship. Thus, both annual and monthly variability of ammonium, including trends of increase over time, are associated with variability of TKN loading as a source and Outflow through its dilution effect. However, a stronger temperature effect was revealed by analyzing monthly data. This effect is not evident in analyses of the annual data because annual temperature fluctuations are small relative to the high-amplitude monthly variability (Fig. 4A). The seasonal temperature effect on ammonium concentration in the estuary is presumably a response to the near-linear relationship between nitrification rate and temperature (e.g., Sudarno et al. 2011). Highest nitrification rates during the warm season would explain the negative relationship between ammonium and temperature (Fig. 9A), the seasonal pattern of lowest ammonium concentrations during summer (Fig. 4B), and the seasonal pattern of ammonium increase over time—largest in winter and near-zero in summer (Fig. 6B). Thus, the long-term trends of ammonium increase in the estuary can be attributed to increased wastewater inputs. But the expression of increased loading is not evident in summer (Fig. 6B), implying that wastewater ammonium is nitrified in the time of transit from the wastewater source to the sampling site in the estuary during the warm, low-flow season. Direct measurements of nitrate production and travel time in the lower Sacramento River support this conclusion (Kraus et al. 2017).
 
-### Load Data
-
-```{r}
-#replace values below the reporting limit
-Ammonia <- raw_nutr_1975_2021 %>%
-  # Remove NA values in DissAmmonia
-  tidyr::drop_na(DissAmmonia) %>%
-  # Replace <RL values with random value
-  drt_replace_rl(DissAmmonia, DissAmmonia_Sign, min_val = 0) %>%
-  # Calculate seasonal-regional averages
-  drt_avg_data(DissAmmonia, avg_type = "both", month_na = "relaxed") %>%
-  # Add year assignments
-  drt_add_yr_assign() %>%
-  mutate(YearType = factor(YearType, levels = c("Critical", "Dry", "Below Normal",
-                                                "Above Normal", "Wet")),
-         LogAm = log(DissAmmonia))
-```
-
 ### Plots
 
 ```{r}
 #plot of Ammonia by water year type
-ggplot(Ammonia, aes(x = YearType, y = LogAm, fill = YearType))+
+ggplot(nutr_chla_data_c, aes(x = YearType, y = DissAmmonia_l, fill = YearType))+
   geom_boxplot(alpha = 0.7)+
   facet_grid(Season~Region)+
-  drt_color_pal_yrtype()+
+  color_pal_yrtype()+
   ylab("Ammonia mg/L log transformed")+
   xlab("Year Type")+
   theme_bw()+
   scale_x_discrete(labels = c("C", "D", "B", "A", "W"))
 
 #plot of Ammonia by water year type
-ggplot(Ammonia, aes(x = YearType, y = DissAmmonia, fill = YearType))+
+ggplot(nutr_chla_data_c, aes(x = YearType, y = DissAmmonia, fill = YearType))+
   geom_boxplot(alpha = 0.7)+
   facet_grid(Season~Region)+
-  drt_color_pal_yrtype()+
+  color_pal_yrtype()+
   ylab("Ammonia mg/L")+
   xlab("Year Type")+
   theme_bw()+
   scale_x_discrete(labels = c("C", "D", "B", "A", "W"))
 
 #plot of Ammonia by Sac valley index
-ggplot(Ammonia, aes(x = SVIndex, y = LogAm))+
+ggplot(nutr_chla_data_c, aes(x = SVIndex, y = DissAmmonia_l))+
   geom_point(alpha = 0.7, aes(color =Drought))+
   geom_smooth(method = "lm")+
   facet_grid(Season~Region)+
-  drt_color_pal_drought(aes_type = "color")+
+  color_pal_drought(aes_type = "color")+
   ylab("Ammonia mg/L (log-transformed)")+
   xlab("Sac Valley Index")+
   theme_bw()
 
-#plot ofammonia by drought
-ggplot(Ammonia, aes(x = Drought, y = LogAm, fill = Drought))+
+#plot of ammonia by drought
+ggplot(nutr_chla_data_c, aes(x = Drought, y = DissAmmonia_l, fill = Drought))+
   geom_boxplot(alpha = 0.7)+
   facet_grid(Season~Region)+
-  drt_color_pal_drought()+
+  color_pal_drought()+
   ylab("Ammonia mg/L log transformed")+
   xlab("Year Type")+
   theme_bw()
 
 #Ammonia by year
-ggplot(Ammonia, aes(x = YearAdj, y = DissAmmonia, fill = YearType))+
+ggplot(nutr_chla_data_c, aes(x = YearAdj, y = DissAmmonia, fill = YearType))+
   geom_col(alpha = 0.7)+
   facet_grid(Season~Region)+
-  drt_color_pal_yrtype()+
+  color_pal_yrtype()+
   ylab("Ammonia mg/L")+
   theme_bw()
 
-#plot ofammonia by drought
-ggplot(Ammonia, aes(x = Drought, y = DissAmmonia, fill = Drought))+
+#plot of ammonia by drought
+ggplot(nutr_chla_data_c, aes(x = Drought, y = DissAmmonia, fill = Drought))+
   geom_boxplot(alpha = 0.7)+
   facet_wrap(~Season, scales = "free_y")+
-  drt_color_pal_drought()+
+  color_pal_drought()+
   ylab("Ammonia mg/L")+
   xlab("Year Type")+
   theme_bw()
@@ -160,26 +150,33 @@ ggplot(Ammonia, aes(x = Drought, y = DissAmmonia, fill = Drought))+
 Now we'll do the statistics. I'm going to take out 2021, because of the Sac WWTP upgrade. Stockton WWTP was upgraded in 2006
 
 ```{r}
-Ammonia = filter(Ammonia, YearAdj < 2021) %>%
-  mutate(StocktonUpgrade = case_when(YearAdj < 2006 ~ "Before",
-                                     YearAdj >= 2006 ~ "After"))
+Ammonia <- nutr_chla_data_c %>% 
+  select(!starts_with(c("DissNitrateNitrite", "DissOrthophos", "Chlorophyll"))) %>% 
+  drop_na(DissAmmonia_l) %>% 
+  filter(YearAdj < 2021) %>%
+  mutate(
+    StocktonUpgrade = case_when(
+      YearAdj < 2006 ~ "Before",
+      YearAdj >= 2006 ~ "After"
+    )
+  )
 ```
 
 Now add the treatment plant term
 
 ```{r}
-Am2 = lm(LogAm ~ Drought*Region + Drought*Season + Region*Season + Region*StocktonUpgrade, data = Ammonia)
+Am2 = lm(DissAmmonia_l ~ Drought*Region + Drought*Season + Region*Season + Region*StocktonUpgrade, data = Ammonia)
 ```
 
 ### Check assumptions
 
 ```{r}
-model_plotter(Am2, Ammonia, "LogAm")
+model_plotter(Am2, Ammonia, "DissAmmonia_l")
 ```
 
 ### Check results
 
-```{r}
+```{r, warning = FALSE}
 summary(Am2)
 Aman = Anova(Am2, type=3, contrasts=list(topic=contr.sum, sys=contr.sum))
 Aman
@@ -241,70 +238,52 @@ Well, the treatment plant term improves the model a bit, but it doesn't actually
 
 ## Nitrate + Nitrite
 
-### Load Data
-
-```{r}
-#replace values below the reporting limit
-Nitrate <- raw_nutr_1975_2021 %>%
-  # Remove NA values in DissNitrate
-  tidyr::drop_na(DissNitrateNitrite) %>%
-  # Replace <RL values with random value
-  drt_replace_rl(DissNitrateNitrite, DissNitrateNitrite_Sign, min_val = 0) %>%
-  # Calculate seasonal-regional averages
-  drt_avg_data(DissNitrateNitrite, avg_type = "both", month_na = "relaxed") %>%
-  # Add year assignments
-  drt_add_yr_assign() %>%
-  mutate(YearType = factor(YearType, levels = c("Critical", "Dry", "Below Normal",
-                                                "Above Normal", "Wet")),
-         LogNat = log(DissNitrateNitrite))
-```
-
 ### Plots
 
 ```{r}
 #plot of Nitrate by water year type
-ggplot(Nitrate, aes(x = YearType, y = LogNat, fill = YearType))+
+ggplot(nutr_chla_data_c, aes(x = YearType, y = DissNitrateNitrite_l, fill = YearType))+
   geom_boxplot(alpha = 0.7)+
   facet_grid(Season~Region)+
-  drt_color_pal_yrtype()+
+  color_pal_yrtype()+
   ylab("Nitrate Nitrite (log-transformed)")+
   xlab("Year Type")+
   theme_bw()+
   scale_x_discrete(labels = c("C", "D", "B", "A", "W"))
 
-ggplot(Nitrate, aes(x = YearType, y = DissNitrateNitrite, fill = YearType))+
+ggplot(nutr_chla_data_c, aes(x = YearType, y = DissNitrateNitrite, fill = YearType))+
   geom_boxplot(alpha = 0.7)+
   facet_grid(Season~Region)+
-  drt_color_pal_yrtype()+
+  color_pal_yrtype()+
   ylab("Nitrate mg/L")+
   xlab("Year Type")+
   theme_bw()+
   scale_x_discrete(labels = c("C", "D", "B", "A", "W"))
 
 #plot of Nitrate by Sac valley index
-ggplot(Nitrate, aes(x = SVIndex, y = LogNat))+
+ggplot(nutr_chla_data_c, aes(x = SVIndex, y = DissNitrateNitrite_l))+
   geom_point(alpha = 0.7, aes(color =Drought))+
   geom_smooth(method = "lm")+
   facet_grid(Season~Region)+
-  drt_color_pal_drought(aes_type = "color")+
+  color_pal_drought(aes_type = "color")+
   ylab("Nitrate nitrite mg/L (log-transformed)")+
   xlab("Sac Valley Index")+
   theme_bw()
 
 #plot ofNitrate by drought
-ggplot(Nitrate, aes(x = Drought, y = DissNitrateNitrite, fill = Drought))+
+ggplot(nutr_chla_data_c, aes(x = Drought, y = DissNitrateNitrite, fill = Drought))+
   geom_boxplot(alpha = 0.7)+
   facet_grid(Season~Region)+
-  drt_color_pal_drought()+
+  color_pal_drought()+
   ylab("Nitrate mg/L")+
   xlab("Year Type")+
   theme_bw()
 
 #Nitrate by year
-ggplot(Nitrate, aes(x = YearAdj, y = DissNitrateNitrite, fill = YearType))+
+ggplot(nutr_chla_data_c, aes(x = YearAdj, y = DissNitrateNitrite, fill = YearType))+
   geom_col(alpha = 0.7)+
   facet_grid(Season~Region)+
-  drt_color_pal_yrtype()+
+  color_pal_yrtype()+
   ylab("Nitrate mg/L")+
   theme_bw()
 ```
@@ -314,18 +293,24 @@ ggplot(Nitrate, aes(x = YearAdj, y = DissNitrateNitrite, fill = YearType))+
 OK, now for the statistics. The treatment plant upgrades didn't have as big an impact on nitrate, so I'll leave it out for now, but I can put it back in if folks think it's important.
 
 ```{r}
-Nat2 = lm(LogNat ~ Drought*Region + Drought*Season + Region*Season, data = Nitrate)
+Nitrate <- nutr_chla_data_c %>% 
+  select(!starts_with(c("DissAmmonia", "DissOrthophos", "Chlorophyll"))) %>% 
+  drop_na(DissNitrateNitrite_l)
+```
+
+```{r}
+Nat2 = lm(DissNitrateNitrite_l ~ Drought*Region + Drought*Season + Region*Season, data = Nitrate)
 ```
 
 ### Check assumptions
 
 ```{r}
-model_plotter(Nat2, Nitrate, "LogNat")
+model_plotter(Nat2, Nitrate, "DissNitrateNitrite_l")
 ```
 
 ### Check results
 
-```{r}
+```{r, warning = FALSE}
 summary(Nat2)
 NatAn =Anova(Nat2, type=3, contrasts=list(topic=contr.sum, sys=contr.sum))
 NatAn
@@ -370,74 +355,57 @@ According to Cloern, total phosphorus loading from the WWTP decreased a lot in t
 Phosphate Although phosphate concentration did not change over
 the long term (Table 2), there was substantial variability of phosphate concentration as an early period of increase during the 1980s, peak concentrations in the early 1990s (Fig. 3) followed by a period of significant decrease (Fig. 5B). Records of phosphorus loading from the Sacramento Regional Wastewater Treatment Facility are not available during the early era of phosphate increase. However, measurements since 1987 showed a steep decrease in wastewater TP loading in the early 1990s that paralleled the downstream phosphate decrease at Sta. D8. This suggests that wastewater effluent is a significant source of phosphorus, as well as ammonium nitrogen, to the upper estuary. The best-fitting regression model (Table 4) explained 73% of annual-mean phosphate concentration as a negative function of Outflow (effect size = −0.74) and a positive function of wastewater TP loading (effect size = +0.25), similar to model results for ammonium. Relative to the Outflow effect, the effect of wastewater TP loading was smaller than the effect of ammonium loading (Table 4). This suggests that the wastewater enrichment of riverine phosphate is smaller than its enrichment of riverine ammonium. The parallel steep declines of phosphorus loading and concentrations in the estuary during the 1990s (Fig. 3) occurred after it became evident that phosphorus enrichment was degrading water quality of U.S. lakes and rivers. State bans on phosphorus-containing detergents grew in the 1970s and 1980s, and by 1994 the manufacture of phosphorus-based detergents ended (Litke 1999). Thus, the oscillating patterns of phosphate concentrations in San Francisco Bay (and other estuaries and lakes) include eras of increase associated with population growth (Jassby 2008) and decrease after policies were implemented to remove phosphorus from household detergents.
 
-### Load Data
-
-```{r}
-Phos <- raw_nutr_1975_2021 %>%
-  # Remove NA values in DissNitrate
-  tidyr::drop_na(DissOrthophos) %>%
-  # Replace <RL values with random value
-  drt_replace_rl(DissOrthophos, DissOrthophos_Sign, min_val = 0) %>%
-  # Calculate seasonal-regional averages
-  drt_avg_data(DissOrthophos, avg_type = "both", month_na = "relaxed") %>%
-  # Add year assignments
-  drt_add_yr_assign() %>%
-  mutate(YearType = factor(YearType, levels = c("Critical", "Dry", "Below Normal",
-                                                "Above Normal", "Wet")),
-         LogPhos = log(DissOrthophos)) 
-```
-
 ### Plots
 
 ```{r}
 #plot of Phosphorus by water year type
-ggplot(Phos, aes(x = YearType, y = LogPhos, fill = YearType))+
+ggplot(nutr_chla_data_c, aes(x = YearType, y = DissOrthophos_l, fill = YearType))+
   geom_boxplot(alpha = 0.7)+
   facet_grid(Season~Region)+
-  drt_color_pal_yrtype()+
+  color_pal_yrtype()+
   ylab("Orthophosphate mg/L (log-transformed)")+
   xlab("Year Type")+
   theme_bw()+
   scale_x_discrete(labels = c("C", "D", "B", "A", "W"))
 
-ggplot(Phos, aes(x = YearType, y = DissOrthophos, fill = YearType))+
+ggplot(nutr_chla_data_c, aes(x = YearType, y = DissOrthophos, fill = YearType))+
   geom_boxplot(alpha = 0.7)+
   facet_grid(Season~Region)+
-  drt_color_pal_yrtype()+
+  color_pal_yrtype()+
   ylab("Orthophosphate mg/L")+
   xlab("Year Type")+
   theme_bw()+
   scale_x_discrete(labels = c("C", "D", "B", "A", "W"))
 
 #plot of phosphorus by Sac valley index
-ggplot(Phos, aes(x = SVIndex, y = LogPhos))+
+ggplot(nutr_chla_data_c, aes(x = SVIndex, y = DissOrthophos_l))+
   geom_point(alpha = 0.7, aes(color =Drought))+
   geom_smooth(method = "lm")+
   facet_grid(Season~Region)+
-  drt_color_pal_drought(aes_type = "color")+
+  color_pal_drought(aes_type = "color")+
   ylab("Orthophosphate mg/L (log-transformed)")+
   xlab("Sac Valley Index")+
   theme_bw()
 
 
-ggplot(Phos, aes(x = YearAdj, y = DissOrthophos)) + geom_point(aes(color = Region))+
+ggplot(nutr_chla_data_c, aes(x = YearAdj, y = DissOrthophos)) + geom_point(aes(color = Region))+
   geom_smooth(aes(color = Region))+
   theme_bw()+ ylab("Dissolved Orthophosphate")
 #Wow. Phosphorus actually looks pretty good there.
 
-ggplot(Phos, aes(x = Drought, y = DissOrthophos, fill = Drought))+
+ggplot(nutr_chla_data_c, aes(x = Drought, y = DissOrthophos, fill = Drought))+
   geom_boxplot(alpha = 0.7)+
   facet_grid(Season~Region)+
-  drt_color_pal_drought()+
+  color_pal_drought()+
   ylab("Phospohrus mg/L")+
   xlab("Year Type")+
   theme_bw()
 
 #Phosphorus by year
-ggplot(Phos, aes(x = YearAdj, y = DissOrthophos, fill = YearType))+
+ggplot(nutr_chla_data_c, aes(x = YearAdj, y = DissOrthophos, fill = YearType))+
   geom_col(alpha = 0.7)+
   facet_grid(Season~Region)+
-  drt_color_pal_yrtype()+
+  color_pal_yrtype()+
   ylab("Phosphorus mg/L")+
   theme_bw()
 ```
@@ -449,19 +417,25 @@ Huh. Cloern didn't see any overall trends in Phosphorus, but I think that's a pa
 Log-transforming phosphorus didn't look quite as nice as nitrogen and ammonium. Square-root transformation looked better, but the residuals actually looked pretty good for both, so I just stuck with the log-transformation to keep it consistent.
 
 ```{r}
-Phos2 = lm(LogPhos ~ Drought*Region + Drought*Season + Region*Season, data = Phos)
+Phos <- nutr_chla_data_c %>% 
+  select(!starts_with(c("DissAmmonia", "DissNitrateNitrite", "Chlorophyll"))) %>% 
+  drop_na(DissOrthophos_l)
+```
+
+```{r}
+Phos2 = lm(DissOrthophos_l ~ Drought*Region + Drought*Season + Region*Season, data = Phos)
 ```
 
 ### Check assumptions
 
 ```{r}
 # Check assumptions
-model_plotter(Phos2, Phos, "LogPhos")
+model_plotter(Phos2, Phos, "DissOrthophos_l")
 ```
 
 ### Check results
 
-```{r}
+```{r, warning = FALSE}
 # Check results
 summary(Phos2)
 Panova = Anova(Phos2, type=3, contrasts=list(topic=contr.sum, sys=contr.sum))
@@ -504,7 +478,7 @@ We didn't use this for the manuscript.
 
 ```{r, warning = FALSE}
 #now again as a linear model versus sac valley index
-Phos2SV = lm(LogPhos ~ SVIndex*Region + SVIndex*Season + Region*Season, data = Phos)
+Phos2SV = lm(DissOrthophos_l ~ SVIndex*Region + SVIndex*Season + Region*Season, data = Phos)
 # plot(Phos2SV)
 visreg(Phos2SV, xvar = "SVIndex", by = "Region")
 visreg(Phos2SV, xvar = "SVIndex", by = "Season")
@@ -520,71 +494,51 @@ Phytoplankton biomass in estuaries is regulated by river driven transport proces
 
 Summer phytoplankton blooms occurred regularly in this region of the estuary during the 1970s and 1980s. These were attributed to the accumulation of phytoplankton cells within an estuarine turbidity maximum that was positioned in Suisun Bay (Sta. D8) when Outflow was in the range 100–350 m3 s−1 (Cloern et al. 1983). Thus, flow-phytoplankton relationships were established early in the study of San Francisco Bay. Observations made over the subsequent 3+ decades confirm that summer Chl a decreases when Outflow exceeds about200–300 m3 s−1 (Fig. 8B), primarily through its effect on residence time (Jassby 2008). A summer bloom did not develop in 1977, a year of extreme drought when salinity increased high enough that the upper estuary was colonized by marine benthic filter feeders including M. arenaria (Nichols 1985). The 1977 anomaly was the first evidence that bivalve grazing can suppress blooms in this estuary. Summer blooms disappeared completely after P. amurensis became established as a permanent resident in 1987. The regression model (Table 4) shows that the effect of clam presence was large (−13.1) compared to the outflow effect (−2.5). The nearly fourfold loss of phytoplankton biomass (Table 2) and production restructured biological communities and altered nutrient dynamics, establishing what has become an iconic example of abrupt disturbance by the introduction of a non-native species (Cloern and Jassby 2012). Regression models allow us to compare the effects of that human disturbance with the effect of varying freshwater inflow.
 
-### Load Data
-
-```{r}
-#replace values below the reporting limit
-ChlaA <- raw_chla_1975_2021 %>%
-  # Remove NA values in DissAmmonia
-  tidyr::drop_na(Chlorophyll) %>%
-  # Replace <RL values with random value
-  drt_replace_rl(Chlorophyll, Chlorophyll_Sign, min_val = 0) %>%
-   # Calculate seasonal-regional averages
-  drt_avg_data(Chlorophyll, avg_type = "both", month_na = "relaxed") %>%
-  # Add year assignments
-  drt_add_yr_assign() %>%
-  mutate(YearType = factor(YearType, levels = c("Critical", "Dry", "Below Normal",
-                                                "Above Normal", "Wet")),
-         LogChl = log(Chlorophyll),
-         Regime = case_when(YearAdj > 1987 ~ "post-clam",
-                            YearAdj <1988 ~ "pre-clam"))
-```
-
 ### Plots
 
 ```{r}
 #plot of chlorophyll by water year type
-ggplot(ChlaA, aes(x = YearType, y = LogChl, fill = YearType))+
+ggplot(nutr_chla_data_c, aes(x = YearType, y = Chlorophyll_l, fill = YearType))+
   geom_boxplot(alpha = 0.7)+
   facet_grid(Season~Region)+
-  drt_color_pal_yrtype()+
+  color_pal_yrtype()+
   ylab("Chlorophyl ug/L (log-transformed)")+
   xlab("Year Type")+
   theme_bw()+
   scale_x_discrete(labels = c("C", "D", "B", "A", "W"))
 
 #plot of chlorophyll by Sac valley index
-ggplot(ChlaA, aes(x = SVIndex, y = LogChl))+
+ggplot(nutr_chla_data_c, aes(x = SVIndex, y = Chlorophyll_l))+
   geom_point(alpha = 0.7, aes(color =Drought))+
   geom_smooth(method = "lm")+
   facet_grid(Season~Region)+
-  drt_color_pal_drought(aes_type = "color")+
+  color_pal_drought(aes_type = "color")+
   ylab("Chlorophyl ug/L (log-transformed)")+
   xlab("Sac Valley Index")+
   theme_bw()
 
 #plot of chlorophyll by drought
-ggplot(ChlaA, aes(x = Drought, y = LogChl, fill = Drought))+
+ggplot(nutr_chla_data_c, aes(x = Drought, y = Chlorophyll_l, fill = Drought))+
   geom_boxplot(alpha = 0.7)+
   facet_grid(Season~Region)+
- drt_color_pal_drought()+
+ color_pal_drought()+
   ylab("Chlorophyl ug/L (log-transformed)")+
   xlab("Year Type")+
   theme_bw()
 
-ggplot(ChlaA, aes(x = Drought, y = Chlorophyll, fill = Drought))+
+ggplot(nutr_chla_data_c, aes(x = Drought, y = Chlorophyll, fill = Drought))+
   geom_boxplot(alpha = 0.7)+
   facet_grid(Season~Region)+
-  drt_color_pal_drought()+
+  color_pal_drought()+
   ylab("Chlorophyl ug/L")+
   xlab("Year Type")+
   theme_bw()
 
-#plot of chlorophyll by water year type - just hte more recent years
-ggplot(filter(ChlaA, YearAdj > 1989), aes(x = YearType, y = LogChl, fill = YearType))+
+#plot of chlorophyll by water year type - just the more recent years
+ggplot(filter(nutr_chla_data_c, YearAdj > 1989), aes(x = YearType, y = Chlorophyll_l, fill = YearType))+
   geom_boxplot(alpha = 0.7)+
   facet_grid(Season~Region)+
-  drt_color_pal_yrtype()+
+  color_pal_yrtype()+
   ylab("Chlorophyl ug/L (log-transformed)")+
   xlab("Year Type")+
   theme_bw()+
@@ -592,25 +546,25 @@ ggplot(filter(ChlaA, YearAdj > 1989), aes(x = YearType, y = LogChl, fill = YearT
 #Bleh, nothing going on there
 
 #plot of chlorophyll by year
-ggplot(ChlaA, aes(x = YearAdj, y = LogChl, fill = YearType))+
+ggplot(nutr_chla_data_c, aes(x = YearAdj, y = Chlorophyll_l, fill = YearType))+
   geom_col(alpha = 0.7)+
   facet_grid(Season~Region)+
-  drt_color_pal_yrtype()+
+  color_pal_yrtype()+
   ylab("Chlorophyl ug/L (log-transformed)")+
   theme_bw()
 
-ggplot(ChlaA, aes(x = YearAdj, y = LogChl, fill = Drought))+
+ggplot(nutr_chla_data_c, aes(x = YearAdj, y = Chlorophyll_l, fill = Drought))+
   geom_col(alpha = 0.7)+
   facet_grid(Season~Region)+
-  drt_color_pal_drought()+
+  color_pal_drought()+
   ylab("Chlorophyl ug/L (log-transformed)")+
   theme_bw()
 
 
-ggplot(ChlaA, aes(x = YearAdj, y = LogChl, color = Region))+
+ggplot(nutr_chla_data_c, aes(x = YearAdj, y = Chlorophyll_l, color = Region))+
   geom_point(alpha = 0.7)+
   geom_smooth()+
- # drt_color_pal_drought()+
+ # color_pal_drought()+
   ylab("Chlorophyl ug/L (log-transformed)")+
   theme_bw()
 ```
@@ -620,14 +574,26 @@ ggplot(ChlaA, aes(x = YearAdj, y = LogChl, color = Region))+
 And now for some statistics
 
 ```{r}
+ChlaA <- nutr_chla_data_c %>%
+  select(!starts_with(c("DissAmmonia", "DissNitrateNitrite", "DissOrthophos"))) %>% 
+  drop_na(Chlorophyll_l) %>%
+  mutate(
+    Regime = case_when(
+      YearAdj > 1987 ~ "post-clam",
+      YearAdj < 1988 ~ "pre-clam"
+    )
+  )
+```
+
+```{r}
 # model including pre/post clam regime
-Chl1 = lm(LogChl ~ Drought*Region + Drought*Season + Region*Season + Region*Regime, data = ChlaA)
+Chl1 = lm(Chlorophyll_l ~ Drought*Region + Drought*Season + Region*Season + Region*Regime, data = ChlaA)
 ```
 
 ### Check assumptions
 
 ```{r}
-model_plotter(Chl1, ChlaA, "LogChl")
+model_plotter(Chl1, ChlaA, "Chlorophyll_l")
 ```
 
 ```{r, warning = FALSE}
@@ -636,7 +602,7 @@ qqPlot(Chl1)
 
 ### Check results
 
-```{r}
+```{r, warning = FALSE}
 summary(Chl1)
 Ch1_Anova<-Anova(Chl1, type=3, contrasts=list(topic=contr.sum, sys=contr.sum))
 Ch1_Anova
@@ -698,7 +664,7 @@ Well, I added the regime shift at the clam invasion and now my diagnostic plots 
 Try the linear model with Sac valley index. We didn't use this for the manuscript.
 
 ```{r, warning = FALSE}
-Chl2 = lm(LogChl ~ SVIndex*Region + SVIndex*Season + Region*Season + Region*Regime, data = ChlaA)
+Chl2 = lm(Chlorophyll_l ~ SVIndex*Region + SVIndex*Season + Region*Season + Region*Regime, data = ChlaA)
 summary(Chl2)
 # plot(Chl2)
 
@@ -846,8 +812,8 @@ ggsave(
 ### Output data for Whitepaper
 
 ```{r, eval = FALSE}
-table(raw_chla_1975_2021$Source, raw_chla_1975_2021$YearAdj)
-table(raw_nutr_1975_2021$Source, raw_nutr_1975_2021$YearAdj)
+# table(raw_chla_1975_2021$Source, raw_chla_1975_2021$YearAdj)
+# table(raw_nutr_1975_2021$Source, raw_nutr_1975_2021$YearAdj)
 
 #bind nutrients and chlorophyll together to use in synthesis paper
 NutsCLa = left_join(ChlaA, Nitrate) %>%

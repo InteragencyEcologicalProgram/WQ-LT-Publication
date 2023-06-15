@@ -228,3 +228,22 @@ comb_pub_figs <- function(ls_plt) {
     patchwork::wrap_plots(ncol = 1)
 }
 
+# Define color palette for the drought classifications
+color_pal_drought <- function(aes_type = c("fill", "color"), scale_title = "Drought") {
+  # Evaluate choices for aes_type
+  aes_type <- match.arg(aes_type, c("fill", "color"))
+
+  # Define color palette for the Drought categories
+  pal_drought <- c(
+    "D" = "#FDE333",
+    "N" = "#53CC67",
+    "W" = "#00588B"
+  )
+
+  # Apply palette based on aes_type
+  if (aes_type == "fill") {
+    ggplot2::scale_fill_manual(name = scale_title, values = pal_drought)
+  } else {
+    ggplot2::scale_color_manual(name = scale_title, values = pal_drought)
+  }
+}

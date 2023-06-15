@@ -6,7 +6,8 @@ layout: default
 
 * Data Processing Methods:
   * [Water Quality, Nutrients, and Chlorophyll](process_data_wq_nutr_chla.html)
-* [Sampling Effort - raw data in DroughtData](Sampling_Effort_DroughtData.html)
+
+* [Sampling Effort - temporal and spatial](sampling_effort.html)
 
 ## Analyses
 

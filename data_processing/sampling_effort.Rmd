@@ -47,7 +47,7 @@ conflicts_prefer(dplyr::filter())
 
 ```{r check dir}
 # Check if we are in the correct working directory
-i_am("data_processing/Sampling_Effort_DroughtData.Rmd")
+i_am("data_processing/sampling_effort.Rmd")
 ```
 
 ```{r session info}

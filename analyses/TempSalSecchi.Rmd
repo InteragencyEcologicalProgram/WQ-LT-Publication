@@ -27,10 +27,6 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r packages, message=FALSE, warning=FALSE}
 require(conflicted)
 require(dplyr)
-# Make sure we are using `DroughtData` version 2.0.0, commit 76a387a4549bb1c4e97757b37246efde33ce6d90
-# install.packages("devtools")
-# devtools::install_github("mountaindboz/DroughtData", ref = "76a387a4549bb1c4e97757b37246efde33ce6d90")
-require(DroughtData)
 require(ggplot2)
 require(patchwork)
 require(knitr)
@@ -43,7 +39,7 @@ require(tidyr)
 library(kableExtra)
 library(here)
 
-source(here("global_functions.R"))
+source(here("analyses/global_analysis_functions.R"))
 
 conflict_prefer("filter", "dplyr")
 conflict_prefer("select", "dplyr")
@@ -58,16 +54,20 @@ devtools::session_info()
 # Load data
 
 ```{r}
-wq_data<-lt_avg_wq%>%
+# Import long-term average data for the water quality measurements
+wq_data <- read_rds(here("data/lt_avg_wq_meas.rds"))
+
+# Prepare data for analyses
+wq_data_c <- wq_data %>%
   mutate(
     # Change region name to "South-Central"
     Region = if_else(Region == "SouthCentral", "South-Central", Region),
-    Region=factor(Region, levels=c("Suisun Marsh", "Suisun Bay", "Confluence", "South-Central", "North")),
-    Season=factor(Season, levels=c("Winter", "Spring", "Summer", "Fall")),
-    Year_fac=factor(YearAdj),
-    Drought=factor(Drought, levels=c("D", "N", "W")),
-    YearAdj_s=(YearAdj-mean(YearAdj)/sd(YearAdj)),
-    across(c(Secchi, Salinity), list(l=log))
+    Region = factor(Region, levels = c("Suisun Marsh", "Suisun Bay", "Confluence", "South-Central", "North")),
+    Season = factor(Season, levels = c("Winter", "Spring", "Summer", "Fall")),
+    Year_fac = factor(YearAdj),
+    Drought = factor(Drought, levels = c("D", "N", "W")),
+    YearAdj_s = (YearAdj - mean(YearAdj) / sd(YearAdj)),
+    across(c(Secchi, Salinity), list(l = log))
   )
 ```
 
@@ -80,10 +80,10 @@ Note that each facet has a different y-axis scale
 ### Temperature
 
 ```{r, fig.width=12, fig.height=12}
-ggplot(wq_data, aes(x=YearAdj, y=Temperature, fill=Drought))+
+ggplot(wq_data_c, aes(x=YearAdj, y=Temperature, fill=Drought))+
   geom_point(shape=21, color="black")+
   facet_wrap(Season~Region, scales="free_y")+
-  drt_color_pal_drought()+
+  color_pal_drought()+
   ylab("Temperature (°C)")+
   theme_bw()+
   theme(axis.text.x=element_text(angle=45, hjust=1))
@@ -92,10 +92,10 @@ ggplot(wq_data, aes(x=YearAdj, y=Temperature, fill=Drought))+
 ### Salinity
 
 ```{r, fig.width=12, fig.height=12}
-ggplot(wq_data, aes(x=YearAdj, y=Salinity, fill=Drought))+
+ggplot(wq_data_c, aes(x=YearAdj, y=Salinity, fill=Drought))+
   geom_point(shape=21, color="black")+
   facet_wrap(Season~Region, scales="free_y")+
-  drt_color_pal_drought()+
+  color_pal_drought()+
   ylab("Salinity")+
   theme_bw()+
   theme(axis.text.x=element_text(angle=45, hjust=1))
@@ -106,10 +106,10 @@ ggplot(wq_data, aes(x=YearAdj, y=Salinity, fill=Drought))+
 Secchi is also more regionally than seasonally variable
 
 ```{r, fig.width=12, fig.height=12}
-plt_se_point <- ggplot(wq_data, aes(x=YearAdj, y=Secchi, fill=Drought))+
+plt_se_point <- ggplot(wq_data_c, aes(x=YearAdj, y=Secchi, fill=Drought))+
   geom_point(shape=21, color="black")+
   facet_wrap(Season~Region, scales="free_y")+
-  drt_color_pal_drought()+
+  color_pal_drought()+
   ylab("Secchi depth (cm)")+
   theme_bw()+
   theme(axis.text.x=element_text(angle=45, hjust=1))
@@ -136,10 +136,10 @@ ggsave(
 ### Temperature
 
 ```{r, fig.width=12, fig.height=12}
-ggplot(wq_data, aes(x=Drought, y=Temperature, fill=Drought))+
+ggplot(wq_data_c, aes(x=Drought, y=Temperature, fill=Drought))+
   geom_boxplot()+
   facet_wrap(Season~Region, scales="free_y")+
-  drt_color_pal_drought()+
+  color_pal_drought()+
   ylab("Temperature (°C)")+
   theme_bw()+
   theme(axis.text.x=element_text(angle=45, hjust=1))
@@ -148,10 +148,10 @@ ggplot(wq_data, aes(x=Drought, y=Temperature, fill=Drought))+
 ### Salinity
 
 ```{r, fig.width=12, fig.height=12}
-ggplot(wq_data, aes(x=Drought, y=Salinity, fill=Drought))+
+ggplot(wq_data_c, aes(x=Drought, y=Salinity, fill=Drought))+
   geom_boxplot()+
   facet_wrap(Season~Region, scales="free_y")+
-  drt_color_pal_drought()+
+  color_pal_drought()+
   ylab("Salinity")+
   theme_bw()+
   theme(axis.text.x=element_text(angle=45, hjust=1))
@@ -160,10 +160,10 @@ ggplot(wq_data, aes(x=Drought, y=Salinity, fill=Drought))+
 ### Secchi
 
 ```{r, fig.width=12, fig.height=12}
-ggplot(wq_data, aes(x=Drought, y=Secchi, fill=Drought))+
+ggplot(wq_data_c, aes(x=Drought, y=Secchi, fill=Drought))+
   geom_boxplot()+
   facet_wrap(Season~Region, scales="free_y")+
-  drt_color_pal_drought()+
+  color_pal_drought()+
   ylab("Secchi depth (cm)")+
   theme_bw()+
   theme(axis.text.x=element_text(angle=45, hjust=1))
@@ -174,18 +174,18 @@ ggplot(wq_data, aes(x=Drought, y=Secchi, fill=Drought))+
 ## Temperature
 
 ```{r}
-m_t<-aov(Temperature ~ (Drought + Season + Region)^2, data=wq_data)
+m_t<-aov(Temperature ~ (Drought + Season + Region)^2, data=wq_data_c)
 ```
 
 ### Check assumptions:
 
 ```{r}
-model_plotter(m_t, wq_data, "Temperature")
+model_plotter(m_t, wq_data_c, "Temperature")
 ```
 
 ### Check results
 
-```{r}
+```{r, warning = FALSE}
 m_t_Anova<-Anova(m_t, type=3, contrasts=list(topic=contr.sum, sys=contr.sum))
 m_t_Anova
 ```
@@ -201,11 +201,11 @@ partial.r2(m_t_Anova)
 ### Post-hoc test
 
 ```{r}
-m_t_contrasts_r <- pub_figure_plotter(df_data=wq_data, param=Temperature, y_label="Temperature (°C)", 
+m_t_contrasts_r <- pub_figure_plotter(df_data=wq_data_c, param=Temperature, y_label="Temperature (°C)", 
                                       fct_grp=Region, model=m_t, plt_title = "Water temperature")
 m_t_contrasts_r$diffs
 
-m_t_contrasts_s <- pub_figure_plotter(df_data=wq_data, param=Temperature, y_label="Temperature (°C)", 
+m_t_contrasts_s <- pub_figure_plotter(df_data=wq_data_c, param=Temperature, y_label="Temperature (°C)", 
                                       fct_grp=Season, model=m_t, plt_title = "Water temperature")
 m_t_contrasts_s$diffs
 ```
@@ -215,18 +215,18 @@ m_t_contrasts_s$diffs
 Salinity data had to be log transformed to fit the assumption of normality
 
 ```{r}
-m_sa<-aov(Salinity_l ~ (Drought + Season + Region)^2, data=wq_data)
+m_sa<-aov(Salinity_l ~ (Drought + Season + Region)^2, data=wq_data_c)
 ```
 
 ### Check assumptions:
 
 ```{r}
-model_plotter(m_sa, wq_data, "Salinity_l")
+model_plotter(m_sa, wq_data_c, "Salinity_l")
 ```
 
 ### Check results
 
-```{r}
+```{r, warning = FALSE}
 m_sa_Anova<-Anova(m_sa, type=3, contrasts=list(topic=contr.sum, sys=contr.sum))
 m_sa_Anova
 ```
@@ -242,12 +242,12 @@ partial.r2(m_sa_Anova)
 ### Post-hoc test
 
 ```{r}
-m_sa_contrasts_r <- pub_figure_plotter(df_data=wq_data, param=Salinity, y_label="Salinity (PSU)", 
+m_sa_contrasts_r <- pub_figure_plotter(df_data=wq_data_c, param=Salinity, y_label="Salinity (PSU)", 
                                        fct_grp=Region, model=m_sa, log_trans = TRUE, plt_title = "Salinity")
 
 m_sa_contrasts_r$diffs
 
-m_sa_contrasts_s <- pub_figure_plotter(df_data=wq_data, param=Salinity, y_label="Salinity (PSU)", 
+m_sa_contrasts_s <- pub_figure_plotter(df_data=wq_data_c, param=Salinity, y_label="Salinity (PSU)", 
                                        fct_grp=Season, model=m_sa, log_trans = TRUE, plt_title = "Salinity")
 
 m_sa_contrasts_s$diffs
@@ -259,18 +259,18 @@ m_sa_contrasts_s$diffs
 Secchi depth had to be log-transformed to comply with the assumption of normality
 
 ```{r}
-m_se<-aov(Secchi_l ~ (Drought + Season + Region)^2, data=wq_data)
+m_se<-aov(Secchi_l ~ (Drought + Season + Region)^2, data=wq_data_c)
 ```
 
 ### Check assumptions:
 
 ```{r}
-model_plotter(m_se, wq_data, "Secchi_l")
+model_plotter(m_se, wq_data_c, "Secchi_l")
 ```
 
 ### Check results
 
-```{r}
+```{r, warning = FALSE}
 m_se_Anova<-Anova(m_se, type=3, contrasts=list(topic=contr.sum, sys=contr.sum))
 m_se_Anova
 ```
@@ -286,12 +286,12 @@ partial.r2(m_se_Anova)
 ### Post-hoc test
 
 ```{r}
-m_se_contrasts_r <- pub_figure_plotter(df_data=wq_data, param=Secchi, y_label="Secchi depth (cm)", 
+m_se_contrasts_r <- pub_figure_plotter(df_data=wq_data_c, param=Secchi, y_label="Secchi depth (cm)", 
                                        fct_grp=Region, model=m_se, log_trans = TRUE, plt_title = "Secchi depth")
 
 m_se_contrasts_r$diffs
 
-m_se_contrasts_s <- pub_figure_plotter(df_data=wq_data, param=Secchi, y_label="Secchi depth (cm)", 
+m_se_contrasts_s <- pub_figure_plotter(df_data=wq_data_c, param=Secchi, y_label="Secchi depth (cm)", 
                                        fct_grp=Season, model=m_se, log_trans = TRUE, plt_title = "Secchi depth")
 
 m_se_contrasts_s$diffs
@@ -302,18 +302,18 @@ m_se_contrasts_s$diffs
 Secchi depth had to be log-transformed to comply with the assumption of normality
 
 ```{r}
-m_se2<-aov(Secchi_l ~ (Drought + Season + Region)^2 + YearAdj*Season*Region, data=wq_data)
+m_se2<-aov(Secchi_l ~ (Drought + Season + Region)^2 + YearAdj*Season*Region, data=wq_data_c)
 ```
 
 ### Check assumptions:
 
 ```{r}
-model_plotter(m_se2, wq_data, "Secchi_l")
+model_plotter(m_se2, wq_data_c, "Secchi_l")
 ```
 
 ### Check results
 
-```{r}
+```{r, warning = FALSE}
 m_se2_Anova<-Anova(m_se2, type=3, contrasts=list(topic=contr.sum, sys=contr.sum))
 m_se2_Anova
 ```
@@ -329,12 +329,12 @@ partial.r2(m_se2_Anova)
 ### Post-hoc test
 
 ```{r}
-m_se2_contrasts_r <- pub_figure_plotter(df_data=wq_data, param=Secchi, y_label="Secchi depth (cm)", 
+m_se2_contrasts_r <- pub_figure_plotter(df_data=wq_data_c, param=Secchi, y_label="Secchi depth (cm)", 
                                         fct_grp=Region, model=m_se2, log_trans = TRUE, plt_title = "Secchi depth")
 
 m_se2_contrasts_r$diffs
 
-m_se2_contrasts_s <- pub_figure_plotter(df_data=wq_data, param=Secchi, y_label="Secchi depth (cm)", 
+m_se2_contrasts_s <- pub_figure_plotter(df_data=wq_data_c, param=Secchi, y_label="Secchi depth (cm)", 
                                         fct_grp=Season, model=m_se2, log_trans = TRUE, plt_title = "Secchi depth")
 
 m_se2_contrasts_s$diffs

@@ -42,10 +42,11 @@ lst(uvRYI, uvRYF, uvSJJ, uvMDM, uvOLD) %>%
 # Download coordinates for stations of interest
 # Define USGS station numbers
 siteNumbers<-c(
+  "USGS-11455350",
   "USGS-11455385",
   "USGS-11337190",
-  "USGS-11313405",
-  "USGS-11312676"
+  "USGS-11312676",
+  "USGS-11313405"
 )
 
 # Retrieve lat/long coordinates and attach to data
@@ -61,10 +62,11 @@ lat_long_c <- lat_long %>%
   mutate(
     Station = case_match(
       Station,
-      "USGS-11313405" ~ "Old",
+      "USGS-11455350" ~ "Cache-RYI"
+      "USGS-11455385" ~ "Cache-RYF",
+      "USGS-11337190" ~ "Jersey",
       "USGS-11312676" ~ "Middle",
-      "USGS-11455385" ~ "Cache",
-      "USGS-11337190" ~ "Jersey"
+      "USGS-11313405" ~ "Old"
     )
   )
 

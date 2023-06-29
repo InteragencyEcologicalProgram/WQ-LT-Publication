@@ -1,8 +1,21 @@
 ---
 title: "Fine scale velocity exploration for water quality drought synthesis"
 author: "Elizabeth Stumpner"
-date: "2022-12-15"
-output: html_document
+date: '`r format(Sys.Date(), "%B %d, %Y")`'
+output: 
+  html_document:
+    toc: true
+    toc_float:
+      collapsed: false
+editor_options: 
+  chunk_output_type: console
+knit: (function(input, ...) {
+    rmarkdown::render(
+      input,
+      output_dir = here::here("docs"),
+      envir = globalenv()
+    )
+    })
 ---
 
 ```{r setup, include=FALSE}

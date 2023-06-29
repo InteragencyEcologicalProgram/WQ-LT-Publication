@@ -55,7 +55,7 @@ source(here("src/global_data_proc_func.R"))
 
 # Import instantaneous velocity data, each station as an element in a list
 fp_vel_inst <- dir_ls(here("data/external"), regexp = "uv[[:upper:]]{3}\\.qs$")
-names(fp_vel_inst) <- str_extract(names(fp_vel_inst), "(?<=uv)[:upper:]{3}(?=\\.qs)")
+names(fp_vel_inst) <- str_extract(names(fp_vel_inst), "(?<=uv)[:upper:]{3}(?=\\.qs$)")
 
 ls_vel_inst <- map(fp_vel_inst, qread)
 
@@ -69,15 +69,18 @@ ls_vel_inst_c1 <- ls_vel_inst %>%
       # Remove a few timestamps not collected on a standard 15-minute interval
       filter(minute(dateTime) %in% c(0, 15, 30, 45)) %>%
       complete(dateTime = seq.POSIXt(min(dateTime), max(dateTime), by = "15 min")) %>%
-      mutate(velocity_ft_s = na_interpolation(velocity_ft_s, maxgap = 8))
+      mutate(velocity_ft_s = na_interpolation(velocity_ft_s, maxgap = 8)) %>%
+      # Convert velocity to metric units
+      mutate(velocity_m_s = velocity_ft_s / 3.2808399) %>%
+      select(-velocity_ft_s)
   )
 
 # Apply Godin filter to calculate net velocity, then calculate tidal velocity
 ls_vel_inst_c2 <- ls_vel_inst_c1 %>%
   map(
-    ~ mutate(.x, NetVel = godin_filt(dateTime, velocity_ft_s)) %>%
+    ~ mutate(.x, NetVel = godin_filt(dateTime, velocity_m_s)) %>%
       drop_na(NetVel) %>%
-      mutate(TidalVel = velocity_ft_s - NetVel)
+      mutate(TidalVel = velocity_m_s - NetVel)
   )
 
 
@@ -128,7 +131,7 @@ ls_vel_wk <- ls_vel_dv_c %>%
       filter(n_day >= 4) %>%
       select(-n_day) %>%
       # Add sign column for tidal velocity
-      mutate(TideSign = if_else(abs(MinTidalVel) > MaxTidalVel, "-", "+")) %>%
+      mutate(TideSign = if_else(abs(MinTidalVel) > MaxTidalVel, "negative", "positive")) %>%
       # Remove min and max tidal velocity since they are no longer needed
       select(-c(MinTidalVel, MaxTidalVel))
   )
@@ -158,10 +161,11 @@ ls_dayflow <- map(fp_dayflow, ~ read_csv(.x, col_types = list(.default = "c")))
 df_outflow <- ls_dayflow %>%
   map(~ select(.x, Date, Outflow = OUT)) %>%
   bind_rows() %>%
-  # Convert date column to date and Outflow to numeric
+  # Convert date column to date and Outflow to numeric (metric units)
   mutate(
     Date = date(parse_date_time(Date, c("mdY", "Ymd"))),
-    Outflow = as.numeric(Outflow)
+    Outflow = as.numeric(Outflow),
+    Outflow = Outflow / 35.315
   )
 
 # Calculate weekly average Delta Outflow
@@ -195,11 +199,6 @@ velocity <- df_vel_wk_c1 %>%
   filter(WaterYear %in% 2008:2021) %>%
   # Add year assignments
   left_join(df_yr_type, by = join_by(WaterYear == Year)) %>%
-  # Convert velocity and Delta Outflow units to metric
-  mutate(
-    across(ends_with("Vel"), ~ .x / 3.2808399),
-    Outflow = Outflow / 35.315
-  ) %>%
   select(
     Station,
     WaterYear,

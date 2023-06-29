@@ -62,7 +62,7 @@ lat_long_c <- lat_long %>%
   mutate(
     Station = case_match(
       Station,
-      "USGS-11455350" ~ "Cache-RYI"
+      "USGS-11455350" ~ "Cache-RYI",
       "USGS-11455385" ~ "Cache-RYF",
       "USGS-11337190" ~ "Jersey",
       "USGS-11312676" ~ "Middle",

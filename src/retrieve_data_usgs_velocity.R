@@ -1,12 +1,13 @@
 # WQ-LT Drought Publication
-# Purpose: Retrieve USGS instantaneous velocity data and save copy in
-  # data/external for continued processing
+# Purpose: Retrieve USGS instantaneous velocity data and station coordinates.
+  # Save copy in data/external for continued processing
 # Authors: Liz Stumpner, Dave Bosworth
 # Contacts: Elizabeth.Stumpner@water.ca.gov; David.Bosworth@water.ca.gov
 
 library(dataRetrieval)
 library(dplyr)
 library(tibble)
+library(readr)
 library(purrr)
 library(qs)
 library(here)
@@ -36,4 +37,37 @@ lst(uvRYI, uvRYF, uvSJJ, uvMDM, uvOLD) %>%
   map(~ select(.x, dateTime, velocity_ft_s = `X_72255_00000`)) %>%
   map(as_tibble) %>%
   iwalk(\(x, idx) qsave(x, file = here("data/external", paste0(idx, ".qs"))))
+
+
+# Download coordinates for stations of interest
+# Define USGS station numbers
+siteNumbers<-c(
+  "USGS-11455385",
+  "USGS-11337190",
+  "USGS-11313405",
+  "USGS-11312676"
+)
+
+# Retrieve lat/long coordinates and attach to data
+lat_long <- whatWQPsites(siteid = siteNumbers)
+
+# Keep only the necessary columns and rename stations
+lat_long_c <- lat_long %>%
+  select(
+    Station = MonitoringLocationIdentifier,
+    Latitude = LatitudeMeasure,
+    Longitude = LongitudeMeasure
+  ) %>%
+  mutate(
+    Station = case_match(
+      Station,
+      "USGS-11313405" ~ "Old",
+      "USGS-11312676" ~ "Middle",
+      "USGS-11455385" ~ "Cache",
+      "USGS-11337190" ~ "Jersey"
+    )
+  )
+
+# Export station coordinates
+write_csv(lat_long_c, here("data/external/vel_coord.csv"))
 

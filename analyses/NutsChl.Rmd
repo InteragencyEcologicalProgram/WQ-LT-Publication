@@ -53,10 +53,10 @@ devtools::session_info()
 
 ```{r}
 # Import long-term average data for the nutrients
-nutr_data <- read_rds(here("data/lt_avg_nutr.rds"))
+nutr_data <- read_rds(here("data/processed/lt_avg_nutr.rds"))
 
 # Import long-term average data for chlorophyll
-chla_data <- read_rds(here("data/lt_avg_chla.rds"))
+chla_data <- read_rds(here("data/processed/lt_avg_chla.rds"))
 
 # Combine nutrient and chlorophyll data and prepare for analyses
 nutr_chla_data_c <- 
@@ -205,11 +205,11 @@ partial.r2(Aman)
 ### Post-hoc tests and figures
 
 ```{r}
-AmRegions = pub_figure_plotter(Ammonia, DissAmmonia, "Ammonium (mg/L)", Region, Am2, log_trans = T,
+AmRegions = pub_figure_plotter(Ammonia, DissAmmonia, expression(Ammonium~(`mg-N`~L^{-1})), Region, Am2, log_trans = T,
                    plt_title = "Ammonium")
 AmRegions$diffs
 
-AmSeasons = pub_figure_plotter(Ammonia, DissAmmonia, "Ammonium (mg/L)", Season, Am2, log_trans = T,
+AmSeasons = pub_figure_plotter(Ammonia, DissAmmonia, expression(Ammonium~(`mg-N`~L^{-1})), Season, Am2, log_trans = T,
                                plt_title = "Ammonium")
 AmSeasons$diffs
 ```
@@ -337,12 +337,10 @@ partial.r2(NatAn)
 ### Post-hoc tests and figures
 
 ```{r}
-NNRegion = pub_figure_plotter(Nitrate, DissNitrateNitrite, "Nitrate + Nitrite (mg/L)", Region, Nat2, log_trans = T,
-                   plt_title = "Nitrate + Nitrite")
+NNRegion = pub_figure_plotter(Nitrate, DissNitrateNitrite, expression(Nitrate+Nitrite~(`mg-N`~L^{-1})), Region, Nat2, log_trans = T, plt_title = "Nitrate + Nitrite")
 NNRegion$diffs
 
-NNSeason = pub_figure_plotter(Nitrate, DissNitrateNitrite, "Nitrate + Nitrite (mg/L)", Season, Nat2, log_trans = T,
-                   plt_title = "Nitrate + Nitrite")
+NNSeason = pub_figure_plotter(Nitrate, DissNitrateNitrite, expression(Nitrate+Nitrite~(`mg-N`~L^{-1})), Season, Nat2, log_trans = T, plt_title = "Nitrate + Nitrite")
 NNSeason$diffs
 ```
 
@@ -461,12 +459,10 @@ partial.r2(Panova)
 ### Post-hoc tests and figures
 
 ```{r}
-OPRegion = pub_figure_plotter(Phos, DissOrthophos, "Ortho-phosphate (mg/L)", Region, Phos2, log_trans = T,
-                              plt_title = "Ortho-phosphate")
+OPRegion = pub_figure_plotter(Phos, DissOrthophos, expression(`Ortho-phosphate`~(`mg-P`~L^{-1})), Region, Phos2, log_trans = T, plt_title = "Ortho-phosphate")
 OPRegion$diffs
 
-OPSeason = pub_figure_plotter(Phos, DissOrthophos, "Ortho-phosphate (mg/L)", Season, Phos2, log_trans = T,
-                   plt_title = "Ortho-phosphate")
+OPSeason = pub_figure_plotter(Phos, DissOrthophos, expression(`Ortho-phosphate`~(`mg-P`~L^{-1})), Season, Phos2, log_trans = T, plt_title = "Ortho-phosphate")
 OPSeason$diffs
 ```
 
@@ -631,12 +627,10 @@ partial.r2(Ch1_Anova)
 ### Post-hoc tests and figures
 
 ```{r}
-ChRegion = pub_figure_plotter(ChlaA, Chlorophyll, "Chlorophyll (ug/L)", Region, Chl1, log_trans = T,
-                              plt_title = "Chlorophyll")
+ChRegion = pub_figure_plotter(ChlaA, Chlorophyll, expression(Chlorophyll~(mu*g~L^{-1})), Region, Chl1, log_trans = T, plt_title = "Chlorophyll")
 ChRegion$diffs
 
-CHSeason = pub_figure_plotter(ChlaA, Chlorophyll, "Chlorophyll (ug/L)", Season, Chl1, log_trans = T,
-                              plt_title = "Chlorophyll")
+CHSeason = pub_figure_plotter(ChlaA, Chlorophyll, expression(Chlorophyll~(mu*g~L^{-1})), Season, Chl1, log_trans = T, plt_title = "Chlorophyll")
 CHSeason$diffs
 ```
 

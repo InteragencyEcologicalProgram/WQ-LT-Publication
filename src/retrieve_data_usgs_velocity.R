@@ -49,27 +49,9 @@ siteNumbers<-c(
   "USGS-11313405"
 )
 
-# Retrieve lat/long coordinates and attach to data
+# Retrieve lat/long coordinates
 lat_long <- whatWQPsites(siteid = siteNumbers)
 
-# Keep only the necessary columns and rename stations
-lat_long_c <- lat_long %>%
-  select(
-    Station = MonitoringLocationIdentifier,
-    Latitude = LatitudeMeasure,
-    Longitude = LongitudeMeasure
-  ) %>%
-  mutate(
-    Station = case_match(
-      Station,
-      "USGS-11455350" ~ "Cache-RYI",
-      "USGS-11455385" ~ "Cache-RYF",
-      "USGS-11337190" ~ "Jersey",
-      "USGS-11312676" ~ "Middle",
-      "USGS-11313405" ~ "Old"
-    )
-  )
-
 # Export station coordinates
-write_csv(lat_long_c, here("data/external/vel_coord.csv"))
+write_csv(lat_long, here("data/external/vel_coord.csv"))
 

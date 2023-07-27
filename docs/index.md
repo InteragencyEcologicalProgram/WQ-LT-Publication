@@ -11,6 +11,6 @@ layout: default
 
 * [Temperature, salinity, and Secchi depth models](TempSalSecchi.html)
 * [Nutrient and chlorophyll models](NutsChl.html)
-* [Inflow and outflow analysis](inflow-and-outflow.html)
+* [Inflow and outflow analysis](inflow_outflow.html)
 * [Velocity analysis](velocity.html)
 

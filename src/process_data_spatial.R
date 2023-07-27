@@ -63,13 +63,9 @@ sf_dwq <- df_dwq_c %>% st_as_sf(coords = c("Longitude", "Latitude"), crs = 4326)
 # Import region assignments
 df_regions <- read_csv(here("data/raw/region_assignments.csv"))
 
-# Load Delta subregions shapefile from EDSM and only keep SubRegions that
-  # contain discrete WQ sampling locations
-sf_subr <- R_EDSM_Subregions_Mahardja_FLOAT %>%
-  st_filter(st_transform(sf_dwq, crs = st_crs(R_EDSM_Subregions_Mahardja_FLOAT)))
-
-# Add region assignments and dissolve subregions into regions
-sf_regions <- sf_subr %>%
+# Load Delta subregions shapefile from EDSM, add region assignments, and
+  # dissolve subregions into regions
+sf_regions <- R_EDSM_Subregions_Mahardja_FLOAT %>%
   select(SubRegion) %>%
   inner_join(df_regions, by = join_by(SubRegion)) %>%
   # Add a 0.5 meter buffer around each subregion to eliminate slivers within
@@ -82,11 +78,11 @@ sf_regions <- sf_subr %>%
 # Export Data -------------------------------------------------------------
 
 # UGSS velocity station coordinates
-sf_usgs_vel_coord %>% write_sf(here("data/processed/velocity_coords.shp"))
+sf_usgs_vel_coord %>% write_sf(here("data/processed/spatial/velocity_coords.shp"))
 
 # Discrete WQ station coordinates
-sf_dwq %>% write_sf(here("data/processed/discrete_wq_coords.shp"))
+sf_dwq %>% write_sf(here("data/processed/spatial/discrete_wq_coords.shp"))
 
 # Region polygons
-sf_regions %>% write_sf(here("data/processed/regions.shp"))
+sf_regions %>% write_sf(here("data/processed/spatial/regions.shp"))
 

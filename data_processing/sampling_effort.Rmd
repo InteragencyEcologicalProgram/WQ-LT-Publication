@@ -25,7 +25,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Purpose
 
-Look at the sampling effort for the various parameters to be included in the long-term WQ publication. This will help us decide how to structure our ANOVA models. Sampling effort is visualized with tile plots of samples collected by region and season and maps displaying spatial coverage. This document also contains a summary table of the surveys, parameters, and periods of record for the publication.
+Look at the sampling effort for the various parameters to be included in the long-term WQ publication. This will help us decide how to structure our ANOVA models. Sampling effort is visualized with tile plots of samples collected by region and season and maps displaying spatial coverage.
 
 
 # Global code and functions
@@ -59,7 +59,7 @@ devtools::session_info()
 
 ```{r import data}
 # Define file paths for raw data for WQ measurements, nutrients, and chlorophyll
-fp_raw_data <- dir(path = here("data"), pattern = "^raw.+qs$", full.names = TRUE)
+fp_raw_data <- dir(path = here("data/interim"), pattern = "^raw.+qs$", full.names = TRUE)
 
 # Import and combine raw data
 df_raw_data <- map(fp_raw_data, qread) %>% list_rbind()
@@ -142,31 +142,5 @@ for (i in 1:nrow(ndf_se_plt)) {
   print(ndf_se_plt$plt[[i]])
   cat("\n\n")
 }
-```
-
-# Regional Coverage
-
-Placeholder
-
-# Survey Summary Table
-
-Create a table of the surveys used for each parameter in the publication and their periods of record. This table is used in the publication.
-
-```{r summarize survey data}
-df_survey_summ <- df_raw_data_c %>%
-  summarize(
-    min_yr = min(YearAdj), 
-    max_yr = max(YearAdj),
-    .by = c(Source, Parameter)
-  ) %>% 
-  arrange(Source, Parameter)
-
-print(df_survey_summ, n = 50)
-```
-
-Export survey summary table to be used in the publication.
-
-```{r export survey summary}
-df_survey_summ %>% write_csv(here("outputs/survey_summary_table.csv"))
 ```
 

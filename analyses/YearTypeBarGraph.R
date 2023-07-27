@@ -1,30 +1,57 @@
-#COde for figure 1 - water year index graph
+# WQ-LT Drought Publication
+# Purpose: Create figure of SV water year indices and drought classifications
+  # for publication
+# Authors: Rosie Hartman, Dave Bosworth
+# Contacts: Rosemary.Hartman@water.ca.gov; David.Bosworth@water.ca.gov
 
 library(tidyverse)
+library(here)
 
-#import water year assignments
-WYs = read.csv("data/yearassignments.csv")
-WYs = mutate(WYs,Yr_type = factor(Yr_type, levels = c("Critical", "Dry", "Below Normal", "Above Normal", "Wet")))
+# Import water year assignments
+df_yr_type <- read_csv(here("data/raw/year_assignments.csv"))
 
+# Create a data frame of SV Index cutoffs for Year Types to be used on the figure
+df_cutoffs <- tibble(
+  Yr_type = c("Critical", "Dry", "Below \nNormal", "Above \nNormal", "Wet"),
+  cutval = c(0, 5.4, 6.5, 7.8, 9.2)
+)
 
-#without the drought periods, and with lines for year type cut offs
-cutoffs = data.frame(Yr_type = c("Critical", "Dry", "Below \nNormal", "Above \nNormal", "Wet"),
-                     cutval = c(0, 5.4, 6.5, 7.8, 9.2))
-
-
-
-#try a simpler version
+# Define color palette for drought classifications
 pal_drought <- c(D = "#FDE333", N = "#53CC67", W = "#00588B")
-ggplot(filter(WYs, Year > 1974, Year <2022))+
-  geom_bar(aes(x = Year, y = Index, fill = Drought), stat = "identity")+
-  scale_fill_manual(values = pal_drought, name = NULL, labels = c("Drought", "Neutral", "Wet"))+
-  theme_bw()+
-  geom_hline(data = cutoffs, aes(yintercept = cutval), linetype = 2)+
-  geom_text(data = cutoffs, aes(x = 1970, y = cutval, label = Yr_type), vjust =0, hjust = 0, size = 3, lineheight = .9)+
-  scale_x_continuous(breaks = c(1975, 2000, 2021))+
-  theme(legend.position = "top") +
-  ylab("Sacramento Valley Index")+
+
+# Create bar chart figure for publication
+plt_yr_type <- df_yr_type %>%
+  ggplot() +
+  geom_col(aes(x = Year, y = SVIndex, fill = Drought)) +
+  scale_fill_manual(
+    values = pal_drought,
+    name = NULL,
+    labels = c("Drought", "Neutral", "Wet")
+  ) +
+  theme_bw() +
+  geom_hline(data = df_cutoffs, aes(yintercept = cutval), linetype = 2) +
+  geom_text(
+    data = df_cutoffs,
+    aes(x = 1970, y = cutval + 0.2, label = Yr_type),
+    vjust = 0,
+    hjust = 0,
+    size = 3,
+    lineheight = 0.9
+  ) +
+  scale_x_continuous(breaks = seq.int(1975, 2020, by = 5)) +
+  theme(
+    panel.grid.minor.x = element_blank(),
+    legend.position = "top"
+  ) +
+  ylab("Sacramento Valley Index") +
   xlab(NULL)
 
+# Export Year Type Figure
+ggsave(
+  here("plots/yr_type.jpg"),
+  plot = plt_yr_type,
+  width = 6,
+  height = 5,
+  units = "in"
+)
 
-ggsave("plots/Wateryears1975.tiff", device = "tiff", width = 6, height = 5)

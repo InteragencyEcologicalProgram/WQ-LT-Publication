@@ -27,7 +27,17 @@ param_lev <- c(
 
 # Summarize periods of record for each survey-parameter combination
 df_survey_summ <- df_dwq %>%
-  mutate(Parameter = factor(Parameter, levels = param_lev)) %>%
+  mutate(
+    # Change a few survey names
+    Source = case_when(
+      Source == "20mm" ~ "20 mm",
+      Source == "Baystudy" ~ "Bay Study",
+      Source == "USGS_CAWSC" ~ "USGS CAWSC",
+      Source == "USGS_SFBS" ~ "USGS SFBS",
+      TRUE ~ Source
+    ),
+    Parameter = factor(Parameter, levels = param_lev)
+  ) %>%
   summarize(
     min_yr = min(YearAdj),
     max_yr = max(YearAdj),

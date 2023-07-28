@@ -140,7 +140,7 @@ map_wq_f <-
 # Export Map Figure -------------------------------------------------------
 
 ggsave(
-  here("plots/wq_map.jpg"),
+  here("results/figures/wq_map.jpg"),
   plot = map_wq_f,
   width = 8,
   height = 8,

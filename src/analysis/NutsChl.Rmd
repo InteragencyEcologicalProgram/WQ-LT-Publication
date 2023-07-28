@@ -40,7 +40,7 @@ library(knitr)
 library(kableExtra)
 library(here)
 
-source(here("analyses/global_analysis_functions.R"))
+source(here("src/analysis/global_analysis_functions.R"))
 ```
 
 Display R and package versions:
@@ -53,10 +53,10 @@ devtools::session_info()
 
 ```{r}
 # Import long-term average data for the nutrients
-nutr_data <- read_rds(here("data/processed/lt_avg_nutr.rds"))
+nutr_data <- read_rds(here("data/processed/wq/lt_avg_nutr.rds"))
 
 # Import long-term average data for chlorophyll
-chla_data <- read_rds(here("data/processed/lt_avg_chla.rds"))
+chla_data <- read_rds(here("data/processed/wq/lt_avg_chla.rds"))
 
 # Combine nutrient and chlorophyll data and prepare for analyses
 nutr_chla_data_c <- 
@@ -684,8 +684,8 @@ cex
 
 ```{r}
 # Define file paths for output and figures for the manuscript
-fp_output <- here("outputs")
-fp_plots <- here("plots")
+fp_output <- here("results/tables")
+fp_plots <- here("results/figures")
 ```
 
 ### Anovas
@@ -801,19 +801,5 @@ ggsave(
   units = "in",
   dpi = 300
 )
-```
-
-### Output data for Whitepaper
-
-```{r, eval = FALSE}
-# table(raw_chla_1975_2021$Source, raw_chla_1975_2021$YearAdj)
-# table(raw_nutr_1975_2021$Source, raw_nutr_1975_2021$YearAdj)
-
-#bind nutrients and chlorophyll together to use in synthesis paper
-NutsCLa = left_join(ChlaA, Nitrate) %>%
-  left_join(Phos) %>%
-  left_join(Ammonia)
-
-saveRDS(NutsCLa, file = file.path(fp_output, "NutrientsChlorophyll.RData"))
 ```
 

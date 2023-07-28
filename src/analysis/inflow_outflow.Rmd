@@ -38,7 +38,7 @@ devtools::session_info()
 
 ```{r}
 # Import Delta Inflow and Outflow data from Dayflow
-dayflow <- readRDS(here("data/processed/dayflow.rds"))
+dayflow <- readRDS(here("data/processed/hydrology/dayflow.rds"))
 
 # Prepare Dayflow data for plots
 dayflow_c <- dayflow %>%
@@ -200,7 +200,7 @@ plt_outflow_wyday
 
 ```{r}
 # Define file path for manuscript figures
-fp_plots <- here("plots")
+fp_plots <- here("results/figures")
 
 # Cumulative inflow figure
 ggsave(

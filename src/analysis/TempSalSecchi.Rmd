@@ -39,7 +39,7 @@ require(tidyr)
 library(kableExtra)
 library(here)
 
-source(here("analyses/global_analysis_functions.R"))
+source(here("src/analysis/global_analysis_functions.R"))
 
 conflict_prefer("filter", "dplyr")
 conflict_prefer("select", "dplyr")
@@ -55,7 +55,7 @@ devtools::session_info()
 
 ```{r}
 # Import long-term average data for the water quality measurements
-wq_data <- read_rds(here("data/lt_avg_wq_meas.rds"))
+wq_data <- read_rds(here("data/processed/wq/lt_avg_wq_meas.rds"))
 
 # Prepare data for analyses
 wq_data_c <- wq_data %>%
@@ -121,7 +121,7 @@ Save Secchi depth figure for Supplemental Info.
 
 ```{r}
 ggsave(
-  here("plots/secchi_point_region_season.jpg"),
+  here("results/figures/secchi_point_region_season.jpg"),
   plot = plt_se_point,
   width = 11,
   height = 9,
@@ -344,8 +344,8 @@ m_se2_contrasts_s$diffs
 
 ```{r}
 # Define file paths for output and figures for the manuscript
-fp_output <- here("outputs")
-fp_plots <- here("plots")
+fp_output <- here("results/tables")
+fp_plots <- here("results/figures")
 ```
 
 ### Anovas

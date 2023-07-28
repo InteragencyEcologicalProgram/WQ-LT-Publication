@@ -12,7 +12,7 @@ library(conflicted)
 conflicts_prefer(dplyr::filter(), dplyr::lag())
 
 # Source global data processing functions
-source(here("src/global_data_proc_func.R"))
+source(here("src/data_processing/global_data_proc_func.R"))
 
 # Import Dayflow data for 1970-2021
 fp_dayflow <- dir_ls(here("data/external"), regexp = "dayflow.+\\.csv$")
@@ -88,8 +88,8 @@ dayflow <- df_dayflow_sum %>%
   arrange(Date)
 
 # Export Dayflow data frame as csv file
-dayflow %>% write_csv(here("data/processed/dayflow.csv"))
+dayflow %>% write_csv(here("data/processed/hydrology/dayflow.csv"))
 
 # Export Dayflow data frame as rds file
-dayflow %>% saveRDS(here("data/processed/dayflow.rds"))
+dayflow %>% saveRDS(here("data/processed/hydrology/dayflow.rds"))
 

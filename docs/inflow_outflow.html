@@ -11,7 +11,7 @@
 
 <meta name="author" content="Sam Bashevkin" />
 
-<meta name="date" content="2023-06-29" />
+<meta name="date" content="2023-07-28" />
 
 <title>Inflow and outflow</title>
 
@@ -1493,7 +1493,7 @@ font-size: 0.95em;
 
 <h1 class="title toc-ignore">Inflow and outflow</h1>
 <h4 class="author">Sam Bashevkin</h4>
-<h4 class="date">2023-06-29</h4>
+<h4 class="date">2023-07-28</h4>
 
 </div>
 
@@ -1512,7 +1512,7 @@ library(here)</code></pre>
 ##  collate  English_United States.utf8
 ##  ctype    English_United States.utf8
 ##  tz       America/Los_Angeles
-##  date     2023-06-29
+##  date     2023-07-28
 ##  pandoc   3.1.1 @ C:/Program Files/RStudio/resources/app/bin/quarto/bin/tools/ (via rmarkdown)
 ## 
 ## ─ Packages ───────────────────────────────────────────────────────────────────
@@ -1598,7 +1598,7 @@ library(here)</code></pre>
 <div id="data-prep" class="section level1">
 <h1>Data prep</h1>
 <pre class="r"><code># Import Delta Inflow and Outflow data from Dayflow
-dayflow &lt;- readRDS(here(&quot;data/processed/dayflow.rds&quot;))
+dayflow &lt;- readRDS(here(&quot;data/processed/hydrology/dayflow.rds&quot;))
 
 # Prepare Dayflow data for plots
 dayflow_c &lt;- dayflow %&gt;%
@@ -1748,7 +1748,7 @@ plt_outflow_wyday</code></pre>
 <div id="export-figures" class="section level1">
 <h1>Export Figures</h1>
 <pre class="r"><code># Define file path for manuscript figures
-fp_plots &lt;- here(&quot;plots&quot;)
+fp_plots &lt;- here(&quot;results/figures&quot;)
 
 # Cumulative inflow figure
 ggsave(

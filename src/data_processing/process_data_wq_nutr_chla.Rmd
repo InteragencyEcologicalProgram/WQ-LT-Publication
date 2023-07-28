@@ -56,7 +56,7 @@ conflicts_prefer(dplyr::filter(), hms::hms())
 
 ```{r check dir}
 # Check if we are in the correct working directory
-i_am("data_processing/process_data_wq_nutr_chla.Rmd")
+i_am("src/data_processing/process_data_wq_nutr_chla.Rmd")
 ```
 
 ```{r session info}
@@ -68,7 +68,7 @@ Load globally-used data:
 
 ```{r load global data, message = FALSE}
 # Import region assignments
-df_regions <- read_csv(here("data_processing/region_assignments.csv"))
+df_regions <- read_csv(here("data/raw/region_assignments.csv"))
   
 # Load Delta shapefile from Brian and only keep SubRegions east of Carquinez Straight
 sf_delta <- R_EDSM_Subregions_Mahardja_FLOAT %>% 
@@ -85,7 +85,7 @@ sf_delta <- R_EDSM_Subregions_Mahardja_FLOAT %>%
   select(SubRegion)
 
 # Import year assignments
-df_yr_type <- read_csv(here("data_processing/year_assignments.csv")) %>% rename(YearAdj = Year)
+df_yr_type <- read_csv(here("data/raw/year_assignments.csv")) %>% rename(YearAdj = Year)
 
 # Define years used in the publication
 lt_yrs <- c(1975:2021)
@@ -1313,7 +1313,7 @@ ls_data_raw <- lst(
 )
 
 # Export raw data frames as qs files
-ls_data_raw %>% iwalk(\(x, idx) qsave(x, file = here("data", paste0(idx, ".qs"))))
+ls_data_raw %>% iwalk(\(x, idx) qsave(x, file = here("data/interim", paste0(idx, ".qs"))))
 
 # Combine all data frames of long-term average data into a named list
 ls_data_lt_avg <- lst(
@@ -1323,9 +1323,9 @@ ls_data_lt_avg <- lst(
 )
 
 # Export long-term average data frames as csv files
-ls_data_lt_avg %>% iwalk(\(x, idx) write_csv(x, file = here("data", paste0(idx, ".csv"))))
+ls_data_lt_avg %>% iwalk(\(x, idx) write_csv(x, file = here("data/processed/wq", paste0(idx, ".csv"))))
 
 # Export long-term average data frames as rds files
-ls_data_lt_avg %>% iwalk(\(x, idx) saveRDS(x, file = here("data", paste0(idx, ".rds"))))
+ls_data_lt_avg %>% iwalk(\(x, idx) saveRDS(x, file = here("data/processed/wq", paste0(idx, ".rds"))))
 ```
 

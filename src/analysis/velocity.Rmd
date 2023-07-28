@@ -32,7 +32,7 @@ library(mapview)
 library(patchwork)
 library(here)
 
-source(here("analyses/global_analysis_functions.R"))
+source(here("src/analysis/global_analysis_functions.R"))
 ```
 
 # Overview
@@ -40,9 +40,9 @@ source(here("analyses/global_analysis_functions.R"))
 This is the velocity analysis for the Drought paper. The weekly velocity records are calculated from instantaneous (15-min) records at four USGS flow stations. Stations include Cache at Ryer Island Ferry, San Joaquin River at Jersey Point, Middle River, and Old River at Bacon Island (see map below). The weekly velocity data is combined with Delta Outflow from Dayflow and drought classifications.
 
 ```{r import data}
-vel_weekly <- readRDS(here("data/processed/velocity.rds"))
+vel_weekly <- readRDS(here("data/processed/hydrology/velocity.rds"))
 
-lat_long <- read_csv(here("data/external/vel_coord.csv"))
+lat_long <- read_sf(here("data/processed/spatial/velocity_coords.shp"))
 ```
 
 ```{r prepare vel data}
@@ -61,9 +61,7 @@ vel_weekly_c <- vel_weekly %>%
 Here is a map of the selected USGS stations flow stations in the Delta - from north to south the stations include Cache Slough (USGS 11455350 - inactive RYI station, 11455385 - active RYF station), Jersey Point (11337190), Old River at Bacon Island (11313405), and Middle River (11312676)
 
 ```{r}
-lat_long_sf <- st_as_sf(lat_long, coords = c("Longitude", "Latitude"), crs = 4326)
-
-mapview(lat_long_sf, layer.name = "Velocity", size = 10, label = "site")
+mapview(lat_long, layer.name = "Velocity", size = 10, label = "site")
 ```
 
 # Figures
@@ -168,7 +166,7 @@ plt_vel_wyday <- plt_mean_net_vel_wyday / plt_max_abs_tidal_vel_wyday +
 
 ```{r}
 # Define file path for manuscript figures
-fp_plots <- here("plots")
+fp_plots <- here("results/figures")
 
 # Velocity vs Outflow Figure
 ggsave(

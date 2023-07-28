@@ -48,7 +48,7 @@ plt_yr_type <- df_yr_type %>%
 
 # Export Year Type Figure
 ggsave(
-  here("plots/yr_type.jpg"),
+  here("results/figures/yr_type.jpg"),
   plot = plt_yr_type,
   width = 6,
   height = 5,

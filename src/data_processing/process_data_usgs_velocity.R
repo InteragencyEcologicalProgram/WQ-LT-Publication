@@ -48,7 +48,7 @@ godin_filt <- function(tint, xint) {
 }
 
 # Source global data processing functions
-source(here("src/global_data_proc_func.R"))
+source(here("src/data_processing/global_data_proc_func.R"))
 
 
 # Import Instantaneous Data -----------------------------------------------
@@ -213,8 +213,8 @@ velocity <- df_vel_wk_c1 %>%
   )
 
 # Export velocity data frame as csv file
-velocity %>% write_csv(here("data/processed/velocity.csv"))
+velocity %>% write_csv(here("data/processed/hydrology/velocity.csv"))
 
 # Export velocity data frame as rds file
-velocity %>% saveRDS(here("data/processed/velocity.rds"))
+velocity %>% saveRDS(here("data/processed/hydrology/velocity.rds"))
 

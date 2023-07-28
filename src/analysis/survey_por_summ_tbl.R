@@ -9,7 +9,6 @@ library(tidyverse)
 library(qs)
 library(fs)
 library(here)
-# library(conflicted)
 
 # Import discrete measurement data for all WQ, nutrient, and chlorophyll parameters
 fp_dwq <- dir_ls(here("data/interim"), regexp = "raw.+\\.qs$")
@@ -37,5 +36,5 @@ df_survey_summ <- df_dwq %>%
   arrange(Source, Parameter)
 
 # Export survey summary table to be used in the publication.
-df_survey_summ %>% write_csv(here("outputs/survey_summary_table.csv"))
+df_survey_summ %>% write_csv(here("results/tables/survey_summary_table.csv"))
 

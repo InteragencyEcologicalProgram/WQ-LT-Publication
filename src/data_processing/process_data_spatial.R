@@ -48,7 +48,7 @@ sf_usgs_vel_coord <- df_usgs_vel_coord_c %>% st_as_sf(coords = c("Longitude", "L
 
 # Discrete WQ sampling locations:
 # Import discrete measurement data for all WQ, nutrient, and chlorophyll parameters
-fp_dwq <- dir_ls(here("data/interim/"), regexp = "raw.+\\.qs$")
+fp_dwq <- dir_ls(here("data/interim"), regexp = "raw.+\\.qs$")
 df_dwq <- map(fp_dwq, qread) %>% list_rbind()
 
 # Find unique combinations of Station, Latitude and Longitude

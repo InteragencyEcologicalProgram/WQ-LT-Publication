@@ -39,14 +39,29 @@ sf_vel_c <- sf_vel %>%
   )
 
 # Remove the EMP EZ stations from the discrete WQ coordinates since they are not
-  # fixed and overwhelm the map
-sf_dwq_c <- sf_dwq %>% filter(!str_detect(Station, "^EMP EZ"))
+  # fixed and overwhelm the map and change a few survey names
+sf_dwq_c <- sf_dwq %>%
+  filter(!str_detect(Station, "^EMP EZ")) %>%
+  mutate(
+    Source = case_when(
+      Source == "20mm" ~ "20 mm",
+      Source == "Baystudy" ~ "Bay Study",
+      Source == "USGS_CAWSC" ~ "USGS CAWSC",
+      Source == "USGS_SFBS" ~ "USGS SFBS",
+      TRUE ~ Source
+    )
+  )
 
 # Import Delta region polygons
 sf_regions <- read_sf(here("data/processed/spatial/regions.shp"))
 
-# Add nudge variable to region polygons to move region labels outside boxes
-sf_regions_c <- sf_regions %>% mutate(nudge = c(-.1, .1, -.2, -.09, .09))
+sf_regions_c <- sf_regions %>%
+  mutate(
+    # Change region name to "South-Central"
+    Region = if_else(Region == "SouthCentral", "South-Central", Region),
+    # Add nudge variable to region polygons to move region labels outside boxes
+    nudge = c(-.1, .1, -.2, -.09, .09)
+  )
 
 
 # Create Map Figure -------------------------------------------------------

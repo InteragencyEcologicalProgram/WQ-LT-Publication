@@ -24,8 +24,8 @@ plt_yr_type <- df_yr_type %>%
   ggplot() +
   geom_col(aes(x = Year, y = SVIndex, fill = Drought)) +
   scale_fill_manual(
+    name = "Drought Classification: ",
     values = pal_drought,
-    name = NULL,
     labels = c("Drought", "Neutral", "Wet")
   ) +
   theme_bw() +
@@ -43,8 +43,8 @@ plt_yr_type <- df_yr_type %>%
     panel.grid.minor.x = element_blank(),
     legend.position = "top"
   ) +
-  ylab("Sacramento Valley Index") +
-  xlab(NULL)
+  ylab("Sacramento Valley Water Year Index") +
+  xlab("Water Year")
 
 # Export Year Type Figure
 ggsave(

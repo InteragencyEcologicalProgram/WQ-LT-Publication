@@ -73,29 +73,27 @@ Next up is exploring the relationship with delta outflow, and mean net velocity 
 ```{r}
 plt_mean_net_vel_vs_outflow <- vel_weekly_c %>%
   ggplot(aes(x = Outflow_log, y = MeanNetVel, color = YearType)) +
-  color_pal_yrtype(aes_type = "color") +
+  color_pal_yrtype(aes_type = "color", scale_title = "Water Year\nHydrologic\nClassification") +
   geom_point(alpha = 0.4, size = 2) +
   facet_wrap(vars(Station), scales = "free") +
   geom_hline(yintercept = 0, linetype = "solid", col = "black") +
   labs(
     x = expression(log(Outflow)~(m^{3}~s^{-1})),
     y = expression(Mean~Net~Velocity~(m~s^{-1}))
-  ) +
-  guides(color = guide_legend("Water year index"))
+  )
 
 plt_mean_net_vel_vs_outflow
 
 plt_max_abs_tidal_vel_vs_outflow <- vel_weekly_c %>%
   ggplot(aes(x = Outflow_log, y = MaxAbsTidalVel, color = YearType, shape = TideSign)) +
   geom_point(alpha = 0.4, size = 2) +
-  color_pal_yrtype(aes_type = "color") +
+  color_pal_yrtype(aes_type = "color", scale_title = "Water Year\nHydrologic\nClassification") +
   facet_wrap(vars(Station), scales = "free") +
   labs(
     x = expression(log(Outflow)~(m^{3}~s^{-1})),
     y = expression(Maximum~Absolute~Tidal~Velocity~(m~s^{-1})),
     shape = "Sign"
-  ) +
-  guides(color = guide_legend("Water year index"))
+  )
 
 plt_max_abs_tidal_vel_vs_outflow
 
@@ -113,13 +111,12 @@ To start, delta outflow is similar at the start of most water years except for w
 plt_outflow_wyday <- vel_weekly_c %>%
   ggplot(aes(x = WYday, y = Outflow_log, color = YearType)) +
   geom_smooth() +
-  color_pal_yrtype(aes_type = "color") +
+  color_pal_yrtype(aes_type = "color", scale_title = "Water Year\nHydrologic\nClassification") +
   theme_bw() +
   labs(
     x = "Water day of year", 
     y = expression(log(Outflow)~(m^{3}~s^{-1}))
-  ) +
-  guides(color = guide_legend("Water year index"))
+  )
 
 plt_outflow_wyday
 ```
@@ -132,27 +129,25 @@ Across all water years, mean net velocity is most always positive at Cache and J
 plt_mean_net_vel_wyday <- vel_weekly_c %>%
   ggplot(aes(x = WYday, y = MeanNetVel, color = YearType)) +
   geom_smooth() +
-  color_pal_yrtype(aes_type = "color") +
+  color_pal_yrtype(aes_type = "color", scale_title = "Water Year\nHydrologic\nClassification") +
   facet_wrap(vars(Station)) +
   geom_hline(yintercept = 0, linetype = "solid", col = "black") +
   labs(
     x = "Water day of year", 
     y = expression(Mean~Net~Velocity~(m~s^{-1}))
-  ) +
-  guides(color = guide_legend("Water year index"))
+  )
 
 plt_mean_net_vel_wyday
 
 plt_max_abs_tidal_vel_wyday <- vel_weekly_c %>%
   ggplot(aes(x = WYday, y = MaxAbsTidalVel, color = YearType)) +
   geom_smooth() +
-  color_pal_yrtype(aes_type = "color") +
+  color_pal_yrtype(aes_type = "color", scale_title = "Water Year\nHydrologic\nClassification") +
   facet_wrap(vars(Station), scales = "free") +
   labs(
     x = "Water day of year", 
     y = expression(Maximum~Absolute~Tidal~Velocity~(m~s^{-1}))
-  ) +
-  guides(color = guide_legend("Water year index"))
+  )
 
 plt_max_abs_tidal_vel_wyday
 

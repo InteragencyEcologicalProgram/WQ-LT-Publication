@@ -80,7 +80,8 @@ plt_mean_net_vel_vs_outflow <- vel_weekly_c %>%
   labs(
     x = expression(log(Outflow)~(m^{3}~s^{-1})),
     y = expression(Mean~Net~Velocity~(m~s^{-1}))
-  )
+  ) +
+  theme_bw()
 
 plt_mean_net_vel_vs_outflow
 
@@ -93,7 +94,8 @@ plt_max_abs_tidal_vel_vs_outflow <- vel_weekly_c %>%
     x = expression(log(Outflow)~(m^{3}~s^{-1})),
     y = expression(Maximum~Absolute~Tidal~Velocity~(m~s^{-1})),
     shape = "Sign"
-  )
+  ) +
+  theme_bw()
 
 plt_max_abs_tidal_vel_vs_outflow
 

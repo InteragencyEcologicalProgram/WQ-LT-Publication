@@ -84,7 +84,7 @@ dayflow_c %>%
   ggplot(aes(x = WYday, y = InflowTotal, color = Period_year_cat, group = Period_year_cat)) +
   geom_smooth(method = "gam", formula = y ~ s(x, bs = "cs", k = 25)) +
   facet_grid(rows = vars(Drought), scales = "free_y") +
-  xlab("Water day of year") +
+  xlab("Day of Water Year") +
   scale_color_viridis_d(name = "Period-year") +
   wdoy_x_axis_spec +
   coord_cartesian(ylim = c(0, NA), expand = FALSE) +
@@ -99,7 +99,7 @@ dayflow_c %>%
   ggplot(aes(x = WYday, y = InflowTotal / InflowTotal_sum, color = Period_year_cat)) +
   geom_smooth(method = "gam", formula = y ~ s(x, bs = "cs", k = 25)) +
   facet_grid(rows = vars(Drought)) +
-  xlab("Water day of year") +
+  xlab("Day of Water Year") +
   scale_color_viridis_d(name = "Period-year") +
   wdoy_x_axis_spec +
   coord_cartesian(ylim = c(0, NA), expand = FALSE) +
@@ -123,7 +123,7 @@ plt_inflow_wyday <- dayflow_c %>%
   geom_line() +
   facet_grid(rows = vars(Drought), scales = "free_y") +
   ylab("Cumulative proportional inflow") +
-  xlab("Water day of year") +
+  xlab("Day of Water Year") +
   scale_color_viridis_d(name = "Period-year") +
   scale_linetype(name = "Period-year") +
   wdoy_x_axis_spec +
@@ -155,7 +155,7 @@ dayflow_c %>%
   geom_smooth(method = "gam", formula = y ~ s(x, bs = "cs", k = 25), alpha = 0.5) +
   facet_grid(rows = vars(Drought), scales = "free_y") +
   ylab("Cumulative proportional inflow") +
-  xlab("Water day of year") +
+  xlab("Day of Water Year") +
   scale_color_viridis_d(aesthetics = c("color", "fill"), name = "Period-year") +
   scale_linetype(name = "Period-year") +
   wdoy_x_axis_spec +
@@ -182,7 +182,7 @@ plt_outflow_wyday <- dayflow_c %>%
   geom_line() +
   facet_grid(rows = vars(Drought), scales = "free_y") +
   ylab("Cumulative proportional outflow") +
-  xlab("Water day of year") +
+  xlab("Day of Water Year") +
   scale_color_viridis_d(name = "Period-year") +
   scale_linetype(name = "Period-year") +
   wdoy_x_axis_spec +

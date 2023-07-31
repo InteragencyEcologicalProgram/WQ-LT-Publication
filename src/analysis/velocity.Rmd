@@ -112,11 +112,13 @@ plt_outflow_wyday <- vel_weekly_c %>%
   ggplot(aes(x = WYday, y = Outflow_log, color = YearType)) +
   geom_smooth() +
   color_pal_yrtype(aes_type = "color", scale_title = "Water Year\nHydrologic\nClassification") +
-  theme_bw() +
-  labs(
-    x = "Water day of year", 
-    y = expression(log(Outflow)~(m^{3}~s^{-1}))
-  )
+  scale_x_continuous(
+    name = "Day of Water Year",
+    breaks = seq.int(0, 360, by = 60),
+    expand = expansion(mult = 0.005)
+  ) +
+  ylab(expression(log(Outflow)~(m^{3}~s^{-1}))) +
+  theme_bw()
 
 plt_outflow_wyday
 ```
@@ -132,10 +134,13 @@ plt_mean_net_vel_wyday <- vel_weekly_c %>%
   color_pal_yrtype(aes_type = "color", scale_title = "Water Year\nHydrologic\nClassification") +
   facet_wrap(vars(Station)) +
   geom_hline(yintercept = 0, linetype = "solid", col = "black") +
-  labs(
-    x = "Water day of year", 
-    y = expression(Mean~Net~Velocity~(m~s^{-1}))
-  )
+  scale_x_continuous(
+    name = "Day of Water Year",
+    breaks = seq.int(0, 360, by = 60),
+    expand = expansion(mult = 0.02)
+  ) +
+  ylab(expression(Mean~Net~Velocity~(m~s^{-1}))) +
+  theme_bw()
 
 plt_mean_net_vel_wyday
 
@@ -144,10 +149,13 @@ plt_max_abs_tidal_vel_wyday <- vel_weekly_c %>%
   geom_smooth() +
   color_pal_yrtype(aes_type = "color", scale_title = "Water Year\nHydrologic\nClassification") +
   facet_wrap(vars(Station), scales = "free") +
-  labs(
-    x = "Water day of year", 
-    y = expression(Maximum~Absolute~Tidal~Velocity~(m~s^{-1}))
-  )
+  scale_x_continuous(
+    name = "Day of Water Year",
+    breaks = seq.int(0, 360, by = 60),
+    expand = expansion(mult = 0.02)
+  ) +
+  ylab(expression(Maximum~Absolute~Tidal~Velocity~(m~s^{-1}))) +
+  theme_bw()
 
 plt_max_abs_tidal_vel_wyday
 

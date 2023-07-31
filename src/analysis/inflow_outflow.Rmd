@@ -76,9 +76,10 @@ dayflow_c %>%
   scale_color_viridis_d(name = "Period-year") +
   scale_x_continuous(
     name = "Day of Water Year",
-    breaks = seq.int(0, 360, by = 60)
+    breaks = seq.int(0, 360, by = 60),
+    expand = expansion(mult = 0.005)
   ) +
-  coord_cartesian(ylim = c(0, NA), expand = FALSE) +
+  scale_y_continuous(limits = c(0, NA), expand = expansion()) +
   theme_bw()
 ```
 
@@ -92,9 +93,10 @@ dayflow_c %>%
   scale_color_viridis_d(name = "Period-year") +
   scale_x_continuous(
     name = "Day of Water Year",
-    breaks = seq.int(0, 360, by = 60)
+    breaks = seq.int(0, 360, by = 60),
+    expand = expansion(mult = 0.005)
   ) +
-  coord_cartesian(ylim = c(0, NA), expand = FALSE) +
+  scale_y_continuous(limits = c(0, NA), expand = expansion()) +
   theme_bw()
 ```
 
@@ -113,14 +115,18 @@ plt_inflow_wyday <- dayflow_c %>%
   ) +
   geom_line() +
   facet_grid(rows = vars(Drought), scales = "free_y") +
-  ylab("Cumulative proportional inflow") +
   scale_color_viridis_d(name = "Period-year") +
   scale_linetype(name = "Period-year") +
   scale_x_continuous(
     name = "Day of Water Year",
-    breaks = seq.int(0, 360, by = 60)
+    breaks = seq.int(0, 360, by = 60),
+    expand = expansion(mult = 0.005)
   ) +
-  coord_cartesian(ylim = c(0, NA), expand = FALSE) +
+  scale_y_continuous(
+    name = "Cumulative proportional inflow",
+    limits = c(0, NA), 
+    expand = expansion()
+  ) +
   theme_bw() +
   theme(panel.spacing = unit(1, "lines"))
 
@@ -144,14 +150,18 @@ dayflow_c %>%
   ) +
   geom_smooth(method = "gam", formula = y ~ s(x, bs = "cs", k = 25), alpha = 0.5) +
   facet_grid(rows = vars(Drought), scales = "free_y") +
-  ylab("Cumulative proportional inflow") +
   scale_color_viridis_d(aesthetics = c("color", "fill"), name = "Period-year") +
   scale_linetype(name = "Period-year") +
-  scale_x_continuous(
+   scale_x_continuous(
     name = "Day of Water Year",
-    breaks = seq.int(0, 360, by = 60)
+    breaks = seq.int(0, 360, by = 60),
+    expand = expansion(mult = 0.005)
   ) +
-  coord_cartesian(ylim = c(0, NA), expand = FALSE) +
+  scale_y_continuous(
+    name = "Cumulative proportional inflow",
+    limits = c(0, NA), 
+    expand = expansion()
+  ) +
   theme_bw()
 ```
 
@@ -175,11 +185,16 @@ plt_outflow_wyday <- dayflow_c %>%
   ylab("Cumulative proportional outflow") +
   scale_color_viridis_d(name = "Period-year") +
   scale_linetype(name = "Period-year") +
-  scale_x_continuous(
+   scale_x_continuous(
     name = "Day of Water Year",
-    breaks = seq.int(0, 360, by = 60)
+    breaks = seq.int(0, 360, by = 60),
+    expand = expansion(mult = 0.005)
   ) +
-  coord_cartesian(ylim = c(0, NA), expand = FALSE) +
+  scale_y_continuous(
+    name = "Cumulative proportional outflow",
+    limits = c(0, NA), 
+    expand = expansion()
+  ) +
   theme_bw() +
   theme(panel.spacing = unit(1, "lines"))
 

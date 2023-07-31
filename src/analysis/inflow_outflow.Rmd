@@ -209,7 +209,7 @@ fp_plots <- here("results/figures")
 
 # Cumulative inflow figure
 ggsave(
-  file.path(fp_plots, "inflow_wyday.jpg"), 
+  file.path(fp_plots, "cumul_inflow_wyday.jpg"), 
   plot = plt_inflow_wyday, 
   width = 6, 
   height = 4, 
@@ -219,7 +219,7 @@ ggsave(
 
 # Cumulative outflow figure
 ggsave(
-  file.path(fp_plots, "outflow_wyday.jpg"), 
+  file.path(fp_plots, "cumul_outflow_wyday.jpg"), 
   plot = plt_outflow_wyday, 
   width = 6, 
   height = 4, 

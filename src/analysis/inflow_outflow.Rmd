@@ -44,23 +44,12 @@ dayflow <- readRDS(here("data/processed/hydrology/dayflow.rds"))
 dayflow_c <- dayflow %>%
   mutate(
     Period_year_cat = factor(Period_year_cat, levels = c("1", "2", "3+")),
-    Drought = factor(Drought, levels = c("D", "N", "W"))
+    Drought = factor(
+      Drought, 
+      levels = c("D", "N", "W"), 
+      labels = c("Drought", "Neutral", "Wet")
+    )
   )
-
-# Calculate WYday for the first day of each month
-wdoy_months <- dayflow_c %>%
-  mutate(Month = month(Date, label = TRUE)) %>%
-  group_by(Month) %>%
-  summarise(day_min = min(WYday)) %>%
-  mutate(month_label = day_min + 15)
-
-# Create custom x-axis breaks and labels for the figures
-wdoy_x_axis_spec <- list(
-  scale_x_continuous(
-    breaks = c(wdoy_months$day_min, wdoy_months$month_label), 
-    labels = c(rep("", 12), as.character(wdoy_months$Month))
-  )
-)
 ```
 
 # Inflow plots
@@ -84,12 +73,13 @@ dayflow_c %>%
   ggplot(aes(x = WYday, y = InflowTotal, color = Period_year_cat, group = Period_year_cat)) +
   geom_smooth(method = "gam", formula = y ~ s(x, bs = "cs", k = 25)) +
   facet_grid(rows = vars(Drought), scales = "free_y") +
-  xlab("Day of Water Year") +
   scale_color_viridis_d(name = "Period-year") +
-  wdoy_x_axis_spec +
+  scale_x_continuous(
+    name = "Day of Water Year",
+    breaks = seq.int(0, 360, by = 60)
+  ) +
   coord_cartesian(ylim = c(0, NA), expand = FALSE) +
-  theme_bw() +
-  theme(axis.ticks.x = element_line(color = c(rep("black", 12), rep(NA, 12))))
+  theme_bw()
 ```
 
 Total inflow seasonal hydrograph by Period_year, scaled by summed inflow over the year
@@ -99,12 +89,13 @@ dayflow_c %>%
   ggplot(aes(x = WYday, y = InflowTotal / InflowTotal_sum, color = Period_year_cat)) +
   geom_smooth(method = "gam", formula = y ~ s(x, bs = "cs", k = 25)) +
   facet_grid(rows = vars(Drought)) +
-  xlab("Day of Water Year") +
   scale_color_viridis_d(name = "Period-year") +
-  wdoy_x_axis_spec +
+  scale_x_continuous(
+    name = "Day of Water Year",
+    breaks = seq.int(0, 360, by = 60)
+  ) +
   coord_cartesian(ylim = c(0, NA), expand = FALSE) +
-  theme_bw() +
-  theme(axis.ticks.x = element_line(color = c(rep("black", 12), rep(NA, 12))))
+  theme_bw()
 ```
 
 Total cumulative inflow seasonal hydrograph by Period_year
@@ -123,16 +114,15 @@ plt_inflow_wyday <- dayflow_c %>%
   geom_line() +
   facet_grid(rows = vars(Drought), scales = "free_y") +
   ylab("Cumulative proportional inflow") +
-  xlab("Day of Water Year") +
   scale_color_viridis_d(name = "Period-year") +
   scale_linetype(name = "Period-year") +
-  wdoy_x_axis_spec +
+  scale_x_continuous(
+    name = "Day of Water Year",
+    breaks = seq.int(0, 360, by = 60)
+  ) +
   coord_cartesian(ylim = c(0, NA), expand = FALSE) +
   theme_bw() +
-  theme(
-    axis.ticks.x = element_line(color = c(rep("black", 12), rep(NA, 12))), 
-    panel.spacing = unit(1, "lines")
-  )
+  theme(panel.spacing = unit(1, "lines"))
 
 plt_inflow_wyday
 ```
@@ -155,13 +145,14 @@ dayflow_c %>%
   geom_smooth(method = "gam", formula = y ~ s(x, bs = "cs", k = 25), alpha = 0.5) +
   facet_grid(rows = vars(Drought), scales = "free_y") +
   ylab("Cumulative proportional inflow") +
-  xlab("Day of Water Year") +
   scale_color_viridis_d(aesthetics = c("color", "fill"), name = "Period-year") +
   scale_linetype(name = "Period-year") +
-  wdoy_x_axis_spec +
+  scale_x_continuous(
+    name = "Day of Water Year",
+    breaks = seq.int(0, 360, by = 60)
+  ) +
   coord_cartesian(ylim = c(0, NA), expand = FALSE) +
-  theme_bw() +
-  theme(axis.ticks.x = element_line(color = c(rep("black", 12), rep(NA, 12))))
+  theme_bw()
 ```
 
 # Outflow plots
@@ -182,16 +173,15 @@ plt_outflow_wyday <- dayflow_c %>%
   geom_line() +
   facet_grid(rows = vars(Drought), scales = "free_y") +
   ylab("Cumulative proportional outflow") +
-  xlab("Day of Water Year") +
   scale_color_viridis_d(name = "Period-year") +
   scale_linetype(name = "Period-year") +
-  wdoy_x_axis_spec +
+  scale_x_continuous(
+    name = "Day of Water Year",
+    breaks = seq.int(0, 360, by = 60)
+  ) +
   coord_cartesian(ylim = c(0, NA), expand = FALSE) +
   theme_bw() +
-  theme(
-    axis.ticks.x = element_line(color = c(rep("black", 12), rep(NA, 12))), 
-    panel.spacing = unit(1, "lines")
-  )
+  theme(panel.spacing = unit(1, "lines"))
 
 plt_outflow_wyday
 ```
@@ -215,7 +205,7 @@ ggsave(
 # Cumulative outflow figure
 ggsave(
   file.path(fp_plots, "outflow_wyday.jpg"), 
-  plot = plt_inflow_wyday, 
+  plot = plt_outflow_wyday, 
   width = 6, 
   height = 4, 
   units = "in",

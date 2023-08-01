@@ -5,12 +5,12 @@ Ammonium,region,Suisun Bay,N - W,0.04061ZZZ,0.07791ZZZ,661,0.5212ZZZ,0.8610ZZZ
 Ammonium,region,Confluence,D - N,0.09564ZZZ,0.06987ZZZ,661,1.369ZZZ,0.3580ZZZ
 Ammonium,region,Confluence,D - W,0.1974ZZZ,0.07671ZZZ,661,2.573ZZZ,0.02774ZZZ
 Ammonium,region,Confluence,N - W,0.1017ZZZ,0.07829ZZZ,661,1.300ZZZ,0.3959ZZZ
-Ammonium,region,South-Central,D - N,0.1261ZZZ,0.07225ZZZ,661,1.746ZZZ,0.1891ZZZ
-Ammonium,region,South-Central,D - W,0.006499ZZZ,0.08031ZZZ,661,0.08093ZZZ,0.9964ZZZ
-Ammonium,region,South-Central,N - W,-0.1196ZZZ,0.08044ZZZ,661,-1.487ZZZ,0.2978ZZZ
-Ammonium,region,North,D - N,0.3639ZZZ,0.07225ZZZ,661,5.037ZZZ,< 0.001ZZZ
-Ammonium,region,North,D - W,0.8457ZZZ,0.08031ZZZ,661,10.53ZZZ,< 0.001ZZZ
-Ammonium,region,North,N - W,0.4817ZZZ,0.08044ZZZ,661,5.988ZZZ,< 0.001ZZZ
+Ammonium,region,South-Central Delta,D - N,0.1261ZZZ,0.07225ZZZ,661,1.746ZZZ,0.1891ZZZ
+Ammonium,region,South-Central Delta,D - W,0.006499ZZZ,0.08031ZZZ,661,0.08093ZZZ,0.9964ZZZ
+Ammonium,region,South-Central Delta,N - W,-0.1196ZZZ,0.08044ZZZ,661,-1.487ZZZ,0.2978ZZZ
+Ammonium,region,North Delta,D - N,0.3639ZZZ,0.07225ZZZ,661,5.037ZZZ,< 0.001ZZZ
+Ammonium,region,North Delta,D - W,0.8457ZZZ,0.08031ZZZ,661,10.53ZZZ,< 0.001ZZZ
+Ammonium,region,North Delta,N - W,0.4817ZZZ,0.08044ZZZ,661,5.988ZZZ,< 0.001ZZZ
 Ammonium,season,Winter,D - N,0.1491ZZZ,0.07006ZZZ,661,2.128ZZZ,0.08492ZZZ
 Ammonium,season,Winter,D - W,0.4564ZZZ,0.07456ZZZ,661,6.121ZZZ,< 0.001ZZZ
 Ammonium,season,Winter,N - W,0.3073ZZZ,0.07781ZZZ,661,3.949ZZZ,< 0.001ZZZ
@@ -29,12 +29,12 @@ Nitrate + Nitrite,region,Suisun Bay,N - W,0.04596ZZZ,0.05761ZZZ,718,0.7978ZZZ,0.
 Nitrate + Nitrite,region,Confluence,D - N,0.2665ZZZ,0.05065ZZZ,718,5.262ZZZ,< 0.001ZZZ
 Nitrate + Nitrite,region,Confluence,D - W,0.3753ZZZ,0.05311ZZZ,718,7.066ZZZ,< 0.001ZZZ
 Nitrate + Nitrite,region,Confluence,N - W,0.1087ZZZ,0.05761ZZZ,718,1.888ZZZ,0.1429ZZZ
-Nitrate + Nitrite,region,South-Central,D - N,0.1631ZZZ,0.05052ZZZ,718,3.229ZZZ,0.003715ZZZ
-Nitrate + Nitrite,region,South-Central,D - W,0.1054ZZZ,0.05336ZZZ,718,1.975ZZZ,0.1192ZZZ
-Nitrate + Nitrite,region,South-Central,N - W,-0.05775ZZZ,0.05795ZZZ,718,-0.9966ZZZ,0.5792ZZZ
-Nitrate + Nitrite,region,North,D - N,0.02974ZZZ,0.05052ZZZ,718,0.5887ZZZ,0.8263ZZZ
-Nitrate + Nitrite,region,North,D - W,0.07402ZZZ,0.05336ZZZ,718,1.387ZZZ,0.3481ZZZ
-Nitrate + Nitrite,region,North,N - W,0.04428ZZZ,0.05795ZZZ,718,0.7641ZZZ,0.7251ZZZ
+Nitrate + Nitrite,region,South-Central Delta,D - N,0.1631ZZZ,0.05052ZZZ,718,3.229ZZZ,0.003715ZZZ
+Nitrate + Nitrite,region,South-Central Delta,D - W,0.1054ZZZ,0.05336ZZZ,718,1.975ZZZ,0.1192ZZZ
+Nitrate + Nitrite,region,South-Central Delta,N - W,-0.05775ZZZ,0.05795ZZZ,718,-0.9966ZZZ,0.5792ZZZ
+Nitrate + Nitrite,region,North Delta,D - N,0.02974ZZZ,0.05052ZZZ,718,0.5887ZZZ,0.8263ZZZ
+Nitrate + Nitrite,region,North Delta,D - W,0.07402ZZZ,0.05336ZZZ,718,1.387ZZZ,0.3481ZZZ
+Nitrate + Nitrite,region,North Delta,N - W,0.04428ZZZ,0.05795ZZZ,718,0.7641ZZZ,0.7251ZZZ
 Nitrate + Nitrite,season,Winter,D - N,0.006385ZZZ,0.05077ZZZ,718,0.1258ZZZ,0.9913ZZZ
 Nitrate + Nitrite,season,Winter,D - W,0.09362ZZZ,0.05397ZZZ,718,1.734ZZZ,0.1931ZZZ
 Nitrate + Nitrite,season,Winter,N - W,0.08723ZZZ,0.05829ZZZ,718,1.496ZZZ,0.2932ZZZ
@@ -53,12 +53,12 @@ Ortho-phosphate,region,Suisun Bay,N - W,0.2048ZZZ,0.06003ZZZ,720,3.412ZZZ,0.0019
 Ortho-phosphate,region,Confluence,D - N,0.1669ZZZ,0.05278ZZZ,720,3.161ZZZ,0.004656ZZZ
 Ortho-phosphate,region,Confluence,D - W,0.4292ZZZ,0.05535ZZZ,720,7.755ZZZ,< 0.001ZZZ
 Ortho-phosphate,region,Confluence,N - W,0.2624ZZZ,0.06003ZZZ,720,4.370ZZZ,< 0.001ZZZ
-Ortho-phosphate,region,South-Central,D - N,0.04469ZZZ,0.05265ZZZ,720,0.8489ZZZ,0.6727ZZZ
-Ortho-phosphate,region,South-Central,D - W,0.2018ZZZ,0.05522ZZZ,720,3.654ZZZ,< 0.001ZZZ
-Ortho-phosphate,region,South-Central,N - W,0.1571ZZZ,0.06003ZZZ,720,2.617ZZZ,0.02454ZZZ
-Ortho-phosphate,region,North,D - N,0.07904ZZZ,0.05265ZZZ,720,1.501ZZZ,0.2909ZZZ
-Ortho-phosphate,region,North,D - W,0.4834ZZZ,0.05522ZZZ,720,8.753ZZZ,< 0.001ZZZ
-Ortho-phosphate,region,North,N - W,0.4043ZZZ,0.06003ZZZ,720,6.735ZZZ,< 0.001ZZZ
+Ortho-phosphate,region,South-Central Delta,D - N,0.04469ZZZ,0.05265ZZZ,720,0.8489ZZZ,0.6727ZZZ
+Ortho-phosphate,region,South-Central Delta,D - W,0.2018ZZZ,0.05522ZZZ,720,3.654ZZZ,< 0.001ZZZ
+Ortho-phosphate,region,South-Central Delta,N - W,0.1571ZZZ,0.06003ZZZ,720,2.617ZZZ,0.02454ZZZ
+Ortho-phosphate,region,North Delta,D - N,0.07904ZZZ,0.05265ZZZ,720,1.501ZZZ,0.2909ZZZ
+Ortho-phosphate,region,North Delta,D - W,0.4834ZZZ,0.05522ZZZ,720,8.753ZZZ,< 0.001ZZZ
+Ortho-phosphate,region,North Delta,N - W,0.4043ZZZ,0.06003ZZZ,720,6.735ZZZ,< 0.001ZZZ
 Ortho-phosphate,season,Winter,D - N,-0.03507ZZZ,0.05291ZZZ,720,-0.6627ZZZ,0.7852ZZZ
 Ortho-phosphate,season,Winter,D - W,0.2475ZZZ,0.05547ZZZ,720,4.462ZZZ,< 0.001ZZZ
 Ortho-phosphate,season,Winter,N - W,0.2826ZZZ,0.06003ZZZ,720,4.707ZZZ,< 0.001ZZZ
@@ -77,12 +77,12 @@ Chlorophyll,region,Suisun Bay,N - W,0.1441ZZZ,0.09919ZZZ,717,1.452ZZZ,0.3147ZZZ
 Chlorophyll,region,Confluence,D - N,0.1505ZZZ,0.09006ZZZ,717,1.671ZZZ,0.2172ZZZ
 Chlorophyll,region,Confluence,D - W,0.2379ZZZ,0.09237ZZZ,717,2.575ZZZ,0.02753ZZZ
 Chlorophyll,region,Confluence,N - W,0.08743ZZZ,0.09919ZZZ,717,0.8814ZZZ,0.6522ZZZ
-Chlorophyll,region,South-Central,D - N,0.4456ZZZ,0.09006ZZZ,717,4.947ZZZ,< 0.001ZZZ
-Chlorophyll,region,South-Central,D - W,0.6036ZZZ,0.09237ZZZ,717,6.534ZZZ,< 0.001ZZZ
-Chlorophyll,region,South-Central,N - W,0.1580ZZZ,0.09919ZZZ,717,1.593ZZZ,0.2493ZZZ
-Chlorophyll,region,North,D - N,-0.01498ZZZ,0.09006ZZZ,717,-0.1663ZZZ,0.9849ZZZ
-Chlorophyll,region,North,D - W,0.01042ZZZ,0.09237ZZZ,717,0.1128ZZZ,0.9930ZZZ
-Chlorophyll,region,North,N - W,0.02540ZZZ,0.09919ZZZ,717,0.2561ZZZ,0.9645ZZZ
+Chlorophyll,region,South-Central Delta,D - N,0.4456ZZZ,0.09006ZZZ,717,4.947ZZZ,< 0.001ZZZ
+Chlorophyll,region,South-Central Delta,D - W,0.6036ZZZ,0.09237ZZZ,717,6.534ZZZ,< 0.001ZZZ
+Chlorophyll,region,South-Central Delta,N - W,0.1580ZZZ,0.09919ZZZ,717,1.593ZZZ,0.2493ZZZ
+Chlorophyll,region,North Delta,D - N,-0.01498ZZZ,0.09006ZZZ,717,-0.1663ZZZ,0.9849ZZZ
+Chlorophyll,region,North Delta,D - W,0.01042ZZZ,0.09237ZZZ,717,0.1128ZZZ,0.9930ZZZ
+Chlorophyll,region,North Delta,N - W,0.02540ZZZ,0.09919ZZZ,717,0.2561ZZZ,0.9645ZZZ
 Chlorophyll,season,Winter,D - N,0.3760ZZZ,0.08775ZZZ,717,4.285ZZZ,< 0.001ZZZ
 Chlorophyll,season,Winter,D - W,0.4883ZZZ,0.09149ZZZ,717,5.337ZZZ,< 0.001ZZZ
 Chlorophyll,season,Winter,N - W,0.1123ZZZ,0.09894ZZZ,717,1.135ZZZ,0.4929ZZZ

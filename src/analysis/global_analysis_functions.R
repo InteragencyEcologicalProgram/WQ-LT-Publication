@@ -102,7 +102,7 @@ pub_figure_plotter <- function(df_data, # dataframe containing the dataset
 
   # Define factor order for Season, Region, and Drought variables
   lvs_season <- c("Winter", "Spring", "Summer", "Fall")
-  lvs_region <- c("Suisun Marsh", "Suisun Bay", "Confluence", "South-Central", "North")
+  lvs_region <- c("Suisun Marsh", "Suisun Bay", "Confluence", "South-Central Delta", "North Delta")
   lvs_drought <- c("D", "N", "W")
 
   # Prepare df_data for plotting
@@ -111,8 +111,12 @@ pub_figure_plotter <- function(df_data, # dataframe containing the dataset
     tidyr::drop_na({{ param }}) %>%
     # Apply factor orders
     dplyr::mutate(
-      # Make sure that we're using region name "South-Central"
-      Region = dplyr::if_else(Region == "SouthCentral", "South-Central", .data$Region),
+      # Make sure that we're using region names "South-Central Delta" and "North Delta"
+      Region = dplyr::case_when(
+        Region == "SouthCentral" ~ "South-Central Delta",
+        Region == "North" ~ "North Delta",
+        TRUE ~ .data$Region
+      ),
       Season = factor(.data$Season, levels = lvs_season),
       Region = factor(.data$Region, levels = lvs_region),
       Drought = factor(.data$Drought, levels = lvs_drought)

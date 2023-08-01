@@ -8,12 +8,12 @@ Temperature,region,Suisun Bay,N - W,0.2275ZZZ,0.1564ZZZ,900,1.455ZZZ,0.3134ZZZ
 Temperature,region,Confluence,D - N,0.2060ZZZ,0.1372ZZZ,900,1.501ZZZ,0.2907ZZZ
 Temperature,region,Confluence,D - W,0.5403ZZZ,0.1439ZZZ,900,3.756ZZZ,< 0.001ZZZ
 Temperature,region,Confluence,N - W,0.3343ZZZ,0.1564ZZZ,900,2.138ZZZ,0.08292ZZZ
-Temperature,region,South-Central,D - N,0.6159ZZZ,0.1372ZZZ,900,4.490ZZZ,< 0.001ZZZ
-Temperature,region,South-Central,D - W,0.9019ZZZ,0.1439ZZZ,900,6.269ZZZ,< 0.001ZZZ
-Temperature,region,South-Central,N - W,0.2860ZZZ,0.1564ZZZ,900,1.829ZZZ,0.1608ZZZ
-Temperature,region,North,D - N,0.7882ZZZ,0.1372ZZZ,900,5.746ZZZ,< 0.001ZZZ
-Temperature,region,North,D - W,1.421ZZZ,0.1439ZZZ,900,9.876ZZZ,< 0.001ZZZ
-Temperature,region,North,N - W,0.6326ZZZ,0.1564ZZZ,900,4.045ZZZ,< 0.001ZZZ
+Temperature,region,South-Central Delta,D - N,0.6159ZZZ,0.1372ZZZ,900,4.490ZZZ,< 0.001ZZZ
+Temperature,region,South-Central Delta,D - W,0.9019ZZZ,0.1439ZZZ,900,6.269ZZZ,< 0.001ZZZ
+Temperature,region,South-Central Delta,N - W,0.2860ZZZ,0.1564ZZZ,900,1.829ZZZ,0.1608ZZZ
+Temperature,region,North Delta,D - N,0.7882ZZZ,0.1372ZZZ,900,5.746ZZZ,< 0.001ZZZ
+Temperature,region,North Delta,D - W,1.421ZZZ,0.1439ZZZ,900,9.876ZZZ,< 0.001ZZZ
+Temperature,region,North Delta,N - W,0.6326ZZZ,0.1564ZZZ,900,4.045ZZZ,< 0.001ZZZ
 Temperature,season,Winter,D - N,-0.1974ZZZ,0.1227ZZZ,900,-1.609ZZZ,0.2424ZZZ
 Temperature,season,Winter,D - W,-0.1055ZZZ,0.1294ZZZ,900,-0.8155ZZZ,0.6935ZZZ
 Temperature,season,Winter,N - W,0.09187ZZZ,0.1405ZZZ,900,0.6537ZZZ,0.7903ZZZ
@@ -35,12 +35,12 @@ Salinity,region,Suisun Bay,N - W,0.6617ZZZ,0.09957ZZZ,900,6.646ZZZ,< 0.001ZZZ
 Salinity,region,Confluence,D - N,0.9571ZZZ,0.08733ZZZ,900,10.96ZZZ,< 0.001ZZZ
 Salinity,region,Confluence,D - W,1.626ZZZ,0.09159ZZZ,900,17.75ZZZ,< 0.001ZZZ
 Salinity,region,Confluence,N - W,0.6691ZZZ,0.09957ZZZ,900,6.720ZZZ,< 0.001ZZZ
-Salinity,region,South-Central,D - N,0.4048ZZZ,0.08733ZZZ,900,4.636ZZZ,< 0.001ZZZ
-Salinity,region,South-Central,D - W,0.6239ZZZ,0.09159ZZZ,900,6.811ZZZ,< 0.001ZZZ
-Salinity,region,South-Central,N - W,0.2190ZZZ,0.09957ZZZ,900,2.200ZZZ,0.07175ZZZ
-Salinity,region,North,D - N,0.09576ZZZ,0.08733ZZZ,900,1.097ZZZ,0.5164ZZZ
-Salinity,region,North,D - W,0.2076ZZZ,0.09159ZZZ,900,2.267ZZZ,0.06104ZZZ
-Salinity,region,North,N - W,0.1119ZZZ,0.09957ZZZ,900,1.124ZZZ,0.4997ZZZ
+Salinity,region,South-Central Delta,D - N,0.4048ZZZ,0.08733ZZZ,900,4.636ZZZ,< 0.001ZZZ
+Salinity,region,South-Central Delta,D - W,0.6239ZZZ,0.09159ZZZ,900,6.811ZZZ,< 0.001ZZZ
+Salinity,region,South-Central Delta,N - W,0.2190ZZZ,0.09957ZZZ,900,2.200ZZZ,0.07175ZZZ
+Salinity,region,North Delta,D - N,0.09576ZZZ,0.08733ZZZ,900,1.097ZZZ,0.5164ZZZ
+Salinity,region,North Delta,D - W,0.2076ZZZ,0.09159ZZZ,900,2.267ZZZ,0.06104ZZZ
+Salinity,region,North Delta,N - W,0.1119ZZZ,0.09957ZZZ,900,1.124ZZZ,0.4997ZZZ
 Salinity,season,Winter,D - N,0.3919ZZZ,0.07811ZZZ,900,5.017ZZZ,< 0.001ZZZ
 Salinity,season,Winter,D - W,0.9788ZZZ,0.08238ZZZ,900,11.88ZZZ,< 0.001ZZZ
 Salinity,season,Winter,N - W,0.5869ZZZ,0.08948ZZZ,900,6.560ZZZ,< 0.001ZZZ
@@ -62,12 +62,12 @@ Secchi depth,region,Suisun Bay,N - W,0.1127ZZZ,0.04243ZZZ,870,2.656ZZZ,0.02190ZZ
 Secchi depth,region,Confluence,D - N,0.06421ZZZ,0.03767ZZZ,870,1.704ZZZ,0.2041ZZZ
 Secchi depth,region,Confluence,D - W,0.1042ZZZ,0.04020ZZZ,870,2.592ZZZ,0.02621ZZZ
 Secchi depth,region,Confluence,N - W,0.04000ZZZ,0.04243ZZZ,870,0.9428ZZZ,0.6133ZZZ
-Secchi depth,region,South-Central,D - N,0.1476ZZZ,0.03767ZZZ,870,3.918ZZZ,< 0.001ZZZ
-Secchi depth,region,South-Central,D - W,0.2250ZZZ,0.04020ZZZ,870,5.597ZZZ,< 0.001ZZZ
-Secchi depth,region,South-Central,N - W,0.07741ZZZ,0.04243ZZZ,870,1.824ZZZ,0.1622ZZZ
-Secchi depth,region,North,D - N,0.1507ZZZ,0.04013ZZZ,870,3.757ZZZ,< 0.001ZZZ
-Secchi depth,region,North,D - W,0.3798ZZZ,0.04045ZZZ,870,9.389ZZZ,< 0.001ZZZ
-Secchi depth,region,North,N - W,0.2290ZZZ,0.04363ZZZ,870,5.250ZZZ,< 0.001ZZZ
+Secchi depth,region,South-Central Delta,D - N,0.1476ZZZ,0.03767ZZZ,870,3.918ZZZ,< 0.001ZZZ
+Secchi depth,region,South-Central Delta,D - W,0.2250ZZZ,0.04020ZZZ,870,5.597ZZZ,< 0.001ZZZ
+Secchi depth,region,South-Central Delta,N - W,0.07741ZZZ,0.04243ZZZ,870,1.824ZZZ,0.1622ZZZ
+Secchi depth,region,North Delta,D - N,0.1507ZZZ,0.04013ZZZ,870,3.757ZZZ,< 0.001ZZZ
+Secchi depth,region,North Delta,D - W,0.3798ZZZ,0.04045ZZZ,870,9.389ZZZ,< 0.001ZZZ
+Secchi depth,region,North Delta,N - W,0.2290ZZZ,0.04363ZZZ,870,5.250ZZZ,< 0.001ZZZ
 Secchi depth,season,Winter,D - N,0.2162ZZZ,0.03370ZZZ,870,6.415ZZZ,< 0.001ZZZ
 Secchi depth,season,Winter,D - W,0.3911ZZZ,0.03607ZZZ,870,10.84ZZZ,< 0.001ZZZ
 Secchi depth,season,Winter,N - W,0.1749ZZZ,0.03811ZZZ,870,4.590ZZZ,< 0.001ZZZ

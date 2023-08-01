@@ -60,9 +60,16 @@ wq_data <- read_rds(here("data/processed/wq/lt_avg_wq_meas.rds"))
 # Prepare data for analyses
 wq_data_c <- wq_data %>%
   mutate(
-    # Change region name to "South-Central"
-    Region = if_else(Region == "SouthCentral", "South-Central", Region),
-    Region = factor(Region, levels = c("Suisun Marsh", "Suisun Bay", "Confluence", "South-Central", "North")),
+    # Change region names to "South-Central Delta" and "North Delta"
+    Region = case_when(
+      Region == "SouthCentral" ~ "South-Central Delta",
+      Region == "North" ~ "North Delta",
+      TRUE ~ Region
+    ),
+    Region = factor(
+      Region, 
+      levels = c("Suisun Marsh", "Suisun Bay", "Confluence", "South-Central Delta", "North Delta")
+    ),
     Season = factor(Season, levels = c("Winter", "Spring", "Summer", "Fall")),
     Year_fac = factor(YearAdj),
     Drought = factor(Drought, levels = c("D", "N", "W")),
@@ -203,7 +210,7 @@ partial.r2(m_t_Anova)
 
 ### Post-hoc test
 
-```{r}
+```{r, fig.width = 8}
 m_t_contrasts_r <- pub_figure_plotter(df_data=wq_data_c, param=Temperature, y_label="Temperature (°C)", 
                                       fct_grp=Region, model=m_t, plt_title = "Water temperature")
 m_t_contrasts_r$diffs
@@ -244,7 +251,7 @@ partial.r2(m_sa_Anova)
 
 ### Post-hoc test
 
-```{r}
+```{r, fig.width = 8}
 m_sa_contrasts_r <- pub_figure_plotter(df_data=wq_data_c, param=Salinity, y_label="Salinity (PSU)", 
                                        fct_grp=Region, model=m_sa, log_trans = TRUE, plt_title = "Salinity")
 
@@ -288,7 +295,7 @@ partial.r2(m_se_Anova)
 
 ### Post-hoc test
 
-```{r}
+```{r, fig.width = 8}
 m_se_contrasts_r <- pub_figure_plotter(df_data=wq_data_c, param=Secchi, y_label="Secchi depth (cm)", 
                                        fct_grp=Region, model=m_se, log_trans = TRUE, plt_title = "Secchi depth")
 
@@ -331,7 +338,7 @@ partial.r2(m_se2_Anova)
 
 ### Post-hoc test
 
-```{r}
+```{r, fig.width = 8}
 m_se2_contrasts_r <- pub_figure_plotter(df_data=wq_data_c, param=Secchi, y_label="Secchi depth (cm)", 
                                         fct_grp=Region, model=m_se2, log_trans = TRUE, plt_title = "Secchi depth")
 

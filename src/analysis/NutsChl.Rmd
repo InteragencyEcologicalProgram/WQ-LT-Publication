@@ -62,9 +62,16 @@ chla_data <- read_rds(here("data/processed/wq/lt_avg_chla.rds"))
 nutr_chla_data_c <- 
   full_join(nutr_data, chla_data, by = join_by(YearAdj, Season, Region, SVIndex, YearType, Drought)) %>% 
   mutate(
-    # Change region name to "South-Central"
-    Region = if_else(Region == "SouthCentral", "South-Central", Region),
-    Region = factor(Region, levels = c("Suisun Marsh", "Suisun Bay", "Confluence", "South-Central", "North")),
+    # Change region names to "South-Central Delta" and "North Delta"
+    Region = case_when(
+      Region == "SouthCentral" ~ "South-Central Delta",
+      Region == "North" ~ "North Delta",
+      TRUE ~ Region
+    ),
+    Region = factor(
+      Region, 
+      levels = c("Suisun Marsh", "Suisun Bay", "Confluence", "South-Central Delta", "North Delta")
+    ),
     Season = factor(Season, levels = c("Winter", "Spring", "Summer", "Fall")),
     Year_fac = factor(YearAdj),
     YearType = factor(YearType, levels = c("Critical", "Dry", "Below Normal", "Above Normal", "Wet")),

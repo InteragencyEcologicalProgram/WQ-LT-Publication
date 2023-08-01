@@ -7,6 +7,8 @@
 library(tidyverse)
 library(here)
 
+source(here("src/analysis/global_analysis_functions.R"))
+
 # Import water year assignments
 df_yr_type <- read_csv(here("data/raw/year_assignments.csv"))
 
@@ -16,18 +18,11 @@ df_cutoffs <- tibble(
   cutval = c(0, 5.4, 6.5, 7.8, 9.2)
 )
 
-# Define color palette for drought classifications
-pal_drought <- c(D = "#FDE333", N = "#53CC67", W = "#00588B")
-
 # Create bar chart figure for publication
 plt_yr_type <- df_yr_type %>%
   ggplot() +
   geom_col(aes(x = Year, y = SVIndex, fill = Drought)) +
-  scale_fill_manual(
-    name = "Drought Classification: ",
-    values = pal_drought,
-    labels = c("Drought", "Neutral", "Wet")
-  ) +
+  color_pal_drought(scale_title = "Drought Classification: ") +
   theme_bw() +
   geom_hline(data = df_cutoffs, aes(yintercept = cutval), linetype = 2) +
   geom_text(

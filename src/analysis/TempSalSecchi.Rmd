@@ -85,6 +85,7 @@ ggplot(wq_data_c, aes(x=YearAdj, y=Temperature, fill=Drought))+
   facet_wrap(Season~Region, scales="free_y")+
   color_pal_drought()+
   ylab("Temperature (°C)")+
+  xlab("Adjusted Water Year") +
   theme_bw()+
   theme(axis.text.x=element_text(angle=45, hjust=1))
 ```
@@ -97,6 +98,7 @@ ggplot(wq_data_c, aes(x=YearAdj, y=Salinity, fill=Drought))+
   facet_wrap(Season~Region, scales="free_y")+
   color_pal_drought()+
   ylab("Salinity")+
+  xlab("Adjusted Water Year") +
   theme_bw()+
   theme(axis.text.x=element_text(angle=45, hjust=1))
 ```
@@ -111,6 +113,7 @@ plt_se_point <- ggplot(wq_data_c, aes(x=YearAdj, y=Secchi, fill=Drought))+
   facet_wrap(Season~Region, scales="free_y")+
   color_pal_drought()+
   ylab("Secchi depth (cm)")+
+  xlab("Adjusted Water Year") +
   theme_bw()+
   theme(axis.text.x=element_text(angle=45, hjust=1))
 

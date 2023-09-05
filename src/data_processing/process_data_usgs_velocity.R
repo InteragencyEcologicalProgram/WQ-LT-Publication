@@ -137,18 +137,7 @@ ls_vel_wk <- ls_vel_dv_c %>%
   )
 
 # Combine data into one data frame
-df_vel_wk <-
-  bind_rows(ls_vel_wk, .id = "Station") %>%
-  # Change Station names
-  mutate(
-    Station = case_match(
-      Station,
-      "Cache" ~ "Cache",
-      "MDM" ~ "Middle",
-      "OLD" ~ "Old",
-      "SJJ" ~ "Jersey"
-    )
-  )
+df_vel_wk <- bind_rows(ls_vel_wk, .id = "Station")
 
 
 # Add Weekly Avg Delta Outflow from Dayflow -------------------------------

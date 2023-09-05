@@ -198,7 +198,7 @@ ggsave(
   file.path(fp_plots, "vel_wyday.jpg"),
   plot = plt_vel_wyday,
   width = 7,
-  height = 9,
+  height = 8.75,
   units = "in",
   dpi = 300
 )

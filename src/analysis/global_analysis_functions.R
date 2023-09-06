@@ -63,18 +63,6 @@ model_plotter <- function(model, data, parameter) {
 }
 
 
-# result_plotter <- function(contrast, variable, xlabel) {
-#   contrasts <- plot(contrast$emmeans, comparisons = T, by = variable, plotit = F) %>%
-#     mutate(across(c(lcmpl, rcmpl), ~ if_else(is.na(.x), the.emmean, .x)))
-#
-#   ggplot(contrasts, aes(y = Drought, x = the.emmean)) +
-#     geom_pointrange(aes(xmin = lcmpl, xmax = rcmpl)) +
-#     facet_wrap(~ .data[[variable]], scales = "free_x", ncol = 1) +
-#     xlab(xlabel) +
-#     theme_bw()
-# }
-
-
 # Calculate Partial R2 for the Drought main effect. Derived from this post:
 # https://stats.stackexchange.com/questions/64010/importance-of-predictors-in-multiple-regression-partial-r2-vs-standardized
 partial.r2 <- function(ANOVA) {

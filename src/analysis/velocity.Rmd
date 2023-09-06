@@ -54,20 +54,20 @@ vel_weekly_c <- vel_weekly %>%
     # Rename stations for more descriptive facet labels
     Station = case_match(
       Station,
-      "Cache" ~ "Cache Slough\n(11455350 and 11455385)",
-      "MDM" ~ "Middle River\n(11312676)",
-      "OLD" ~ "Old River\n(11313405)",
-      "SJJ" ~ "SJR at Jersey Point\n(11337190)"
+      "Cache" ~ "Cache Slough (USGS stations\n11455350 and 11455385)",
+      "MDM" ~ "Middle River at Middle River, CA\n(USGS station 11312676)",
+      "OLD" ~ "Old River at Bacon Island, CA\n(USGS station 11313405)",
+      "SJJ" ~ "SJR at Jersey Point, CA\n(USGS station 11337190)"
     ),
     # Apply custom order to YearType and Station
     YearType = factor(YearType, levels = c("Critical", "Dry", "Below Normal", "Above Normal", "Wet")),
     Station = factor(
       Station,
       levels = c(
-        "Cache Slough\n(11455350 and 11455385)",
-        "SJR at Jersey Point\n(11337190)",
-        "Middle River\n(11312676)",
-        "Old River\n(11313405)"
+        "Cache Slough (USGS stations\n11455350 and 11455385)",
+        "SJR at Jersey Point, CA\n(USGS station 11337190)",
+        "Middle River at Middle River, CA\n(USGS station 11312676)",
+        "Old River at Bacon Island, CA\n(USGS station 11313405)"
       )
     )
   )
@@ -215,7 +215,7 @@ ggsave(
   file.path(fp_plots, "vel_wyday.jpg"),
   plot = plt_vel_wyday,
   width = 7,
-  height = 8.75,
+  height = 9,
   units = "in",
   dpi = 300
 )

@@ -1,5 +1,7 @@
 # WQ-LT-Publication
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.8322725.svg)](https://doi.org/10.5281/zenodo.8322725)
+
 This repository contains the scripts used for the data processing and analyses for the draft manuscript on long-term water quality and lower trophic trends during droughts in the San Francisco Estuary. This manuscript will be submitted for publication in San Francisco Estuary and Watershed Science (SFEWS). The folder structure contains:
 
 * `data` - all raw, external, interim, and processed data used in the analyses

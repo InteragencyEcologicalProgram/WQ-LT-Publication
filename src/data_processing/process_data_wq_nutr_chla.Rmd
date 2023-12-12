@@ -237,6 +237,8 @@ flag_high_rl <- function(df, perc_thresh) {
   df %>% mutate(HighRL_flag = if_else(Sign == "<" & Result > threshold, TRUE, FALSE))
 }
 
+# Replace values below the reporting limit with simulated values between
+  # `min_val` and the RL
 replace_blw_rl <- function(df, min_val = 0.00001, seed = 1) {
   # Pull out values that are below the RL
   df_blw_rl <- df %>% filter(Sign == "<")
@@ -1300,6 +1302,18 @@ lt_avg_chla <-
   filter(Region != "Suisun Marsh")
 ```
 
+# Summarize Reporting Limits
+
+Create a summary table of the reporting limits in the final QC'ed nutrient and chlorophyll raw data for the Supplemental Information.
+
+```{r summarize nutr chla rl values}
+df_rl_vals_nutr_chla <- 
+  bind_rows(raw_nutr, raw_chla) %>% 
+  filter(Sign == "<") %>% 
+  count(Source, Parameter, Result) %>% 
+  arrange(Parameter, Source, Result)
+```
+
 # Export Data
 
 Export raw data for all parameters as .qs files. Also export, long-term average data both as .csv and .rds files for the analyses.
@@ -1327,5 +1341,8 @@ ls_data_lt_avg %>% iwalk(\(x, idx) write_csv(x, file = here("data/processed/wq",
 
 # Export long-term average data frames as rds files
 ls_data_lt_avg %>% iwalk(\(x, idx) saveRDS(x, file = here("data/processed/wq", paste0(idx, ".rds"))))
+
+# Export summary table of the reporting limits as csv file
+df_rl_vals_nutr_chla %>% write_csv(file = here("results/tables/rl_summary_table.csv"))
 ```
 

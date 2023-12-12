@@ -137,7 +137,9 @@ pub_figure_plotter <- function(df_data, # dataframe containing the dataset
       .
     }} %>%
     # Determine vertical positioning of letters
-    dplyr::mutate(dplyr::if_else(.data$upper.CL > .data$max_val, .data$upper.CL, .data$max_val)) %>%
+    dplyr::mutate(
+      max_val = dplyr::if_else(.data$upper.CL > .data$max_val, .data$upper.CL, .data$max_val)
+    ) %>%
     dplyr::group_by({{ fct_grp }}) %>%
     dplyr::mutate(max_val = max(.data$max_val)) %>%
     ungroup() %>%

@@ -10,12 +10,12 @@ output:
 editor_options: 
   chunk_output_type: console
 knit: (function(input, ...) {
-    rmarkdown::render(
-      input,
-      output_dir = here::here("docs"),
-      envir = globalenv()
     )
     })
+    rmarkdown::render(
+      input,
+      envir = globalenv()
+      output_dir = here::here("docs"),
 ---
 
 ```{r setup, include=FALSE}

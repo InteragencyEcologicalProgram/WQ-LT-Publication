@@ -62,6 +62,9 @@ ls_vel_inst <- map(fp_vel_inst, qread)
 
 # Prepare Instantaneous Data for Summarizing ------------------------------
 
+# Define the start month for the adjusted year
+adj_year_month<-10
+
 # Fill in time stamps using linear interpolation for gaps up to 2 hours
 ls_vel_inst_c1 <- ls_vel_inst %>%
   map(
@@ -181,8 +184,8 @@ df_yr_type <- read_csv(here("data/raw/year_assignments.csv"))
 velocity <- df_vel_wk_c1 %>%
   # Add Water Year and water day of year columns
   mutate(
-    WaterYear = calc_wy(Week),
-    WYday = calc_wy_day(Week)
+    WaterYear = calc_wy(Week, adj_year_month),
+    WYday = calc_wy_day(Week, adj_year_month)
   ) %>%
   # Filter to WY 2008-2021
   filter(WaterYear %in% 2008:2021) %>%

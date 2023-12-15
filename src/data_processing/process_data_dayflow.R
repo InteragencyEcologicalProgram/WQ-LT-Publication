@@ -18,6 +18,9 @@ source(here("src/data_processing/global_data_proc_func.R"))
 fp_dayflow <- dir_ls(here("data/external"), regexp = "dayflow.+\\.csv$")
 ls_dayflow <- map(fp_dayflow, ~ read_csv(.x, col_types = list(.default = "c")))
 
+# Define the start month for the adjusted year
+adj_year_month<-10
+
 # Combine Dayflow data - only keep Delta Inflow and Outflow
 df_dayflow <- ls_dayflow %>%
   map(
@@ -34,8 +37,8 @@ df_dayflow <- ls_dayflow %>%
     Date = date(parse_date_time(Date, c("mdY", "Ymd"))),
     across(contains("flow"), as.numeric),
     # Add Water Year and water day of year columns
-    WaterYear = calc_wy(Date),
-    WYday = calc_wy_day(Date)
+    WaterYear = calc_wy(Date, adj_year_month),
+    WYday = calc_wy_day(Date, adj_year_month)
   ) %>%
   # Filter to WY 1975-2021
   filter(WaterYear %in% 1975:2021)

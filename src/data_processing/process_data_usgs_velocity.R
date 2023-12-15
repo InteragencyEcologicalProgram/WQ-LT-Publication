@@ -63,7 +63,7 @@ ls_vel_inst <- map(fp_vel_inst, qread)
 # Prepare Instantaneous Data for Summarizing ------------------------------
 
 # Define the start month for the adjusted year
-adj_year_month<-10
+adj_year_month<-12
 
 # Fill in time stamps using linear interpolation for gaps up to 2 hours
 ls_vel_inst_c1 <- ls_vel_inst %>%

@@ -239,7 +239,7 @@ flag_high_rl <- function(df, perc_thresh) {
 
 # Replace values below the reporting limit with simulated values between
   # `min_val` and the RL
-replace_blw_rl <- function(df, min_val = 0.00001, seed = 1) {
+replace_blw_rl <- function(df, min_val = 0, seed = 1) {
   # Pull out values that are below the RL
   df_blw_rl <- df %>% filter(Sign == "<")
 
@@ -1108,7 +1108,7 @@ df_nutr_avg <- raw_nutr %>%
   mutate(
     df_data = map(
       df_data, 
-      ~ replace_blw_rl(.x, min_val = 0) %>% 
+      ~ replace_blw_rl(.x) %>% 
         calc_seas_reg_avg()
     )
   ) %>% 
@@ -1291,7 +1291,7 @@ raw_chla <- df_chla_c3 %>%
 # Calculate seasonal-regional averages, substituting random numbers from a
   # uniform distribution for the <RL values
 df_chla_avg <- raw_chla %>% 
-  replace_blw_rl(min_val = 0) %>% 
+  replace_blw_rl() %>% 
   calc_seas_reg_avg() %>% 
   rename(Chlorophyll = Result)
 

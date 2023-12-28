@@ -1,48 +1,22 @@
-Source,Parameter,min_yr,max_yr
-20 mm,Temperature,1995,2021
-20 mm,Salinity,1995,2021
-20 mm,Secchi,1995,2021
-Bay Study,Temperature,1980,2021
-Bay Study,Salinity,1980,2021
-Bay Study,Secchi,1980,2021
-DJFMP,Temperature,1976,2021
-DJFMP,Secchi,1976,2021
-EMP,Temperature,1975,2021
-EMP,Salinity,1975,2021
-EMP,Secchi,1975,2021
-EMP,DissAmmonia,1979,2021
-EMP,DissNitrateNitrite,1975,2021
-EMP,DissOrthophos,1975,2021
-EMP,Chlorophyll,1975,2021
-FMWT,Temperature,1975,2021
-FMWT,Salinity,1975,2021
-FMWT,Secchi,1975,2021
-NCRO,Temperature,1999,2021
-NCRO,Salinity,1999,2021
-NCRO,DissAmmonia,2001,2021
-NCRO,DissNitrateNitrite,2014,2021
-NCRO,DissOrthophos,2014,2021
-NCRO,Chlorophyll,1999,2021
-SDO,Temperature,1997,2021
-SDO,Salinity,2003,2021
-SDO,Secchi,2001,2021
-SKT,Temperature,2002,2021
-SKT,Salinity,2002,2021
-SKT,Secchi,2002,2021
-STN,Temperature,1975,2021
-STN,Salinity,1975,2021
-STN,Secchi,1975,2021
-Suisun,Temperature,1979,2021
-Suisun,Salinity,1979,2021
-Suisun,Secchi,1980,2021
-USGS CAWSC,Temperature,1975,2021
-USGS CAWSC,Salinity,1975,2021
-USGS CAWSC,DissAmmonia,1979,2021
-USGS CAWSC,DissNitrateNitrite,1979,2021
-USGS CAWSC,DissOrthophos,1981,2021
-USGS SFBS,Temperature,1975,2021
-USGS SFBS,Salinity,1975,2021
-USGS SFBS,DissAmmonia,1975,2021
-USGS SFBS,DissNitrateNitrite,1975,2021
-USGS SFBS,DissOrthophos,1975,2021
-USGS SFBS,Chlorophyll,1977,2021
+Survey,Abbreviation,Operator,Parameters_collected,Period_of_record
+20 mm Survey,20 mm,CDFW,"salinity, Secchi depth, water temperature",1995 - 2021
+Bay Study,Bay Study,CDFW,"salinity, Secchi depth, water temperature",1980 - 2021
+Fall Midwater Trawl,FMWT,CDFW,"salinity, Secchi depth, water temperature",1975 - 2021
+Spring Kodiak Trawl,SKT,CDFW,"salinity, Secchi depth, water temperature",2002 - 2021
+Summer Townet Survey,STN,CDFW,"salinity, Secchi depth, water temperature",1975 - 2021
+Delta Juvenile Fish Monitoring Program,DJFMP,USFWS,"Secchi depth, water temperature",1976 - 2021
+Environmental Monitoring Program,EMP,CDWR,"chlorophyll, nitrate + nitrite, ortho-phosphate, salinity, Secchi depth, water temperature",1975 - 2021
+Environmental Monitoring Program,EMP,CDWR,ammonium,1979 - 2021
+North Central Region Office monitoring program,NCRO,CDWR,"chlorophyll, salinity, water temperature",1999 - 2021
+North Central Region Office monitoring program,NCRO,CDWR,ammonium,2001 - 2021
+North Central Region Office monitoring program,NCRO,CDWR,"nitrate + nitrite, ortho-phosphate",2014 - 2021
+Stockton Dissolved Oxygen monitoring,SDO,CDWR,water temperature,1997 - 2021
+Stockton Dissolved Oxygen monitoring,SDO,CDWR,Secchi depth,2001 - 2021
+Stockton Dissolved Oxygen monitoring,SDO,CDWR,salinity,2003 - 2021
+Suisun Marsh Fish Study,Suisun,UCD,"salinity, water temperature",1979 - 2021
+Suisun Marsh Fish Study,Suisun,UCD,Secchi depth,1980 - 2021
+"Sacramento River at Freeport, California (11447650)",USGS CAWSC,USGS,"salinity, water temperature",1975 - 2021
+"Sacramento River at Freeport, California (11447650)",USGS CAWSC,USGS,"ammonium, nitrate + nitrite",1979 - 2021
+"Sacramento River at Freeport, California (11447650)",USGS CAWSC,USGS,ortho-phosphate,1981 - 2021
+San Francisco Bay Water Quality Program,USGS SFBS,USGS,"ammonium, nitrate + nitrite, ortho-phosphate, salinity, water temperature",1975 - 2021
+San Francisco Bay Water Quality Program,USGS SFBS,USGS,chlorophyll,1977 - 2021

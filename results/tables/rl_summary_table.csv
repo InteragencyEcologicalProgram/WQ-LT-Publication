@@ -1,38 +1,38 @@
-Source,Parameter,Result,n
-EMP,Chlorophyll,0.05,4
-EMP,Chlorophyll,0.5,23
-NCRO,Chlorophyll,0.05,2
-NCRO,Chlorophyll,0.5,23
-EMP,DissAmmonia,0.01,174
-EMP,DissAmmonia,0.05,181
-NCRO,DissAmmonia,0.01,5
-NCRO,DissAmmonia,0.05,25
-USGS_CAWSC,DissAmmonia,0.01,50
-USGS_CAWSC,DissAmmonia,0.02,136
-USGS_CAWSC,DissAmmonia,0.04,73
-USGS_CAWSC,DissAmmonia,0.06,2
-USGS_CAWSC,DissAmmonia,0.07,1
-USGS_SFBS,DissAmmonia,7e-4,5
-EMP,DissNitrateNitrite,0.01,12
-EMP,DissNitrateNitrite,0.05,14
-EMP,DissNitrateNitrite,0.055,3
-EMP,DissNitrateNitrite,0.15,5
-NCRO,DissNitrateNitrite,0.01,5
-NCRO,DissNitrateNitrite,0.05,8
-USGS_CAWSC,DissNitrateNitrite,0.01,1
-USGS_CAWSC,DissNitrateNitrite,0.016,1
-USGS_CAWSC,DissNitrateNitrite,0.04,8
-USGS_CAWSC,DissNitrateNitrite,0.05,5
-USGS_CAWSC,DissNitrateNitrite,0.06,7
-USGS_CAWSC,DissNitrateNitrite,0.08,46
-USGS_CAWSC,DissNitrateNitrite,0.1,20
-USGS_SFBS,DissNitrateNitrite,7e-4,14
-EMP,DissOrthophos,0.01,9
-EMP,DissOrthophos,0.04,1
-EMP,DissOrthophos,0.05,25
-NCRO,DissOrthophos,0.05,1
-USGS_CAWSC,DissOrthophos,0.004,1
-USGS_CAWSC,DissOrthophos,0.008,1
-USGS_CAWSC,DissOrthophos,0.01,5
-USGS_CAWSC,DissOrthophos,0.02,3
-USGS_SFBS,DissOrthophos,0.0015,17
+Survey,Parameter,RL,Num_blw_RL
+Environmental Monitoring Program,ammonium,0.01,174
+Environmental Monitoring Program,ammonium,0.05,181
+Environmental Monitoring Program,chlorophyll,0.05,4
+Environmental Monitoring Program,chlorophyll,0.5,23
+Environmental Monitoring Program,nitrate + nitrite,0.01,12
+Environmental Monitoring Program,nitrate + nitrite,0.05,14
+Environmental Monitoring Program,nitrate + nitrite,0.055,3
+Environmental Monitoring Program,nitrate + nitrite,0.15,5
+Environmental Monitoring Program,ortho-phosphate,0.01,9
+Environmental Monitoring Program,ortho-phosphate,0.04,1
+Environmental Monitoring Program,ortho-phosphate,0.05,25
+North Central Region Office monitoring program,ammonium,0.01,5
+North Central Region Office monitoring program,ammonium,0.05,25
+North Central Region Office monitoring program,chlorophyll,0.05,2
+North Central Region Office monitoring program,chlorophyll,0.5,23
+North Central Region Office monitoring program,nitrate + nitrite,0.01,5
+North Central Region Office monitoring program,nitrate + nitrite,0.05,8
+North Central Region Office monitoring program,ortho-phosphate,0.05,1
+"Sacramento River at Freeport, California (11447650)",ammonium,0.01,50
+"Sacramento River at Freeport, California (11447650)",ammonium,0.02,136
+"Sacramento River at Freeport, California (11447650)",ammonium,0.04,73
+"Sacramento River at Freeport, California (11447650)",ammonium,0.06,2
+"Sacramento River at Freeport, California (11447650)",ammonium,0.07,1
+"Sacramento River at Freeport, California (11447650)",nitrate + nitrite,0.01,1
+"Sacramento River at Freeport, California (11447650)",nitrate + nitrite,0.016,1
+"Sacramento River at Freeport, California (11447650)",nitrate + nitrite,0.04,8
+"Sacramento River at Freeport, California (11447650)",nitrate + nitrite,0.05,5
+"Sacramento River at Freeport, California (11447650)",nitrate + nitrite,0.06,7
+"Sacramento River at Freeport, California (11447650)",nitrate + nitrite,0.08,46
+"Sacramento River at Freeport, California (11447650)",nitrate + nitrite,0.1,20
+"Sacramento River at Freeport, California (11447650)",ortho-phosphate,0.004,1
+"Sacramento River at Freeport, California (11447650)",ortho-phosphate,0.008,1
+"Sacramento River at Freeport, California (11447650)",ortho-phosphate,0.01,5
+"Sacramento River at Freeport, California (11447650)",ortho-phosphate,0.02,3
+San Francisco Bay Water Quality Program,ammonium,0.0007,5
+San Francisco Bay Water Quality Program,nitrate + nitrite,0.0007,14
+San Francisco Bay Water Quality Program,ortho-phosphate,0.0015,17

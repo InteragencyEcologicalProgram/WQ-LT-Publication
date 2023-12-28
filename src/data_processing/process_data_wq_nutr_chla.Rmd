@@ -47,6 +47,9 @@ library(here)
 library(contentid)
 library(qs)
 library(conflicted)
+
+# Source global data processing functions
+source(here("src/data_processing/global_data_proc_func.R"))
 ```
 
 ```{r declare conflict pref}
@@ -1310,13 +1313,24 @@ Create a summary table of the reporting limits in the final QC'ed nutrient and c
 df_rl_vals_nutr_chla <- 
   bind_rows(raw_nutr, raw_chla) %>% 
   filter(Sign == "<") %>% 
-  count(Source, Parameter, Result) %>% 
-  arrange(Parameter, Source, Result)
+  count(Source, Parameter, Result, name = "Num_blw_RL") %>% 
+  # Join crosswalk tables for parameter and survey names
+  left_join(df_param_cw, by = join_by(Parameter)) %>%
+  left_join(df_survey_cw, by = join_by(Source)) %>% 
+  # Clean up
+  transmute(
+    Survey = Survey_name,
+    Parameter = Parameter_publ,
+    # Format RL values to prevent Excel from converting to scientific notation
+    RL = format(Result, drop0trailing = TRUE),
+    Num_blw_RL
+  ) %>% 
+  arrange(Survey, Parameter, RL) 
 ```
 
 # Export Data
 
-Export raw data for all parameters as .qs files. Also export, long-term average data both as .csv and .rds files for the analyses.
+Export raw data for all parameters as .qs files, and export the long-term average data both as .csv and .rds files for the analyses. Also, export the summary table of the reporting limits as a .csv file.
 
 ```{r export data, eval = FALSE}
 # Combine all data frames of raw data into a named list

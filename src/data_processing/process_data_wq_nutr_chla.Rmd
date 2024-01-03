@@ -784,7 +784,12 @@ df_nutr_c1 <- df_dwq_lt_filt %>%
   # value reported, then we will assume that the other parameters were below the
   # reporting limit for that station and day. We'll use RL values provided by USGS
   # for 2006-present. We assumed these were constant throughout the entire
-  # monitoring program including in years earlier than 2006.
+  # monitoring program including in years earlier than 2006. RL values are 0.05
+  # umol/L for dissolved ammonia, dissolved nitrate + nitrite, and dissolved
+  # ortho-phosphate. Converting these to mg/L while using the molar mass of either
+  # N or P, we used the following RL values for the USGS_SFBS survey: 
+    # dissolved ammonia and dissolved nitrate + nitrite: 0.05 * 14.0067 / 1000 = 0.0007 mg/L
+    # dissolved ortho-phosphate: 0.05 * 30.973761 / 1000 = 0.0015 mg/L
 df_nutr_sfbs_blw_rl <- df_nutr_c1 %>%
   filter(Source == "USGS_SFBS") %>%
   filter(if_any(c(DissAmmonia, DissNitrateNitrite, DissOrthophos), is.na)) %>%

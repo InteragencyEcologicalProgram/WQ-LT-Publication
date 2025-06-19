@@ -44,7 +44,6 @@ library(deltamapr)
 library(sf)
 library(leaflet)
 library(here)
-library(contentid)
 library(qs)
 library(conflicted)
 
@@ -277,23 +276,12 @@ calc_seas_reg_avg <- function(df) {
 # Import and Prepare Data
 
 ```{r import all data, warning = FALSE}
-# Register a contentid for the WQ data from the discretewq EDI data package
-# This only needs to be done once
-# register(
-#   "https://portal.edirepository.org/nis/dataviewer?packageid=edi.731.7&entityid=6c5f35b1d316e39c8de0bfadfb3c9692"
-# )
+# Define URL for the WQ data from the discretewq EDI data package
+url_dwq <- "https://pasta.lternet.edu/package/data/eml/edi/731/7/6c5f35b1d316e39c8de0bfadfb3c9692"
 
-# Define contentid for the WQ data from the discretewq EDI data package
-id_dwq <- "hash://sha256/c5397df66c7c0e407c0bcd422711e3aab2713023a4aa3d24ff80de58a68f0cf9"
-
-# Resolve the contentid for the WQ data from the discretewq EDI data package -
-  # storing a local copy for faster import
-file_dwq <- resolve(id_dwq, store = TRUE)
-
-# Import WQ data from the discretewq EDI data package from the local copy using
-  # its contentid
+# Import WQ data from the discretewq EDI data package from the local copy using its URL
 df_dwq <- read_csv(
-  file = file_dwq,
+  file = url_dwq,
   # Select a subset of columns
   col_select = c(
     Source,
